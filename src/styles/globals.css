@@ -1,31 +1,13 @@
-html,
-body {
-	padding: 0;
-	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-		Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .mainpage {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-}
-
-a {
-	color: inherit;
-	text-decoration: none;
-}
-
-* {
-	box-sizing: border-box;
-}
-
-row {
-	display:flex;
-	flex-direction: row;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .flex-container {
@@ -35,16 +17,16 @@ row {
 .game {
     flex: 1;
     border: 2px solid black;
-	height: 100vh
+    height: 100vh;
 }
 
 .chatbox {
     flex: 1;
     border: 2px solid black;
-	height: 100vh;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	width: 300px;
-}  
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 300px;
+}
