@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/dist/client/router';
-import LogInForm from '../components/LogInForm';
+import LogInForm from '../components/authentication/LogInForm';
 import { Card } from '../components/vechai-extensions/Card';
 
 const LoginPage: NextPage = () => {
@@ -9,10 +9,7 @@ const LoginPage: NextPage = () => {
     // If already authenticated, send to the home page.
     // Only run on the client.
     if (typeof window !== 'undefined') {
-        fetch('http://localhost:8080/api/user', {
-            method: 'GET',
-            credentials: 'include',
-        })
+        fetch('http://localhost:8080/api/user', { credentials: 'include' })
             .then((res) => res.json())
             .then(({ authenticated }) => authenticated && router.replace('./'));
     }
