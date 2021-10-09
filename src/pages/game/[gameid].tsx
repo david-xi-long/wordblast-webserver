@@ -1,22 +1,63 @@
-import {useRouter} from 'next/router'
+import { NextPage } from 'next';
+import { FunctionComponent, useEffect, useState } from 'react';
+import LobbyPage from '../../components/game/LobbyPage';
+import UsernameSelectPage from '../../components/game/UsernameSelectPage';
+import GameSocket from '../../scripts/game/GameSocket';
 
-function Game() {
-    const router = useRouter();
-    // stores the gameID
-    // add code to verify that the game exists
-    
-    // let gameID = router.query.gameid
+const env = 'dev';
+const endpoints = {
+    dev: 'http://localhost:8080/api/game/',
+    prod: 'http://localhost:8080/api/game/',
+};
 
-    return (
-        <div className="flex-container">
-            <div className="game">
-                Game UI goes here
-            </div>
-            <div className="chatbox">
-                Chat here
-            </div>
-        </div>
-    
-    )
-}
-export default Game;
+// This is ran on the web server.
+// Inform the client whether the game exists or not.
+export const getServerSideProps = async (context) => {
+    const response = await fetch(`${endpoints[env]}${context.params?.gameId}`);
+
+    return {
+        props: { gameExists: response.status === 200 },
+    };
+};
+
+const GamePage: FunctionComponent = () => {
+    const [username, setUsername] = useState('');
+    const [isConnected, setIsConnected] = useState(false);
+
+    const gameSocket = new GameSocket();
+
+    useEffect(() => {
+        (async () => {
+            await gameSocket.connect();
+            setIsConnected(true);
+        })();
+
+        return () => {
+            gameSocket.disconnect();
+        };
+    });
+
+    if (!isConnected) {
+        return <div>Connecting...</div>;
+    }
+
+    if (username === '') {
+        return (
+            <UsernameSelectPage
+                setUsername={setUsername}
+                gameSocket={gameSocket}
+            />
+        );
+    }
+
+    return <LobbyPage />;
+};
+
+const NotFoundPage: FunctionComponent = () => <div>Game not found.</div>;
+
+// Prop types defined by NextPage.
+// eslint-disable-next-line react/prop-types
+const Proxy: NextPage<{ gameExists: boolean }> = ({ gameExists }) =>
+    gameExists ? <GamePage /> : <NotFoundPage />;
+
+export default Proxy;

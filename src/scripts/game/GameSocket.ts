@@ -1,49 +1,77 @@
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import {
+    IdentitySerializer,
+    JsonSerializer,
+    RSocketClient,
+} from 'rsocket-core';
+import RSocketWebsocketClient from 'rsocket-websocket-client';
+import { ReactiveSocket, Payload } from 'rsocket-types';
+import { Flowable, Single } from 'rsocket-flowable';
 import Packet from '../packets/Packet';
-import PacketOutGameJoin from '../packets/PacketOutGameJoin';
 import SocketUtils from './SocketUtils';
 
 export default class GameSocket {
-    private static readonly GAME_SOCKET_URL = 'http://localhost:8080/socket';
+    private static readonly GAME_SOCKET_URL = 'ws://localhost:7000';
 
-    private client: Stomp.Client | undefined = undefined;
+    private socket: ReactiveSocket<unknown, unknown> | undefined = undefined;
 
-    public connect = () => {
-        this.client = Stomp.over(new SockJS(GameSocket.GAME_SOCKET_URL));
+    public connect = async () => {
+        if (this.socket !== undefined) return;
 
-        const { client } = this;
-
-        client.connect({}, () => {
-            const joinPacket = new PacketOutGameJoin(
-                '7d1bffde-41ca-451a-8649-205eb07efaab',
-                '7d1bffde-41ca-451a-8649-205eb07efaab'
-            );
-
-            this.subscribe('/game/info', (packet) => {
-                console.log(packet);
-            });
-
-            this.send('/game/join', joinPacket);
+        const client = new RSocketClient({
+            serializers: {
+                data: JsonSerializer,
+                metadata: IdentitySerializer,
+            },
+            setup: {
+                keepAlive: 60000,
+                lifetime: 180000,
+                dataMimeType: 'application/json',
+                metadataMimeType: 'message/x.rsocket.routing.v0',
+            },
+            transport: new RSocketWebsocketClient({
+                url: GameSocket.GAME_SOCKET_URL,
+            }),
         });
+
+        this.socket = await client.connect();
     };
 
-    public send = (destination: string, packet: Packet) => {
-        if (this.client === undefined) return;
+    public disconnect = async () => {
+        if (this.socket === undefined) return;
 
-        this.client.send(destination, {}, JSON.stringify(packet));
+        this.socket.close();
     };
 
-    public subscribe = (
-        desination: string,
-        listener: (packet: Packet) => any
+    private proxy = <T>(
+        destination: string,
+        packet: Packet,
+        fn: ((payload: Payload<unknown, unknown>) => T) | undefined
     ) => {
-        if (this.client === undefined) return;
+        if (fn === undefined)
+            throw new Error('Passed socket function is undefined.');
 
-        this.client.subscribe(desination, (message) => {
-            const data = JSON.parse(message.body);
-            const packet = SocketUtils.resolvePacket(data);
-            listener(packet);
+        const code = String.fromCharCode(destination.length);
+
+        return fn.call(this.socket, {
+            data: packet,
+            metadata: `${code}${destination}`,
         });
     };
+
+    public fireAndForget = (destination: string, packet: Packet) =>
+        this.proxy(destination, packet, this.socket?.fireAndForget);
+
+    public requestResponse = <T>(destination: string, packet: Packet) =>
+        this.proxy<Single<Payload<unknown, unknown>>>(
+            destination,
+            packet,
+            this.socket?.requestResponse
+        ).map(({ data }) => SocketUtils.resolvePacket(data) as T);
+
+    public requestStream = <T>(destination: string, packet: Packet) =>
+        this.proxy<Flowable<Payload<unknown, unknown>>>(
+            destination,
+            packet,
+            this.socket?.requestStream
+        ).map(({ data }) => SocketUtils.resolvePacket(data) as T);
 }

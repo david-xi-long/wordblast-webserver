@@ -349,6 +349,39 @@
     "@types/scheduler" "*"
     "csstype" "^3.0.2"
 
+"@types/rsocket-core@*", "@types/rsocket-core@^0.0.7":
+  "integrity" "sha512-y4WRagbMA+7DZOtVbCow0Qkk7B8jJAH834Cu+ntmPqiAmHHn9RaVfwmlADQJk17Yuh+e6D5dS18oJNrpUXNEKQ=="
+  "resolved" "https://registry.npmjs.org/@types/rsocket-core/-/rsocket-core-0.0.7.tgz"
+  "version" "0.0.7"
+  dependencies:
+    "@types/node" "*"
+    "@types/rsocket-flowable" "*"
+    "@types/rsocket-types" "*"
+
+"@types/rsocket-flowable@*":
+  "integrity" "sha512-Xf9C8VCPqSPGXaFvnE31ifjQJACiNpxo8ujfeZ0vMHPOANxkbmiL8Crrxa3nUe1EVcFGDgmODUhLqnCcjPWjDQ=="
+  "resolved" "https://registry.npmjs.org/@types/rsocket-flowable/-/rsocket-flowable-0.0.5.tgz"
+  "version" "0.0.5"
+  dependencies:
+    "@types/rsocket-types" "*"
+
+"@types/rsocket-types@*":
+  "integrity" "sha512-q6eHLNb65AOK6h06bqpVs7TN6bA/qukNdvNf+QLjDLKOTta2oRkrxa2aVB7S6/c7lrihPGZUwiO4ps6IKSjocA=="
+  "resolved" "https://registry.npmjs.org/@types/rsocket-types/-/rsocket-types-0.0.3.tgz"
+  "version" "0.0.3"
+  dependencies:
+    "@types/node" "*"
+    "@types/rsocket-flowable" "*"
+
+"@types/rsocket-websocket-client@^0.0.4":
+  "integrity" "sha512-FAhbXRXq7ikkJZPDj1bHlgPLrDDIVGLCnAl5Dsl5PK7lpAxGZxe0WSJtFMBXLkQSGbTQgMS+GYj/oV/D65HSmg=="
+  "resolved" "https://registry.npmjs.org/@types/rsocket-websocket-client/-/rsocket-websocket-client-0.0.4.tgz"
+  "version" "0.0.4"
+  dependencies:
+    "@types/rsocket-core" "*"
+    "@types/rsocket-flowable" "*"
+    "@types/rsocket-types" "*"
+
 "@types/scheduler@*":
   "integrity" "sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew=="
   "resolved" "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.2.tgz"
@@ -3683,6 +3716,35 @@
   dependencies:
     "hash-base" "^3.0.0"
     "inherits" "^2.0.1"
+
+"rsocket-core@^0.0.27":
+  "integrity" "sha512-q/+8PY0BIPvwXb6jPsnKCdyUKFusrm4JDzWnxbW1Ywu2sG/suv28/+mHC7kRGtMnRsxsLAWnqsmI6EznTabItA=="
+  "resolved" "https://registry.npmjs.org/rsocket-core/-/rsocket-core-0.0.27.tgz"
+  "version" "0.0.27"
+  dependencies:
+    "rsocket-flowable" "^0.0.27"
+    "rsocket-types" "^0.0.27"
+
+"rsocket-flowable@^0.0.27":
+  "integrity" "sha512-I/1vETXP+qCfGFeMY8i+QLhyBpcEj0nDmWnP2vh7lDyOBNT9LjAiY6kigUzEHbfhoNe3vnJWYK6uCzxIsi622Q=="
+  "resolved" "https://registry.npmjs.org/rsocket-flowable/-/rsocket-flowable-0.0.27.tgz"
+  "version" "0.0.27"
+
+"rsocket-types@^0.0.27":
+  "integrity" "sha512-88vgA+d31a6wW5YP63jQZ0CqZ3DALtH4oCbuMtIcNy28m1kDYGPZunhsnw+YC/XtjOqb5hKhn10ZQm7OK2xc1g=="
+  "resolved" "https://registry.npmjs.org/rsocket-types/-/rsocket-types-0.0.27.tgz"
+  "version" "0.0.27"
+  dependencies:
+    "rsocket-flowable" "^0.0.27"
+
+"rsocket-websocket-client@^0.0.27":
+  "integrity" "sha512-1BX2O1C1R5W78kI7J5E/nbzxawUOceLggeG1b7rnIGZgCbnftGoIOF5xU/Q268UCE4NNtaDRED4xSHJpdAVFBw=="
+  "resolved" "https://registry.npmjs.org/rsocket-websocket-client/-/rsocket-websocket-client-0.0.27.tgz"
+  "version" "0.0.27"
+  dependencies:
+    "rsocket-core" "^0.0.27"
+    "rsocket-flowable" "^0.0.27"
+    "rsocket-types" "^0.0.27"
 
 "run-parallel@^1.1.9":
   "integrity" "sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA=="

@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import SignUpForm from '../components/SignUpForm';
+import SignUpForm from '../components/authentication/SignUpForm';
 import { Card } from '../components/vechai-extensions/Card';
 
 const SignupPage: NextPage = () => (
