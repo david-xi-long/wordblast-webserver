@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import LobbyPage from '../../components/game/LobbyPage';
 import UsernameSelectPage from '../../components/game/UsernameSelectPage';
 import GameSocket from '../../scripts/game/GameSocket';

@@ -54,7 +54,6 @@ function MainPage() {
         router.push(`/game/${uid}`);
     };
 
-
     return (
         <div>
             <div className="mainpage">
