@@ -31,6 +31,30 @@ function MainPage() {
         router.push(`/game/${uid}`);
     };
 
+    const singlePlayer = async () => {
+        setIsLoading(true);
+
+        const response = await fetch(
+            'http://localhost:8080/api/game/singlePlayer'
+        );
+
+        setIsLoading(false);
+
+        if (response.status !== 200) {
+            notification({
+                title: 'Error',
+                description: 'An unexpected error occurred. Try again later.',
+                status: 'error',
+            });
+            return;
+        }
+
+        const { uid } = await response.json();
+
+        router.push(`/game/${uid}`);
+    };
+
+
     return (
         <div>
             <div className="mainpage">
@@ -60,6 +84,16 @@ function MainPage() {
                     >
                         Play with friends
                     </Button> */}
+                    <Button
+                        type="submit"
+                        variant="solid"
+                        color="primary"
+                        size="lg"
+                        loading={isLoading}
+                        onClick={singlePlayer}
+                    >
+                        Single Player
+                    </Button>
                 </div>
             </div>
         </div>
