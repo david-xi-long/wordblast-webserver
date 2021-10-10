@@ -32,7 +32,9 @@ const LobbyPage: FunctionComponent<{
             );
 
         gameSocket.subscribe<PacketInPlayerState>('player-state', (packet) => {
-            console.log(packet.getUsername(), packet.getState());
+            if (!packet.getState()) {
+                setPlayers(players.filter((p) => p !== packet.getUsername()));
+            }
         });
     }, []);
 
