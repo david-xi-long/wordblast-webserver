@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import LobbyPage from '../../components/game/LobbyPage';
 import UsernameSelectPage from '../../components/game/UsernameSelectPage';
 import GameSocket from '../../scripts/game/GameSocket';
@@ -23,8 +23,7 @@ export const getServerSideProps = async (context) => {
 const GamePage: FunctionComponent = () => {
     const [username, setUsername] = useState('');
     const [isConnected, setIsConnected] = useState(false);
-
-    const gameSocket = new GameSocket();
+    const [gameSocket] = useState(new GameSocket());
 
     useEffect(() => {
         (async () => {
@@ -35,7 +34,7 @@ const GamePage: FunctionComponent = () => {
         return () => {
             gameSocket.disconnect();
         };
-    });
+    }, []);
 
     if (!isConnected) {
         return <div>Connecting...</div>;
@@ -50,7 +49,7 @@ const GamePage: FunctionComponent = () => {
         );
     }
 
-    return <LobbyPage />;
+    return <LobbyPage gameSocket={gameSocket} username={username} />;
 };
 
 const NotFoundPage: FunctionComponent = () => <div>Game not found.</div>;

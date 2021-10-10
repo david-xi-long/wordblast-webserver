@@ -1,5 +1,6 @@
 import Packet from '../packets/Packet';
 import PacketInGameInfo from '../packets/PacketInGameInfo';
+import PacketInPlayerState from '../packets/PacketInPlayerState';
 import PacketInSelectUsername from '../packets/PacketInSelectUsername';
 
 export default class SocketUtils {
@@ -12,6 +13,9 @@ export default class SocketUtils {
                 break;
             case 'PACKET_OUT_SELECT_USERNAME':
                 packet = PacketInSelectUsername.of(data);
+                break;
+            case 'PACKET_OUT_PLAYER_STATE':
+                packet = PacketInPlayerState.of(data);
                 break;
             case 'PACKET_OUT_EXCEPTION':
                 throw new Error(`Received exception packet: ${data.message}`);

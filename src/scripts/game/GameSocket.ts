@@ -8,9 +8,12 @@ import { ReactiveSocket, Payload } from 'rsocket-types';
 import { Flowable, Single } from 'rsocket-flowable';
 import Packet from '../packets/Packet';
 import SocketUtils from './SocketUtils';
+import ResponderImpl from './ResponderImpl';
 
 export default class GameSocket {
     private static readonly GAME_SOCKET_URL = 'ws://localhost:7000';
+
+    private readonly responder = new ResponderImpl();
 
     private socket: ReactiveSocket<unknown, unknown> | undefined = undefined;
 
@@ -18,16 +21,17 @@ export default class GameSocket {
         if (this.socket !== undefined) return;
 
         const client = new RSocketClient({
-            serializers: {
-                data: JsonSerializer,
-                metadata: IdentitySerializer,
-            },
             setup: {
                 keepAlive: 60000,
                 lifetime: 180000,
                 dataMimeType: 'application/json',
                 metadataMimeType: 'message/x.rsocket.routing.v0',
             },
+            serializers: {
+                data: JsonSerializer,
+                metadata: IdentitySerializer,
+            },
+            responder: this.responder,
             transport: new RSocketWebsocketClient({
                 url: GameSocket.GAME_SOCKET_URL,
             }),
@@ -61,17 +65,34 @@ export default class GameSocket {
     public fireAndForget = (destination: string, packet: Packet) =>
         this.proxy(destination, packet, this.socket?.fireAndForget);
 
-    public requestResponse = <T>(destination: string, packet: Packet) =>
+    public requestResponse = <T extends Packet>(
+        destination: string,
+        packet: Packet
+    ) =>
         this.proxy<Single<Payload<unknown, unknown>>>(
             destination,
             packet,
             this.socket?.requestResponse
         ).map(({ data }) => SocketUtils.resolvePacket(data) as T);
 
-    public requestStream = <T>(destination: string, packet: Packet) =>
+    public requestStream = <T extends Packet>(
+        destination: string,
+        packet: Packet
+    ) =>
         this.proxy<Flowable<Payload<unknown, unknown>>>(
             destination,
             packet,
             this.socket?.requestStream
         ).map(({ data }) => SocketUtils.resolvePacket(data) as T);
+
+    public subscribe = <T extends Packet>(
+        destination: string,
+        subscriber: (packet: T) => any
+    ) => {
+        this.responder.addSubscriber(
+            destination,
+            // NOTE: Casting here could bring up issues in the future.
+            subscriber as (packet: Packet) => any
+        );
+    };
 }
