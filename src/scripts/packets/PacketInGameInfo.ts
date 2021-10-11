@@ -3,19 +3,19 @@ import Packet from './Packet';
 export default class PacketInGameInfo extends Packet {
     private readonly gameUid: string;
     private readonly status: string;
-    private readonly playerNames: string[];
+    private readonly activePlayerNames: string[];
 
-    constructor(gameUid: string, status: string, playerNames: string[]) {
+    constructor(gameUid: string, status: string, activePlayerNames: string[]) {
         super();
         this.gameUid = gameUid;
         this.status = status;
-        this.playerNames = playerNames;
+        this.activePlayerNames = activePlayerNames;
     }
 
     public getGameUid = () => this.gameUid;
     public getStatus = () => this.status;
-    public getPlayerNames = () => this.playerNames;
+    public getActivePlayerNames = () => this.activePlayerNames;
 
     public static of = (obj: any) =>
-        new PacketInGameInfo(obj.gameUid, obj.status, obj.playerNames);
+        new PacketInGameInfo(obj.gameUid, obj.status, obj.activePlayerNames);
 }
