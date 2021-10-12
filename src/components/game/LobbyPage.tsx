@@ -49,15 +49,10 @@ const LobbyPage: FunctionComponent<{
             );
     };
 
-
     // Run only once after the component has mounted.
     useEffect(() => {
         joinGame();
         registerInitHandlers();
-
-        gameSocket.subscribe<PacketInPlayerState>('player-state', (packet) => {
-            setPlayerState(packet.getUsername(), packet.getState());
-        });
     }, []);
 
     return (
