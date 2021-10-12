@@ -2,6 +2,7 @@ import Packet from '../packets/Packet';
 import PacketInGameInfo from '../packets/PacketInGameInfo';
 import PacketInPlayerState from '../packets/PacketInPlayerState';
 import PacketInSelectUsername from '../packets/PacketInSelectUsername';
+import PacketInCheckWord from '../packets/PacketInCheckWord';
 
 export default class SocketUtils {
     public static resolvePacket = (data: any) => {
@@ -16,6 +17,9 @@ export default class SocketUtils {
                 break;
             case 'PACKET_OUT_PLAYER_STATE':
                 packet = PacketInPlayerState.of(data);
+                break;
+            case 'PACKET_OUT_CHECK_WORD':
+                packet = PacketInCheckWord.of(data);
                 break;
             case 'PACKET_OUT_EXCEPTION':
                 throw new Error(`Received exception packet: ${data.message}`);
