@@ -14,7 +14,24 @@ const LobbyPage: FunctionComponent<{
 
     const [players, setPlayers] = useState([] as string[]);
 
-    useEffect(() => {
+    const setPlayerState = (playerName: string, state: boolean) => {
+        if (state && !players.includes(playerName)) {
+            setPlayers((curPlayers) => [...curPlayers, playerName]);
+        }
+        if (!state) {
+            setPlayers((curPlayers) =>
+                curPlayers.filter((p) => p !== playerName)
+            );
+        }
+    };
+
+    const registerInitHandlers = () => {
+        gameSocket.subscribe<PacketInPlayerState>('player-state', (packet) => {
+            setPlayerState(packet.getUsername(), packet.getState());
+        });
+    };
+
+    const joinGame = () => {
         gameSocket
             .requestResponse<PacketInGameInfo>(
                 'join-game',
@@ -22,7 +39,7 @@ const LobbyPage: FunctionComponent<{
             )
             .then(
                 (packet) => {
-                    setPlayers(packet.getPlayerNames());
+                    setPlayers(packet.getActivePlayerNames());
                 },
                 () => {
                     // An exception occured while sending data to the game socket.
@@ -30,11 +47,16 @@ const LobbyPage: FunctionComponent<{
                     router.replace('/');
                 }
             );
+    };
+
+
+    // Run only once after the component has mounted.
+    useEffect(() => {
+        joinGame();
+        registerInitHandlers();
 
         gameSocket.subscribe<PacketInPlayerState>('player-state', (packet) => {
-            if (!packet.getState()) {
-                setPlayers(players.filter((p) => p !== packet.getUsername()));
-            }
+            setPlayerState(packet.getUsername(), packet.getState());
         });
     }, []);
 
