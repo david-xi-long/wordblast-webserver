@@ -51,7 +51,7 @@ function MainPage() {
 
         const { uid } = await response.json();
 
-        router.push(`/game/${uid}`);
+        router.push(`/game/SinglePlayerLobby`);
     };
 
     return (

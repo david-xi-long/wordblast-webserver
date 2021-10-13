@@ -30,3 +30,14 @@
     right: 0;
     width: 300px;
 }
+
+.chat-input {
+    color: red;
+    vertical-align: bottom;
+}
+
+
+.bottom {
+    position: absolute;
+    bottom: 0;
+}

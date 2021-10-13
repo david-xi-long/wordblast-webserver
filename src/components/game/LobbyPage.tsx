@@ -4,6 +4,7 @@ import GameSocket from '../../scripts/game/GameSocket';
 import PacketInGameInfo from '../../scripts/packets/PacketInGameInfo';
 import PacketInPlayerState from '../../scripts/packets/PacketInPlayerState';
 import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
+import ChatRoom from './ChatRoom'
 
 const LobbyPage: FunctionComponent<{
     gameSocket: GameSocket;
@@ -62,7 +63,7 @@ const LobbyPage: FunctionComponent<{
                     <div key={p}>{p}</div>
                 ))}
             </div>
-            <div className="chatbox">Chat here</div>
+            <ChatRoom username={username} gameSocket={gameSocket} gameId={gameId}/>
         </div>
     );
 };
