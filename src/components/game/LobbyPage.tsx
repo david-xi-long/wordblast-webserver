@@ -3,8 +3,10 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import GameSocket from '../../scripts/game/GameSocket';
 import PacketInGameInfo from '../../scripts/packets/PacketInGameInfo';
 import PacketInPlayerState from '../../scripts/packets/PacketInPlayerState';
+import PacketInUsernameChange from '../../scripts/packets/PacketInUsernameChange';
 import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
 import ChatRoom from './ChatRoom';
+import LobbyPlayers from './LobbyPlayers';
 import LobbyUsernameField from './LobbyUsernameField';
 
 const LobbyPage: FunctionComponent<{
@@ -28,10 +30,25 @@ const LobbyPage: FunctionComponent<{
         }
     };
 
+    const changeUsername = (oldUsername: string, newUsername: string) => {
+        setPlayers((curPlayers) =>
+            curPlayers.map((p) => (p === oldUsername ? newUsername : p))
+        );
+    };
+
     const registerInitHandlers = () => {
         gameSocket.subscribe<PacketInPlayerState>('player-state', (packet) => {
             setPlayerState(packet.getUsername(), packet.getState());
         });
+        gameSocket.subscribe<PacketInUsernameChange>(
+            'change-username',
+            (packet) => {
+                changeUsername(
+                    packet.getOldUsername(),
+                    packet.getNewUsername()
+                );
+            }
+        );
     };
 
     const joinGame = () => {
@@ -53,10 +70,6 @@ const LobbyPage: FunctionComponent<{
             );
     };
 
-    const playerPlaceholders = Array(8)
-        .fill(0)
-        .map(() => Math.random());
-
     // Run only once after the component has mounted.
     useEffect(() => {
         joinGame();
@@ -67,12 +80,7 @@ const LobbyPage: FunctionComponent<{
         <div className="h-screen">
             <div className="h-full flex flex-col justify-center items-center">
                 <div className="my-auto">
-                    <h1 className="font-bold text-3xl mb-3">Players</h1>
-                    <div className="grid grid-cols-4 gap-3">
-                        {playerPlaceholders.map((v) => (
-                            <div key={v} className="h-24 w-24 bg-neutral-700" />
-                        ))}
-                    </div>
+                    <LobbyPlayers players={players} />
                 </div>
                 <LobbyUsernameField
                     gameId={gameId}
