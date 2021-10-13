@@ -27,6 +27,16 @@ const gameplayPage: FunctionComponent = () => {
     const [gameSocket] = useState(new GameSocket());
     const {gameId} = router.query as {gameId: string};
 
+    const startTheGame = () => {
+        //This function will wnable the game to start once everyone is in th e lobby
+        //and has readied up.
+        
+    }
+    const getReadyForTheGame = () => {
+        //This function will check whether other players have readied up
+        
+    }
+    
     useEffect(() => {
         (async () => {
             await gameSocket.connect();
@@ -56,11 +66,20 @@ const gameplayPage: FunctionComponent = () => {
             .then(
                 (packet) => {
                     if (packet.wordIsValid()==true) {
+                        // Implement word being correct
+                        console.log("Word is valid");
+                        setCorrectInput(true);
+                        router.replace("/sucess");
                     } else {
+                        // Implement word being incorrect
+                        setWordIsValid(false);
+                        //router.replace("/failure");
+                        router.reload();
                     }
                 },
                 () => {
-                    // Something has gone wrong
+                    // Something has gone wrong where packet was not received
+                    router.replace("/");
                 }
             );
     };
@@ -68,6 +87,25 @@ const gameplayPage: FunctionComponent = () => {
     return (
         <><Image src={AvatarPlaceholder} width={50} height={100}/>
         <Image src={BombPlaceholder} width={50} height={50}/>
+        <div>
+
+       
+        <Button
+          type="submit"
+          variant="solid"
+          color="primary"
+          onclick={startTheGame}
+          >
+            Start Game
+        </Button>
+        <Button
+          type="submit"
+          variant="solid"
+          color="primary"
+          onclick={getReadyForTheGame}
+          >
+            Ready To Play
+        </Button>
         <form onSubmit={handleSubmit(submit)}>
             {!wordIsValid && (
                 <Alert variant="subtle"> That word is invalid.</Alert>
@@ -78,17 +116,19 @@ const gameplayPage: FunctionComponent = () => {
                 </FormLabel>
                 <Input
                     type="inputWord"
-                    {...register('inputWord', { required: true })} />
+                    {...register('inputWord', { required: true })}
+                />
                 {errors.inputWord?.type == 'required' && (<FormErrorMessage>Input must not be blank.</FormErrorMessage>)}
-                <Button
-                    type="submit"
-                    variant="solid"
-                    color="primary"
-                >
-                    Submit Input
-                </Button>
+                    <Button
+                        type="submit"
+                        variant="solid"
+                        color="primary"
+                    >
+                        Submit Input
+                    </Button>
             </FormControl>
-        </form></>
+        </form>
+        </div>
     );
 };
 

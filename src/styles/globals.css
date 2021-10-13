@@ -10,16 +10,6 @@
     justify-content: center;
 }
 
-.flex-container {
-    display: flex;
-}
-
-.game {
-    flex: 1;
-    border: 2px solid black;
-    height: 100vh;
-}
-
 .chatbox {
     flex: 1;
     border: 2px solid black;
@@ -35,7 +25,6 @@
     color: red;
     vertical-align: bottom;
 }
-
 
 .bottom {
     position: absolute;
