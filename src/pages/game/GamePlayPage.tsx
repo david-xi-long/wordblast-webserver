@@ -21,7 +21,7 @@ const gameplayPage: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [wordIsValid, setWordIsValid] = useState(true);
     const [correctInput, setCorrectInput] = useState(true);
-;    const [isConnected, setIsConnected] = useState(false);
+    const [isConnected, setIsConnected] = useState(false);
     const router = useRouter();
     const [gameSocket] = useState(new GameSocket());
     const {gameId} = router.query as {gameId: string};
@@ -55,20 +55,11 @@ const gameplayPage: FunctionComponent = () => {
             .then(
                 (packet) => {
                     if (packet.wordIsValid()==true) {
-                        // Implement word being correct
-                        console.log("Word is valid");
-                        setCorrectInput(true);
-                        router.replace("/sucess");
                     } else {
-                        // Implement word being incorrect
-                        setWordIsValid(false);
-                        //router.replace("/failure");
-                        router.reload();
                     }
                 },
                 () => {
-                    // Something has gone wrong where packet was not received
-                    router.replace("/");
+                    // Something has gone wrong
                 }
             );
     };
