@@ -13,8 +13,9 @@ import { useForm } from 'react-hook-form';
 import GameSocket from '../../scripts/game/GameSocket';
 import PacketInCheckWord from '../../scripts/packets/PacketInCheckWord';
 import PacketOutCheckWord from '../../scripts/packets/PacketOutCheckWord';
-
-
+import Image from 'next/image'
+import AvatarPlaceholder from '../../../public/AvatarPlaceholder.png';
+import BombPlaceholder from '../../../public/Bomb.png';
 
 const gameplayPage: FunctionComponent = () => {
 
@@ -65,6 +66,8 @@ const gameplayPage: FunctionComponent = () => {
     };
 
     return (
+        <><Image src={AvatarPlaceholder} width={50} height={100}/>
+        <Image src={BombPlaceholder} width={50} height={50}/>
         <form onSubmit={handleSubmit(submit)}>
             {!wordIsValid && (
                 <Alert variant="subtle"> That word is invalid.</Alert>
@@ -75,18 +78,17 @@ const gameplayPage: FunctionComponent = () => {
                 </FormLabel>
                 <Input
                     type="inputWord"
-                    {...register('inputWord', { required: true })}
-                />
+                    {...register('inputWord', { required: true })} />
                 {errors.inputWord?.type == 'required' && (<FormErrorMessage>Input must not be blank.</FormErrorMessage>)}
-                    <Button
-                        type="submit"
-                        variant="solid"
-                        color="primary"
-                    >
-                        Submit Input
-                    </Button>
+                <Button
+                    type="submit"
+                    variant="solid"
+                    color="primary"
+                >
+                    Submit Input
+                </Button>
             </FormControl>
-        </form>
+        </form></>
     );
 };
 
