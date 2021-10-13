@@ -8,6 +8,7 @@ import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
 import ChatRoom from './ChatRoom';
 import LobbyPlayers from './LobbyPlayers';
 import LobbyUsernameField from './LobbyUsernameField';
+import { Button } from '@vechaiui/button';
 
 const LobbyPage: FunctionComponent<{
     gameSocket: GameSocket;
@@ -70,6 +71,14 @@ const LobbyPage: FunctionComponent<{
             );
     };
 
+    const startTheGame = () => {
+
+    }
+
+    const getReadyForTheGame = () => {
+
+    }
+
     // Run only once after the component has mounted.
     useEffect(() => {
         joinGame();
@@ -78,6 +87,22 @@ const LobbyPage: FunctionComponent<{
 
     return (
         <div className="h-screen">
+            <Button
+          type="submit"
+          variant="solid"
+          color="primary"
+          onClick={startTheGame}
+          >
+            Force Start Game (dev)
+        </Button>
+        <Button
+          type="submit"
+          variant="solid"
+          color="primary"
+          onClick={getReadyForTheGame}
+          >
+            Ready To Play
+        </Button>
             <div className="h-full flex flex-col justify-center items-center">
                 <div className="my-auto">
                     <LobbyPlayers players={players} />
