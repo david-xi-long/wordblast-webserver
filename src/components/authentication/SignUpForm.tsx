@@ -53,7 +53,10 @@ const SignUpForm: FunctionComponent = () => {
     };
 
     return (
-        <form className="p-8 flex flex-col" onSubmit={handleSubmit(submit)}>
+        <form
+            className="w-screen max-w-md p-8 flex flex-col"
+            onSubmit={handleSubmit(submit)}
+        >
             <h1 className="text-xl font-bold">Sign Up</h1>
 
             <Divider className={cx('my-4', 'dark:border-neutral-700')} />

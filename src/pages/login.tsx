@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import LogInForm from '../components/authentication/LogInForm';
-import { Card } from '../components/vechai-extensions/Card';
+import Card from '../components/vechai-extensions/Card';
 
 const LoginPage: NextPage = () => {
     const router = useRouter();

@@ -1,14 +1,14 @@
 import { useRouter } from 'next/router';
 import { FunctionComponent, useEffect, useState } from 'react';
+import { Button } from '@vechaiui/button';
 import GameSocket from '../../scripts/game/GameSocket';
 import PacketInGameInfo from '../../scripts/packets/PacketInGameInfo';
 import PacketInPlayerState from '../../scripts/packets/PacketInPlayerState';
 import PacketInUsernameChange from '../../scripts/packets/PacketInUsernameChange';
 import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
-import ChatRoom from './ChatRoom';
+import Chatbox from './Chatbox';
 import LobbyPlayers from './LobbyPlayers';
 import LobbyUsernameField from './LobbyUsernameField';
-import { Button } from '@vechaiui/button';
 
 const LobbyPage: FunctionComponent<{
     gameSocket: GameSocket;
@@ -24,6 +24,7 @@ const LobbyPage: FunctionComponent<{
         if (state && !players.includes(playerName)) {
             setPlayers((curPlayers) => [...curPlayers, playerName]);
         }
+
         if (!state) {
             setPlayers((curPlayers) =>
                 curPlayers.filter((p) => p !== playerName)
@@ -41,6 +42,7 @@ const LobbyPage: FunctionComponent<{
         gameSocket.subscribe<PacketInPlayerState>('player-state', (packet) => {
             setPlayerState(packet.getUsername(), packet.getState());
         });
+
         gameSocket.subscribe<PacketInUsernameChange>(
             'change-username',
             (packet) => {
@@ -63,7 +65,6 @@ const LobbyPage: FunctionComponent<{
                     setPlayers(packet.getActivePlayerNames());
                 },
                 () => {
-                    return;
                     // An exception occured while sending data to the game socket.
                     // Redirect to the main page, as the game is probably broken.
                     router.replace('/');
@@ -71,39 +72,45 @@ const LobbyPage: FunctionComponent<{
             );
     };
 
-    const startTheGame = () => {
-
-    }
-
-    const getReadyForTheGame = () => {
-
-    }
+    // TODO: Implement these button handlers.
+    const getReadyForTheGame = () => {};
+    const startTheGame = () => {};
 
     // Run only once after the component has mounted.
     useEffect(() => {
         joinGame();
         registerInitHandlers();
+
+        // Do not care about dependencies.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
-        <div className="h-screen">
-            <Button
-          type="submit"
-          variant="solid"
-          color="primary"
-          onClick={startTheGame}
-          >
-            Force Start Game (dev)
-        </Button>
-        <Button
-          type="submit"
-          variant="solid"
-          color="primary"
-          onClick={getReadyForTheGame}
-          >
-            Ready To Play
-        </Button>
-            <div className="h-full flex flex-col justify-center items-center">
+        <div className="relative h-screen flex">
+            <div className="absolute p-3 left-0 bottom-0">
+                <div>
+                    <Button
+                        type="button"
+                        variant="solid"
+                        color="primary"
+                        onClick={getReadyForTheGame}
+                    >
+                        Ready To Play
+                    </Button>
+                </div>
+                <div className="mt-2">
+                    <Button
+                        type="button"
+                        variant="solid"
+                        color="primary"
+                        onClick={startTheGame}
+                    >
+                        Force Start Game
+                    </Button>
+                </div>
+            </div>
+
+            <div className="h-full flex flex-col justify-center items-center flex-grow">
                 <div className="my-auto">
                     <LobbyPlayers players={players} />
                 </div>
@@ -114,11 +121,9 @@ const LobbyPage: FunctionComponent<{
                     setUsername={setUsername}
                 />
             </div>
-            <ChatRoom
-                username={username}
-                gameSocket={gameSocket}
-                gameId={gameId}
-            />
+            <Chatbox username={username}>
+                <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />
+            </Chatbox>
         </div>
     );
 };

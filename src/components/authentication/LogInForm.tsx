@@ -41,7 +41,10 @@ const LogInForm: FunctionComponent = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="p-8 flex flex-col">
+        <form
+            onSubmit={handleSubmit(submit)}
+            className="w-screen max-w-md p-8 flex flex-col"
+        >
             <h1 className="text-xl font-bold">Log In</h1>
 
             <Divider className={cx('my-4', 'dark:border-neutral-700')} />
