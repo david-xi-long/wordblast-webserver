@@ -67,3 +67,38 @@
     width: 3rem;
     margin-right: 1.25rem;
 }
+
+.player_container {
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "P8 . P1 . P2"
+      ". A7 A0 A1 ."
+      "P7 A6 Bomb A2 P3"
+      ". A5 A4 A3 ."
+      "P6 . P5 . P4"
+      ". . Cycle . .";
+  }
+  .P1 { grid-area: P1; }
+  .P2 { grid-area: P2; }
+  .P3 { grid-area: P3; }
+  .P4 { grid-area: P4; }
+  .P5 { grid-area: P5; }
+  .P6 { grid-area: P6; }
+  .P7 { grid-area: P7; }
+  .P8 { grid-area: P8; }
+  .Bomb { grid-area: Bomb; }
+  .A0 { grid-area: A0; transform: rotate(90deg); }
+  .A1 { grid-area: A1; transform: rotate(135deg); }
+  .A2 { grid-area: A2; transform: rotate(180deg); }
+  .A3 { grid-area: A3; transform: rotate(225deg); }
+  .A4 { grid-area: A4; transform: rotate(270deg); }
+  .A5 { grid-area: A5; transform: rotate(315deg); }
+  .A6 { grid-area: A6; }
+  .A7 { grid-area: A7; transform: rotate(45deg); }
+  .Cycle {grid-area: Cycle; }
+  

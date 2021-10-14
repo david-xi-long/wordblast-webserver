@@ -24,7 +24,7 @@ const SinglePlayerLobby: FunctionComponent = () => {
     }
 
     return (
-        <div>
+        <><div>
             <Button
                 type="submit"
                 variant="solid"
@@ -35,6 +35,7 @@ const SinglePlayerLobby: FunctionComponent = () => {
                 Ready?
             </Button>
         </div>
+        </>
     )
 };
 
