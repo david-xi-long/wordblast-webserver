@@ -1,10 +1,11 @@
 import Packet from '../packets/Packet';
 import PacketInGameInfo from '../packets/PacketInGameInfo';
 import PacketInPlayerState from '../packets/PacketInPlayerState';
-import PacketInSelectUsername from '../packets/PacketInSelectUsername';
 import PacketInCheckWord from '../packets/PacketInCheckWord';
 import PacketInPlayerMessage from '../packets/PacketInPlayerMessage';
 import PacketInUsernameChange from '../packets/PacketInUsernameChange';
+import PacketInUsernameSelect from '../packets/PacketInUsernameSelect';
+import PacketInStartGame from '../packets/PacketInStartGame';
 
 export default class SocketUtils {
     public static resolvePacket = (data: any) => {
@@ -17,8 +18,8 @@ export default class SocketUtils {
             case 'PACKET_OUT_GAME_INFO':
                 packet = PacketInGameInfo.of(data);
                 break;
-            case 'PACKET_OUT_SELECT_USERNAME':
-                packet = PacketInSelectUsername.of(data);
+            case 'PACKET_OUT_USERNAME_SELECT':
+                packet = PacketInUsernameSelect.of(data);
                 break;
             case 'PACKET_OUT_PLAYER_STATE':
                 packet = PacketInPlayerState.of(data);
@@ -28,6 +29,9 @@ export default class SocketUtils {
                 break;
             case 'PACKET_OUT_USERNAME_CHANGE':
                 packet = PacketInUsernameChange.of(data);
+                break;
+            case 'PACKET_OUT_START_GAME':
+                packet = PacketInStartGame.of(data);
                 break;
             case 'PACKET_OUT_EXCEPTION':
                 throw new Error(`Received exception packet: ${data.message}`);

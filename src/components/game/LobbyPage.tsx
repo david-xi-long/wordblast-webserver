@@ -9,6 +9,11 @@ import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
 import Chatbox from './Chatbox';
 import LobbyPlayers from './LobbyPlayers';
 import LobbyUsernameField from './LobbyUsernameField';
+import MultiplayerGameplayPage from '../../pages/game/MultiplayerGameplayPage';
+import SinglePlayerLobby from '../../pages/game/SinglePlayerLobby';
+import PacketInStartGame from '../../scripts/packets/PacketInStartGame';
+import PacketOutStartGame from '../../scripts/packets/PacketOutStartGame';
+import Packet from '../../scripts/packets/Packet';
 
 const LobbyPage: FunctionComponent<{
     gameSocket: GameSocket;
@@ -19,6 +24,7 @@ const LobbyPage: FunctionComponent<{
 
     const [username, setUsername] = useState(selectedUsername);
     const [players, setPlayers] = useState([] as string[]);
+    const [startGame, setStartGame] = useState(false);
 
     const setPlayerState = (playerName: string, state: boolean) => {
         if (state && !players.includes(playerName)) {
@@ -74,16 +80,33 @@ const LobbyPage: FunctionComponent<{
 
     // TODO: Implement these button handlers.
     const getReadyForTheGame = () => {};
-    const startTheGame = () => {};
 
+    const startTheGame = () => {
+        gameSocket.subscribe<PacketInStartGame>('start-game', (packet: { getPlayers: () => any; }) => {
+            setPlayers(packet.getPlayers);
+            setStartGame(true);
+            //return <MultiplayerGameplayPage players = {players} />;
+            //router.push("/game/MultiplayerGameplayPage");
+        });
+    }
+
+    const sendStartGameRequest = async () => {
+        gameSocket.fireAndForget("start-game", new PacketOutStartGame(gameId, players));
+    }
+    
     // Run only once after the component has mounted.
     useEffect(() => {
         joinGame();
         registerInitHandlers();
-
+        startTheGame();
         // Do not care about dependencies.
         // eslint-disable-next-line react-hooks/exhaustive-deps
+        
     }, []);
+
+    if (startGame) {
+        return <MultiplayerGameplayPage players = {players} />;
+    }
 
     return (
         <div className="relative h-screen flex">
@@ -103,7 +126,7 @@ const LobbyPage: FunctionComponent<{
                         type="button"
                         variant="solid"
                         color="primary"
-                        onClick={startTheGame}
+                        onClick={sendStartGameRequest}
                     >
                         Force Start Game
                     </Button>
@@ -129,3 +152,4 @@ const LobbyPage: FunctionComponent<{
 };
 
 export default LobbyPage;
+

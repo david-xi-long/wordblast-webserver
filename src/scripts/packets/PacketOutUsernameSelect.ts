@@ -1,6 +1,6 @@
 import Packet from './Packet';
 
-export default class PacketOutSelectUsername extends Packet {
+export default class PacketOutUsernameSelect extends Packet {
     private readonly gameUid: string;
     private readonly username: string;
 
