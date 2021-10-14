@@ -26,12 +26,16 @@ const LobbyUsernameField: FunctionComponent<{
                 'change-username',
                 new PacketOutUsernameChange(gameId, username, newUsername)
             )
-            .then((packet) => {
-                // TODO: If an error was encountered, inform user.
-
-                setEditingUsername(false);
-                setUsername(newUsername);
-            });
+            .then(
+                () => {
+                    setEditingUsername(false);
+                    setUsername(newUsername);
+                },
+                () => {
+                    // Could not change the username, do nothing.
+                    // Should probably inform user in a better manner.
+                }
+            );
     };
 
     return (
