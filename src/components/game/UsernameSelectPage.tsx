@@ -1,19 +1,13 @@
 import { Alert } from '@vechaiui/alert';
 import { Button } from '@vechaiui/button';
-import {
-    FormControl,
-    FormErrorMessage,
-    FormLabel,
-    Input,
-    RequiredIndicator,
-} from '@vechaiui/forms';
+import { FormControl, FormErrorMessage, Input } from '@vechaiui/forms';
 import { useRouter } from 'next/router';
 import { FunctionComponent, Dispatch, SetStateAction, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import GameSocket from '../../scripts/game/GameSocket';
 import { uid } from '../../scripts/miscellaneous/math';
-import PacketInSelectUsername from '../../scripts/packets/PacketInSelectUsername';
-import PacketOutSelectUsername from '../../scripts/packets/PacketOutSelectUsername';
+import PacketInUsernameSelect from '../../scripts/packets/PacketInUsernameSelect';
+import PacketOutUsernameSelect from '../../scripts/packets/PacketOutUsernameSelect';
 
 const UsernameSelectPage: FunctionComponent<{
     setUsername: Dispatch<SetStateAction<string>>;
@@ -35,13 +29,13 @@ const UsernameSelectPage: FunctionComponent<{
         setIsLoading(true);
 
         gameSocket
-            .requestResponse<PacketInSelectUsername>(
+            .requestResponse<PacketInUsernameSelect>(
                 'select-username',
-                new PacketOutSelectUsername(gameId, username)
+                new PacketOutUsernameSelect(gameId, username)
             )
             .then(
                 (packet) => {
-                    if (packet.usernameExists()) {
+                    if (packet.getUsernameExists()) {
                         setUsernameExists(true);
                     } else {
                         setUsernameExists(false);
@@ -50,7 +44,7 @@ const UsernameSelectPage: FunctionComponent<{
 
                     setIsLoading(false);
                 },
-                () => {
+                (err) => {
                     // An exception occured while sending data to the game socket.
                     // Redirect to the main page, as the game is probably broken.
                     router.replace('/');
@@ -59,34 +53,48 @@ const UsernameSelectPage: FunctionComponent<{
     };
 
     return (
-        <form onSubmit={handleSubmit(submit)}>
-            {usernameExists && (
-                <Alert variant="subtle">That username is taken.</Alert>
-            )}
+        <div className="h-screen w-full flex flex-col justify-center items-center">
+            <form onSubmit={handleSubmit(submit)}>
+                <h2 className="font-semibold text-xl">
+                    Enter your username below
+                </h2>
 
-            <FormControl id="username" invalid={errors.username !== undefined}>
-                <FormLabel>
-                    Username
-                    <RequiredIndicator />
-                </FormLabel>
-                <Input
-                    type="username"
-                    {...register('username', { required: true })}
-                />
-                {errors.username?.type === 'required' && (
-                    <FormErrorMessage>Username is required.</FormErrorMessage>
+                <div className="mt-2 w-0 min-w-full flex items-center">
+                    <FormControl
+                        id="username"
+                        invalid={errors.username !== undefined}
+                    >
+                        <Input
+                            type="username"
+                            autoComplete="off"
+                            size="lg"
+                            {...register('username', { required: true })}
+                        />
+                        {errors.username?.type === 'required' && (
+                            <FormErrorMessage>
+                                Username is required.
+                            </FormErrorMessage>
+                        )}
+                    </FormControl>
+
+                    <Button
+                        type="submit"
+                        variant="solid"
+                        color="primary"
+                        loading={isLoading}
+                        className="ml-2"
+                    >
+                        Next
+                    </Button>
+                </div>
+
+                {usernameExists && (
+                    <Alert variant="subtle" className="mt-3">
+                        That username is taken.
+                    </Alert>
                 )}
-            </FormControl>
-
-            <Button
-                type="submit"
-                variant="solid"
-                color="primary"
-                loading={isLoading}
-            >
-                Next
-            </Button>
-        </form>
+            </form>
+        </div>
     );
 };
 
