@@ -34,6 +34,9 @@ const GamePage: FunctionComponent = () => {
         return () => {
             gameSocket.disconnect();
         };
+
+        // Do not care about dependencies.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!isConnected) {

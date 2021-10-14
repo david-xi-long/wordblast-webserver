@@ -88,24 +88,6 @@ const gameplayPage: FunctionComponent = () => {
         <><Image src={AvatarPlaceholder} width={50} height={100}/>
         <Image src={BombPlaceholder} width={50} height={50}/>
         <div>
-
-       
-        <Button
-          type="submit"
-          variant="solid"
-          color="primary"
-          onclick={startTheGame}
-          >
-            Start Game
-        </Button>
-        <Button
-          type="submit"
-          variant="solid"
-          color="primary"
-          onclick={getReadyForTheGame}
-          >
-            Ready To Play
-        </Button>
         <form onSubmit={handleSubmit(submit)}>
             {!wordIsValid && (
                 <Alert variant="subtle"> That word is invalid.</Alert>
@@ -129,6 +111,7 @@ const gameplayPage: FunctionComponent = () => {
             </FormControl>
         </form>
         </div>
+        </>
     );
 };
 
