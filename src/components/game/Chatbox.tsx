@@ -120,6 +120,9 @@ const Game: ChatboxImpls['Game'] = ({ gameId, gameSocket }) => {
         );
 
         setSendMessage(() => (message: ChatboxMessage) => {
+            if (message.text === '') {
+                return;
+            }
             gameSocket.fireAndForget(
                 'chat-message',
                 new PacketOutPlayerMessage(
