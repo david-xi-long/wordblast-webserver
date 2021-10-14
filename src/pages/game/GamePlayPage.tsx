@@ -28,6 +28,20 @@ const gameplayPage: FunctionComponent = () => {
     const [gameSocket] = useState(new GameSocket());
     const {gameId} = router.query as {gameId: string};
 
+    const startTheGame = () => {
+        //This function will wnable the game to start once everyone is in th e lobby
+        //and has readied up.
+        export const getServerSideProps = async (context) => {
+            const response = await fetch(`${endpoints[env]}${context.params?.gameId}`);
+        
+            return {
+                props: { gameExists: response.status === 200 },
+            };
+        };
+        
+        
+    }    
+    
     useEffect(() => {
         (async () => {
             await gameSocket.connect();
@@ -39,7 +53,10 @@ const gameplayPage: FunctionComponent = () => {
         };
     }, []);
 
-    const {
+    const {const Proxy: NextPage<{ gameExists: boolean }> = ({ gameExists }) =>
+    gameExists ? <GamePage /> : <NotFoundPage />;
+
+export default Proxy;
         register, 
         handleSubmit,
         formState: { errors },
@@ -54,11 +71,14 @@ const gameplayPage: FunctionComponent = () => {
             )
             .then(
                 (packet) => {
-                    if (packet.wordIsValid()==true) {
+                    if (packet.wordIsVaconst Proxy: NextPage<{ gameExists: boolean }> = ({ gameExists }) =>
+                    gameExists ? <GamePage /> : <NotFoundPage />;
+                
+                export default Proxy;lid()==true) {
                         // Implement word being correct
                         console.log("Word is valid");
                         setCorrectInput(true);
-                        router.replace("/sucess");
+                        router.replace("/success");
                     } else {
                         // Implement word being incorrect
                         setWordIsValid(false);
@@ -80,6 +100,15 @@ const gameplayPage: FunctionComponent = () => {
     return (
         <>
         <div>
+        <Button
+          type="submit"
+          variant="solid"
+          color="primary"
+          onclick={startTheGame}
+          >
+            Start Game
+        </Button>
+            
         <form onSubmit={handleSubmit(submit)}>
             {!wordIsValid && (
                 <Alert variant="subtle"> That word is invalid.</Alert>
@@ -113,3 +142,8 @@ const gameplayPage: FunctionComponent = () => {
 };
 
 export default gameplayPage;
+
+const Proxy: NextPage<{ gameExists: boolean }> = ({ gameExists }) =>
+    gameExists ? <GamePage /> : <NotFoundPage />;
+
+export default Proxy;
