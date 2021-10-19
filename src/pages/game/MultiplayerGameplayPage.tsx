@@ -105,6 +105,15 @@ const MultiplayerGameplayPage: FunctionComponent<{ players: string[] }> = ({
     return (
         <>
         <div>
+             <Button 
+        border="none"
+        color="pink"
+        height = "200px"
+        onClick={() => console.log("Start Game!")}
+        radius = "50%"
+        width = "200px"
+        children = "I'm a pink circle!"
+      />
         <form onSubmit={handleSubmit(submit)}>
             {!wordIsValid && (
                 <Alert variant="subtle"> That word is invalid.</Alert>
