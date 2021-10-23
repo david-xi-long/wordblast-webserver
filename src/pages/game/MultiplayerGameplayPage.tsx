@@ -18,29 +18,21 @@ import AvatarPlaceholder from '../../../public/AvatarPlaceholder.png';
 import BombPlaceholder from '../../../public/Bomb.png';
 import RightArrowPlaceholder from '../../../public/arrows/RightArrowPlaceholder.png';
 import next from 'next';
+import PacketOutNextTurn from '../../scripts/packets/PacketOutNextTurn';
+import PacketInNextTurn from '../../scripts/packets/PacketInNextTurn';
 
-const MultiplayerGameplayPage: FunctionComponent<{ players: string[] }> = ({
-    players,
+const MultiplayerGameplayPage: FunctionComponent<{ players: string[], gameSocket: GameSocket }> = ({
+    players, gameSocket
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [wordIsValid, setWordIsValid] = useState(true);
     const [correctInput, setCorrectInput] = useState(true);
     const [isConnected, setIsConnected] = useState(false);
+    const [outOfTime, setOutOfTime] = useState(true);
+    const [goNextTurn, setGoNextTurn] = useState(false);
     const router = useRouter();
-    const [gameSocket] = useState(new GameSocket());
     const {gameId} = router.query as {gameId: string};
     var currentPlayer = 0;
-
-    useEffect(() => {
-        (async () => {
-            await gameSocket.connect();
-            setIsConnected(true);
-        })();
-
-        return () => {
-            gameSocket.disconnect();
-        };
-    }, []);
 
     const {
         register, 
@@ -77,30 +69,32 @@ const MultiplayerGameplayPage: FunctionComponent<{ players: string[] }> = ({
             );
     };
 
-    for (let i = 0; i < 8; i++) {
-        if (i != currentPlayer) {
-        const element = document.getElementById("A" + i);
-        if (element != null) {
-            element.style.visibility = "hidden";
-        }
-    }
+    const nextTurn = () => {
+        gameSocket.subscribe<PacketInNextTurn>('next-turn', (packet: {getLetterCombo: () => any; }) => {
+            setGoNextTurn(true);
+            var letterCombo = packet.getLetterCombo();
+            var element = document.getElementById("A" + currentPlayer);
+            if (element != null) {
+                element.style.visibility = "hidden";
+            }
+            currentPlayer = currentPlayer + 1;
+            if (currentPlayer == players.length) {
+                currentPlayer = 0;
+            }
+            element = document.getElementById("A" + currentPlayer);
+            if (element != null) {
+                element.style.visibility = "visible";
+            }
+        });
     }
 
-    function nextTurn() {
-        var element = document.getElementById("A" + currentPlayer);
-        if (element != null) {
-            element.style.visibility = "hidden";
-        }
-        currentPlayer = currentPlayer + 1;
-        if (currentPlayer == players.length) {
-            currentPlayer = 0;
-        }
-        element = document.getElementById("A" + currentPlayer);
-        if (element != null) {
-            element.style.visibility = "visible";
-        }
+    const sendNextTurnRequest = async () => {
+        gameSocket.fireAndForget("next-turn", new PacketOutNextTurn(gameId, outOfTime));
     }
-    
+
+    useEffect(() => {
+        nextTurn();
+    }, []);
 
     return (
         <>
@@ -155,7 +149,7 @@ const MultiplayerGameplayPage: FunctionComponent<{ players: string[] }> = ({
                 <div className="A5" id="A5"><Image src={RightArrowPlaceholder} width={100} height={100}/></div>    
                 <div className="A6" id="A6"><Image src={RightArrowPlaceholder} width={100} height={100}/></div>
                 <div className="A7" id="A7"><Image src={RightArrowPlaceholder} width={100} height={100}/></div>
-                <div className="Cycle"><Button type="submit" variant="solid" color="primary" onClick={nextTurn}> Simulate Next Turn (dev)</Button></div>
+                <div className="Cycle"><Button type="submit" variant="solid" color="primary" onClick={sendNextTurnRequest}> Simulate Next Turn (dev)</Button></div>
         </div>
         </>
     );

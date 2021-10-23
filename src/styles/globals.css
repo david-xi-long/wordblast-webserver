@@ -92,13 +92,13 @@
   .P7 { grid-area: P7; }
   .P8 { grid-area: P8; }
   .Bomb { grid-area: Bomb; }
-  .A0 { grid-area: A0; transform: rotate(90deg); }
-  .A1 { grid-area: A1; transform: rotate(135deg); }
-  .A2 { grid-area: A2; transform: rotate(180deg); }
-  .A3 { grid-area: A3; transform: rotate(225deg); }
-  .A4 { grid-area: A4; transform: rotate(270deg); }
-  .A5 { grid-area: A5; transform: rotate(315deg); }
-  .A6 { grid-area: A6; }
-  .A7 { grid-area: A7; transform: rotate(45deg); }
+  .A0 { grid-area: A0; transform: rotate(90deg);}
+  .A1 { grid-area: A1; transform: rotate(135deg); visibility:hidden}
+  .A2 { grid-area: A2; transform: rotate(180deg); visibility:hidden}
+  .A3 { grid-area: A3; transform: rotate(225deg); visibility:hidden}
+  .A4 { grid-area: A4; transform: rotate(270deg); visibility:hidden}
+  .A5 { grid-area: A5; transform: rotate(315deg); visibility:hidden}
+  .A6 { grid-area: A6; visibility:hidden}
+  .A7 { grid-area: A7; transform: rotate(45deg); visibility:hidden}
   .Cycle {grid-area: Cycle; }
   

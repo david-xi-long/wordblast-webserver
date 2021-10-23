@@ -105,7 +105,7 @@ const LobbyPage: FunctionComponent<{
     }, []);
 
     if (startGame) {
-        return <MultiplayerGameplayPage players = {players} />;
+        return <MultiplayerGameplayPage players = {players} gameSocket = {gameSocket} />;
     }
 
     return (
