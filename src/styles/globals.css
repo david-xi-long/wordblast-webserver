@@ -81,7 +81,8 @@
       "P7 A6 Bomb A2 P3"
       ". A5 A4 A3 ."
       "P6 . P5 . P4"
-      ". . Cycle . .";
+      ". . Cycle . ."
+      ". . Timer . .";
   }
   .P1 { grid-area: P1; }
   .P2 { grid-area: P2; }
@@ -91,7 +92,8 @@
   .P6 { grid-area: P6; }
   .P7 { grid-area: P7; }
   .P8 { grid-area: P8; }
-  .Bomb { grid-area: Bomb; }
+  .Bomb { grid-area: Bomb; opacity: 0.5; }
+  .Timer { grid-area: Timer; }
   .A0 { grid-area: A0; transform: rotate(90deg);}
   .A1 { grid-area: A1; transform: rotate(135deg); visibility:hidden}
   .A2 { grid-area: A2; transform: rotate(180deg); visibility:hidden}

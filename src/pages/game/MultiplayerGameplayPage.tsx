@@ -20,19 +20,24 @@ import RightArrowPlaceholder from '../../../public/arrows/RightArrowPlaceholder.
 import next from 'next';
 import PacketOutNextTurn from '../../scripts/packets/PacketOutNextTurn';
 import PacketInNextTurn from '../../scripts/packets/PacketInNextTurn';
+//import Timer from './Timer';
 
-const MultiplayerGameplayPage: FunctionComponent<{ players: string[], gameSocket: GameSocket }> = ({
-    players, gameSocket
+const MultiplayerGameplayPage: FunctionComponent<{
+    players: string[];
+    gameSocket: GameSocket;
+    username: string }> = ({
+    players, gameSocket, username
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [wordIsValid, setWordIsValid] = useState(true);
     const [correctInput, setCorrectInput] = useState(true);
-    const [isConnected, setIsConnected] = useState(false);
     const [outOfTime, setOutOfTime] = useState(true);
     const [goNextTurn, setGoNextTurn] = useState(false);
     const router = useRouter();
     const {gameId} = router.query as {gameId: string};
+    var playerLoc = players.indexOf(username);
     var currentPlayer = 0;
+    var timeToAnswer = 1;
 
     const {
         register, 
@@ -85,12 +90,29 @@ const MultiplayerGameplayPage: FunctionComponent<{ players: string[], gameSocket
             if (element != null) {
                 element.style.visibility = "visible";
             }
+            var timeleft = timeToAnswer;
+            var testTimer = setInterval(function() {
+            var element = document.getElementById("Timer");
+            if (element != null) {
+                if (timeleft <= 0) {
+                    clearInterval(testTimer);
+                    element.innerHTML = "Finished";
+                    if (playerLoc == currentPlayer) {
+                        gameSocket.fireAndForget("next-turn", new PacketOutNextTurn(gameId, outOfTime));
+                    }
+                } else {
+                    element.innerHTML = timeleft + " seconds remaining";
+                }
+                timeleft -= 1;
+            }
+        }, 1000);
         });
     }
 
     const sendNextTurnRequest = async () => {
         gameSocket.fireAndForget("next-turn", new PacketOutNextTurn(gameId, outOfTime));
     }
+
 
     useEffect(() => {
         nextTurn();
@@ -141,6 +163,7 @@ const MultiplayerGameplayPage: FunctionComponent<{ players: string[], gameSocket
                 <div className="P7">{players[6]}<Image src={AvatarPlaceholder} width={100} height={100}/></div>
                 <div className="P8">{players[7]}<Image src={AvatarPlaceholder} width={100} height={100}/></div>
                 <div className="Bomb"><Image src={BombPlaceholder} width={100} height={100}/></div>
+                <div className="Timer" id="Timer"></div>
                 <div className="A0" id="A0"><Image src={RightArrowPlaceholder} width={100} height={100}/></div>
                 <div className="A1" id="A1"><Image src={RightArrowPlaceholder} width={100} height={100}/></div>
                 <div className="A2" id="A2"><Image src={RightArrowPlaceholder} width={100} height={100}/></div>
