@@ -20,6 +20,7 @@ import RightArrowPlaceholder from '../../../public/arrows/RightArrowPlaceholder.
 import next from 'next';
 import PacketOutNextTurn from '../../scripts/packets/PacketOutNextTurn';
 import PacketInNextTurn from '../../scripts/packets/PacketInNextTurn';
+import PacketInPlayerState from '../../scripts/packets/PacketInPlayerState';
 //import Timer from './Timer';
 
 const MultiplayerGameplayPage: FunctionComponent<{
@@ -112,16 +113,21 @@ const MultiplayerGameplayPage: FunctionComponent<{
     const sendNextTurnRequest = async () => {
         gameSocket.fireAndForget("next-turn", new PacketOutNextTurn(gameId, outOfTime));
     }
+    const players_readied_up = async() => {
+        gameSocket.requestResponse("readied", new PacketInPlayerState("active", true))
+    }
+    //Dynamic players Readied up from the Web socket will be attached this variable below
+    const players_readied_upp =2;
 
 
     useEffect(() => {
         nextTurn();
     }, []);
-
-    return (
-        <>
-        <div>
-             <Button 
+    if(players.length==players_readied_upp){
+        return(
+            <>
+            <div>
+            <Button 
         border="none"
         color="pink"
         height = "200px"
@@ -130,6 +136,17 @@ const MultiplayerGameplayPage: FunctionComponent<{
         width = "200px"
         children = "I'm a pink circle!"
       />
+            </div>
+
+            </>
+
+        );
+            
+    }
+    return (
+
+        <>
+        <div>
         <form onSubmit={handleSubmit(submit)}>
             {!wordIsValid && (
                 <Alert variant="subtle"> That word is invalid.</Alert>
