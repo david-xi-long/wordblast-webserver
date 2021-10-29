@@ -5,6 +5,7 @@ import GameSocket from '../../scripts/game/GameSocket';
 import PacketInGameInfo from '../../scripts/packets/PacketInGameInfo';
 import PacketInPlayerState from '../../scripts/packets/PacketInPlayerState';
 import PacketInUsernameChange from '../../scripts/packets/PacketInUsernameChange';
+import PacketOutPlayerReadyState from '../../scripts/packets/PacketOutPlayerReadyState';
 import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
 import Chatbox from './Chatbox';
 import LobbyPlayers from './LobbyPlayers';
@@ -14,6 +15,8 @@ import SinglePlayerLobby from '../../pages/game/SinglePlayerLobby';
 import PacketInStartGame from '../../scripts/packets/PacketInStartGame';
 import PacketOutStartGame from '../../scripts/packets/PacketOutStartGame';
 import Packet from '../../scripts/packets/Packet';
+import PacketInPlayerReadyState from '../../scripts/packets/PacketInPlayerReadyState';
+import { Player } from '../../types';
 
 const LobbyPage: FunctionComponent<{
     gameSocket: GameSocket;
@@ -23,24 +26,41 @@ const LobbyPage: FunctionComponent<{
     const { gameId } = router.query as { gameId: string };
 
     const [username, setUsername] = useState(selectedUsername);
-    const [players, setPlayers] = useState([] as string[]);
+    const [players, setPlayers] = useState([] as Player[]);
     const [startGame, setStartGame] = useState(false);
+    const [ready, setReady] = useState(false);
 
     const setPlayerState = (playerName: string, state: boolean) => {
-        if (state && !players.includes(playerName)) {
-            setPlayers((curPlayers) => [...curPlayers, playerName]);
+        const hasPlayer =
+            players.find((p) => p.username === playerName) !== undefined;
+
+        if (state && !hasPlayer) {
+            setPlayers((curPlayers) => [
+                ...curPlayers,
+                { username: playerName, ready: false },
+            ]);
         }
 
         if (!state) {
             setPlayers((curPlayers) =>
-                curPlayers.filter((p) => p !== playerName)
+                curPlayers.filter((p) => p.username !== playerName)
             );
         }
     };
 
     const changeUsername = (oldUsername: string, newUsername: string) => {
         setPlayers((curPlayers) =>
-            curPlayers.map((p) => (p === oldUsername ? newUsername : p))
+            curPlayers.map((p) =>
+                p.username === oldUsername ? { ...p, username: newUsername } : p
+            )
+        );
+    };
+
+    const setPlayerReadyState = (playerName: string, state: boolean) => {
+        setPlayers((curPlayers) =>
+            curPlayers.map((p) =>
+                p.username === playerName ? { ...p, ready: state } : p
+            )
         );
     };
 
@@ -58,6 +78,12 @@ const LobbyPage: FunctionComponent<{
                 );
             }
         );
+
+        gameSocket.subscribe<PacketInPlayerReadyState>(
+            'player-ready-state',
+            (packet) =>
+                setPlayerReadyState(packet.getUsername(), packet.isReady())
+        );
     };
 
     const joinGame = () => {
@@ -68,9 +94,15 @@ const LobbyPage: FunctionComponent<{
             )
             .then(
                 (packet) => {
-                    setPlayers(packet.getActivePlayerNames());
+                    setPlayers(
+                        packet.getActivePlayerInfos().map((i) => ({
+                            username: i.getUsername(),
+                            ready: i.isReady(),
+                        }))
+                    );
                 },
                 () => {
+                    return;
                     // An exception occured while sending data to the game socket.
                     // Redirect to the main page, as the game is probably broken.
                     router.replace('/');
@@ -78,22 +110,41 @@ const LobbyPage: FunctionComponent<{
             );
     };
 
-    // TODO: Implement these button handlers.
-    const getReadyForTheGame = () => {};
+    console.log(players);
+
+    const toggleReadyState = () => {
+        const newState = !ready;
+
+        setReady(newState);
+
+        gameSocket.fireAndForget(
+            'player-ready-state',
+            new PacketOutPlayerReadyState(gameId, username, newState)
+        );
+    };
 
     const startTheGame = () => {
-        gameSocket.subscribe<PacketInStartGame>('start-game', (packet: { getPlayers: () => any; }) => {
-            setPlayers(packet.getPlayers);
-            setStartGame(true);
-            //return <MultiplayerGameplayPage players = {players} />;
-            //router.push("/game/MultiplayerGameplayPage");
-        });
-    }
+        gameSocket.subscribe<PacketInStartGame>(
+            'start-game',
+            (packet: { getPlayers: () => any }) => {
+                setPlayers(packet.getPlayers);
+                setStartGame(true);
+                // return <MultiplayerGameplayPage players = {players} />;
+                // router.push("/game/MultiplayerGameplayPage");
+            }
+        );
+    };
 
     const sendStartGameRequest = async () => {
-        gameSocket.fireAndForget("start-game", new PacketOutStartGame(gameId, players));
-    }
-    
+        gameSocket.fireAndForget(
+            'start-game',
+            new PacketOutStartGame(
+                gameId,
+                players.map((p) => p.username)
+            )
+        );
+    };
+
     // Run only once after the component has mounted.
     useEffect(() => {
         joinGame();
@@ -101,26 +152,21 @@ const LobbyPage: FunctionComponent<{
         startTheGame();
         // Do not care about dependencies.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        
     }, []);
 
     if (startGame) {
-        return <MultiplayerGameplayPage players = {players} gameSocket = {gameSocket} username={username}/>;
+        return (
+            <MultiplayerGameplayPage
+                players={players}
+                gameSocket={gameSocket}
+                username={username}
+            />
+        );
     }
 
     return (
         <div className="relative h-screen flex">
             <div className="absolute p-3 left-0 bottom-0">
-                <div>
-                    <Button
-                        type="button"
-                        variant="solid"
-                        color="primary"
-                        onClick={getReadyForTheGame}
-                    >
-                        Ready To Play
-                    </Button>
-                </div>
                 <div className="mt-2">
                     <Button
                         type="button"
@@ -134,8 +180,18 @@ const LobbyPage: FunctionComponent<{
             </div>
 
             <div className="h-full flex flex-col justify-center items-center flex-grow">
-                <div className="my-auto">
+                <div className="my-auto flex flex-col justify-center items-center">
                     <LobbyPlayers players={players} />
+                    <Button
+                        size="lg"
+                        type="button"
+                        variant="solid"
+                        color="primary"
+                        onClick={toggleReadyState}
+                        className="mt-8"
+                    >
+                        {ready ? 'Unready' : 'Ready'}
+                    </Button>
                 </div>
                 <LobbyUsernameField
                     gameId={gameId}
@@ -152,4 +208,3 @@ const LobbyPage: FunctionComponent<{
 };
 
 export default LobbyPage;
-
