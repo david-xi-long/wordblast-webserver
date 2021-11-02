@@ -15,7 +15,7 @@ import {
     useState,
     useEffect,
 } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import GameSocket from '../../scripts/game/GameSocket';
 import PacketInCheckWord from '../../scripts/packets/PacketInCheckWord';
 import PacketOutCheckWord from '../../scripts/packets/PacketOutCheckWord';
@@ -45,6 +45,7 @@ const MultiplayerGameplayPage: FunctionComponent<{
     var playerLoc = players.indexOf(username);
     var currentPlayer = 0;
     var timeToAnswer = 1;
+    var lives = 3;
 
     const {
         register,
@@ -98,6 +99,17 @@ const MultiplayerGameplayPage: FunctionComponent<{
                 if (element != null) {
                     element.style.visibility = 'visible';
                 }
+                var form = document.getElementById('inputForm') as HTMLInputElement;
+                var button = document.getElementById('inputButton') as HTMLInputElement;
+                if (form != null) {
+                    if (playerLoc != currentPlayer) {
+                        form.disabled = true;
+                        button.disabled = true;
+                    } else {
+                        form.disabled = false;
+                        button.disabled = false;
+                    }
+                }
                 var timeleft = timeToAnswer;
                 var testTimer = setInterval(function () {
                     var element = document.getElementById('Timer');
@@ -110,6 +122,12 @@ const MultiplayerGameplayPage: FunctionComponent<{
                                     'next-turn',
                                     new PacketOutNextTurn(gameId, outOfTime)
                                 );
+                                alert("Ran out of time!");
+                                lives--;
+                                var livesElement = document.getElementById("lives");
+                                if (livesElement != null) {
+                                    livesElement.innerHTML = "Lives remaining: " + lives;
+                                }
                             }
                         } else {
                             element.innerHTML = timeleft + ' seconds remaining';
@@ -159,7 +177,7 @@ const MultiplayerGameplayPage: FunctionComponent<{
     return (
         <>
             <div>
-                <form onSubmit={handleSubmit(submit)}>
+                <form onSubmit={handleSubmit(submit)} >
                     {!wordIsValid && (
                         <Alert variant="subtle"> That word is invalid.</Alert>
                     )}
@@ -169,6 +187,7 @@ const MultiplayerGameplayPage: FunctionComponent<{
                     >
                         <FormLabel>Input</FormLabel>
                         <Input
+                            id = "inputForm"
                             type="inputWord"
                             {...register('inputWord', { required: true })}
                         />
@@ -177,11 +196,14 @@ const MultiplayerGameplayPage: FunctionComponent<{
                                 Input must not be blank.
                             </FormErrorMessage>
                         )}
-                        <Button type="submit" variant="solid" color="primary">
+                        <Button type="submit" variant="solid" color="primary" id="inputButton">
                             Submit Input
                         </Button>
                     </FormControl>
                 </form>
+            </div>
+            <div id="lives">
+                Lives Remaining: {lives}
             </div>
             <div className="player_container">
                 <div className="P1">
