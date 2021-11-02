@@ -19,6 +19,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import GameSocket from '../../scripts/game/GameSocket';
 import PacketInCheckWord from '../../scripts/packets/PacketInCheckWord';
 import PacketOutCheckWord from '../../scripts/packets/PacketOutCheckWord';
+import PacketOutPlayerMessage from '../../scripts/packets/PacketOutPlayerMessage';
 import Image from 'next/image';
 import AvatarPlaceholder from '../../../public/AvatarPlaceholder.png';
 import BombPlaceholder from '../../../public/Bomb.png';
@@ -139,6 +140,12 @@ const MultiplayerGameplayPage: FunctionComponent<{
         );
     };
 
+    //update text for everyone as a player is typing a word
+    const updateWord = async(e) => {
+        console.log(username, e.target.value);
+        // gameSocket.fireAndForget('update-word', new PacketOutPlayerMessage(gameId, username, e));
+    };
+
     const sendNextTurnRequest = async () => {
         gameSocket.fireAndForget(
             'next-turn',
@@ -177,7 +184,7 @@ const MultiplayerGameplayPage: FunctionComponent<{
     return (
         <>
             <div>
-                <form onSubmit={handleSubmit(submit)} >
+                <form onSubmit={handleSubmit(submit)}>
                     {!wordIsValid && (
                         <Alert variant="subtle"> That word is invalid.</Alert>
                     )}
@@ -190,6 +197,7 @@ const MultiplayerGameplayPage: FunctionComponent<{
                             id = "inputForm"
                             type="inputWord"
                             {...register('inputWord', { required: true })}
+                            onChange={(e) => updateWord(e)}
                         />
                         {errors.inputWord?.type == 'required' && (
                             <FormErrorMessage>
