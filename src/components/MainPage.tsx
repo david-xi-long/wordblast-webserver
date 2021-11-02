@@ -1,18 +1,26 @@
 import { Button } from '@vechaiui/button';
 import { useNotification } from '@vechaiui/notification';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthenticationContext } from './authentication/Authentication';
 
 function MainPage() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const notification = useNotification();
 
-    const joinAvailableGame = async () => {
+    const { isAuthenticated } = useContext(AuthenticationContext);
+
+    const callGameEndpoint = async (
+        endpoint: string,
+        // eslint-disable-next-line no-undef
+        options: RequestInit = {}
+    ) => {
         setIsLoading(true);
 
         const response = await fetch(
-            'http://localhost:8080/api/game/available'
+            `http://localhost:8080/api/game/${endpoint}`,
+            options
         );
 
         setIsLoading(false);
@@ -30,6 +38,14 @@ function MainPage() {
 
         router.push(`/game/${uid}`);
     };
+
+    const joinAvailableGame = () => callGameEndpoint('available');
+
+    const joinNewGame = () =>
+        callGameEndpoint('', {
+            method: 'POST',
+            credentials: 'include',
+        });
 
     const singlePlayer = async () => {
         setIsLoading(true);
@@ -55,45 +71,41 @@ function MainPage() {
     };
 
     return (
-        <div>
-            <div className="mainpage">
-                <code style={{ fontSize: '48px' }}>wordblast.io</code>
-                <br />
-                <code>click play to join a game.</code>
-                <br />
-                <br />
-                <div className="row space-x-4">
+        <div className="mainpage">
+            <code className="text-6xl font-semibold">wordblast.io</code>
+            <div className="mt-6 row space-x-2">
+                <Button
+                    type="submit"
+                    variant="solid"
+                    color="primary"
+                    size="lg"
+                    loading={isLoading}
+                    onClick={joinAvailableGame}
+                >
+                    Multiplayer
+                </Button>
+                <Button
+                    type="submit"
+                    variant="solid"
+                    color="primary"
+                    size="lg"
+                    loading={isLoading}
+                    onClick={singlePlayer}
+                >
+                    Singleplayer
+                </Button>
+                {isAuthenticated && (
                     <Button
                         type="submit"
                         variant="solid"
                         color="primary"
                         size="lg"
                         loading={isLoading}
-                        onClick={joinAvailableGame}
+                        onClick={joinNewGame}
                     >
-                        Play
+                        Create game
                     </Button>
-                    {/* Public games for now. */}
-                    {/* <Button
-                        type="submit"
-                        variant="solid"
-                        color="primary"
-                        size="lg"
-                        onClick={() => {}}
-                    >
-                        Play with friends
-                    </Button> */}
-                    <Button
-                        type="submit"
-                        variant="solid"
-                        color="primary"
-                        size="lg"
-                        loading={isLoading}
-                        onClick={singlePlayer}
-                    >
-                        Single Player
-                    </Button>
-                </div>
+                )}
             </div>
         </div>
     );

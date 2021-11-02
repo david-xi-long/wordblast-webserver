@@ -6,6 +6,7 @@ import {
     colors,
     extendTheme,
 } from '@vechaiui/react';
+import Authentication from '../components/authentication/Authentication';
 
 export const midnight: ColorScheme = {
     id: 'midnight',
@@ -34,7 +35,9 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <VechaiProvider theme={theme} colorScheme="midnight">
-            <Component {...pageProps} />
+            <Authentication>
+                <Component {...pageProps} />
+            </Authentication>
         </VechaiProvider>
     );
 }

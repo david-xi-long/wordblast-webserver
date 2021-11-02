@@ -132,9 +132,6 @@ const Game: ChatboxImpls['Game'] = ({ gameId, gameSocket }) => {
                 )
             );
         });
-
-        // Do not care about dependencies.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return null;

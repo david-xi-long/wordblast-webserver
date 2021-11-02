@@ -1,32 +1,34 @@
 import { useRouter } from 'next/router';
-import { FunctionComponent, useEffect, useState } from 'react';
+import {
+    Dispatch,
+    FunctionComponent,
+    SetStateAction,
+    useEffect,
+    useState,
+} from 'react';
 import { Button } from '@vechaiui/button';
 import GameSocket from '../../scripts/game/GameSocket';
-import PacketInGameInfo from '../../scripts/packets/PacketInGameInfo';
 import PacketInPlayerState from '../../scripts/packets/PacketInPlayerState';
 import PacketInUsernameChange from '../../scripts/packets/PacketInUsernameChange';
 import PacketOutPlayerReadyState from '../../scripts/packets/PacketOutPlayerReadyState';
-import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
-import Chatbox from './Chatbox';
 import LobbyPlayers from './LobbyPlayers';
 import LobbyUsernameField from './LobbyUsernameField';
 import MultiplayerGameplayPage from '../../pages/game/MultiplayerGameplayPage';
-import SinglePlayerLobby from '../../pages/game/SinglePlayerLobby';
 import PacketInStartGame from '../../scripts/packets/PacketInStartGame';
 import PacketOutStartGame from '../../scripts/packets/PacketOutStartGame';
-import Packet from '../../scripts/packets/Packet';
 import PacketInPlayerReadyState from '../../scripts/packets/PacketInPlayerReadyState';
 import { Player } from '../../types';
 
-const LobbyPage: FunctionComponent<{
+const GameLobbyScreen: FunctionComponent<{
     gameSocket: GameSocket;
     username: string;
-}> = ({ gameSocket, username: selectedUsername }) => {
+    players: Player[];
+    setPlayers: Dispatch<SetStateAction<Player[]>>;
+}> = ({ gameSocket, username: selectedUsername, players, setPlayers }) => {
     const router = useRouter();
     const { gameId } = router.query as { gameId: string };
 
     const [username, setUsername] = useState(selectedUsername);
-    const [players, setPlayers] = useState([] as Player[]);
     const [startGame, setStartGame] = useState(false);
     const [ready, setReady] = useState(false);
 
@@ -86,32 +88,6 @@ const LobbyPage: FunctionComponent<{
         );
     };
 
-    const joinGame = () => {
-        gameSocket
-            .requestResponse<PacketInGameInfo>(
-                'join-game',
-                new PacketOutGameJoin(gameId, username)
-            )
-            .then(
-                (packet) => {
-                    setPlayers(
-                        packet.getActivePlayerInfos().map((i) => ({
-                            username: i.getUsername(),
-                            ready: i.isReady(),
-                        }))
-                    );
-                },
-                () => {
-                    return;
-                    // An exception occured while sending data to the game socket.
-                    // Redirect to the main page, as the game is probably broken.
-                    router.replace('/');
-                }
-            );
-    };
-
-    console.log(players);
-
     const toggleReadyState = () => {
         const newState = !ready;
 
@@ -147,11 +123,8 @@ const LobbyPage: FunctionComponent<{
 
     // Run only once after the component has mounted.
     useEffect(() => {
-        joinGame();
         registerInitHandlers();
         startTheGame();
-        // Do not care about dependencies.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (startGame) {
@@ -200,11 +173,8 @@ const LobbyPage: FunctionComponent<{
                     setUsername={setUsername}
                 />
             </div>
-            <Chatbox username={username}>
-                <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />
-            </Chatbox>
         </div>
     );
 };
 
-export default LobbyPage;
+export default GameLobbyScreen;
