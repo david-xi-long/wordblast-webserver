@@ -148,48 +148,25 @@ const GameLobbyScreen: FunctionComponent<{
     }
 
     return (
-        <div className="relative h-screen flex">
-            {/* No longer need to force start games. */}
-            {/* <div className="absolute p-3 left-0 bottom-0">
-                <div className="mt-2">
-                    <Button
-                        type="button"
-                        variant="solid"
-                        color="primary"
-                        onClick={sendStartGameRequest}
-                    >
-                        Force Start Game
-                    </Button>
-                </div>
-            </div> */}
-
-            <div className="h-full flex flex-col justify-center items-center flex-grow">
-                <div className="my-auto flex flex-col justify-center items-center">
-                    <LobbyPlayers players={players} />
-                    <Button
-                        size="lg"
-                        type="button"
-                        variant="solid"
-                        color="primary"
-                        onClick={toggleReadyState}
-                        className="mt-8"
-                    >
-                        {ready ? 'Unready' : 'Ready'}
-                    </Button>
-                </div>
-                <LobbyUsernameField
-                    gameId={gameId}
-                    gameSocket={gameSocket}
-                    username={username}
-                    setUsername={setUsername}
-                />
+        <div className="h-screen flex flex-col">
+            <div className="my-auto flex flex-col items-center">
+                <LobbyPlayers players={players} />
+                <Button
+                    size="lg"
+                    type="button"
+                    variant="solid"
+                    color="primary"
+                    onClick={toggleReadyState}
+                    className="mt-8"
+                >
+                    {ready ? 'Unready' : 'Ready'}
+                </Button>
             </div>
-
-            <GameSettings
+            <LobbyUsernameField
                 gameId={gameId}
                 gameSocket={gameSocket}
-                isOwner={isOwner}
-                initialSettingValues={initialSettingValues}
+                username={username}
+                setUsername={setUsername}
             />
         </div>
     );

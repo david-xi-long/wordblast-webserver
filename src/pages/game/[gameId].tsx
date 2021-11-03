@@ -11,6 +11,7 @@ import PacketInGameInfo from '../../scripts/packets/PacketInGameInfo';
 import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
 import { Player, RoundInfo } from '../../types';
 import { AuthenticationContext } from '../../components/authentication/Authentication';
+import GameSettings from '../../components/game/GameSettings';
 
 const env = 'dev';
 const endpoints = {
@@ -132,6 +133,13 @@ const GamePage: FunctionComponent = () => {
                     />
                 )}
             </div>
+            <GameSettings
+                disabled={!isOwner || roundInfo !== undefined}
+                gameId={gameId}
+                gameSocket={gameSocket}
+                isOwner={isOwner}
+                initialSettingValues={initialSettingValues}
+            />
             <Chatbox username={username}>
                 <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />
             </Chatbox>

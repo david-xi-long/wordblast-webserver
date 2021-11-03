@@ -26,7 +26,7 @@ const SettingOption: FunctionComponent<{
                 disabled={disabled}
             />
         )}
-        {settings[setting].selectorType === 'checkbox' && (
+        {settings[setting].selectorType === 'switch' && (
             <Switch
                 checked={settings[setting].value}
                 onChange={(e) => setSetting(setting, e.target.checked)}

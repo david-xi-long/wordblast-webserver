@@ -5,6 +5,11 @@ import PacketOutSettingChange from '../../scripts/packets/PacketOutSettingChange
 import Settings from './Settings';
 
 const gameSettingsInfo = {
+    public: {
+        selectorType: 'switch',
+        title: 'Public',
+        valueType: 'boolean',
+    },
     playerLives: {
         selectorType: 'input',
         title: 'Player Lives',
@@ -16,23 +21,24 @@ const gameSettingsInfo = {
         valueType: 'number',
     },
     extraLives: {
-        selectorType: 'checkbox',
+        selectorType: 'switch',
         title: 'Extra Lives',
         valueType: 'boolean',
     },
     increasingDifficulty: {
-        selectorType: 'checkbox',
+        selectorType: 'switch',
         title: 'Increasing Difficulty',
         valueType: 'boolean',
     },
 };
 
 const GameSettings: FunctionComponent<{
+    disabled: boolean;
     gameId: string;
     gameSocket: GameSocket;
     isOwner: boolean;
     initialSettingValues: Record<string, string> | undefined;
-}> = ({ gameId, gameSocket, isOwner, initialSettingValues }) => {
+}> = ({ disabled, gameId, gameSocket, isOwner, initialSettingValues }) => {
     const [settings, setSettings] = useState<any>();
 
     const setSetting = (
@@ -86,7 +92,7 @@ const GameSettings: FunctionComponent<{
 
     return (
         <Settings
-            disabled={!isOwner}
+            disabled={disabled}
             settings={settings}
             setSetting={setSetting}
         />
