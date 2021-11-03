@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useContext, useState } from 'react';
 import { Input, FormControl, Button, Divider, Alert } from '@vechaiui/react';
 import { cx } from '@vechaiui/utils';
 import {
@@ -8,6 +8,7 @@ import {
 } from '@vechaiui/forms';
 import { useRouter } from 'next/dist/client/router';
 import { useForm } from 'react-hook-form';
+import { AuthenticationContext } from './Authentication';
 
 const LogInForm: FunctionComponent = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +20,10 @@ const LogInForm: FunctionComponent = () => {
         formState: { errors },
     } = useForm();
     const router = useRouter();
+
+    const { setIsAuthenticated, setUserUid } = useContext(
+        AuthenticationContext
+    );
 
     const submit = async (data) => {
         setIsLoading(true);
@@ -33,7 +38,14 @@ const LogInForm: FunctionComponent = () => {
             credentials: 'include',
         });
 
-        if (response.status === 200) router.push('./');
+        if (response.status === 200) {
+            router.push('./');
+
+            const { userUid } = await response.json();
+
+            setIsAuthenticated?.(true);
+            setUserUid?.(userUid);
+        }
 
         if (response.status === 400) setIsIncorrect(true);
 

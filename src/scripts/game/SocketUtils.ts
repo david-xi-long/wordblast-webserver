@@ -9,6 +9,7 @@ import PacketInStartGame from '../packets/PacketInStartGame';
 import PacketInNextTurn from '../packets/PacketInNextTurn';
 import PacketInPlayerReadyState from '../packets/PacketInPlayerReadyState';
 import PacketInRoundInfo from '../packets/PacketInRoundInfo';
+import PacketInSettingChange from '../packets/PacketInSettingChange';
 
 export default class SocketUtils {
     public static resolvePacket = (data: any) => {
@@ -44,6 +45,9 @@ export default class SocketUtils {
                 break;
             case 'PACKET_OUT_ROUND_INFO':
                 packet = PacketInRoundInfo.of(data);
+                break;
+            case 'PACKET_OUT_SETTING_CHANGE':
+                packet = PacketInSettingChange.of(data);
                 break;
             case 'PACKET_OUT_EXCEPTION':
                 throw new Error(`Received exception packet: ${data.message}`);

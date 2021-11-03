@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useContext, useEffect, useState } from 'react';
 import Chatbox from '../../components/game/Chatbox';
 import GameLobbyScreen from '../../components/game/GameLobbyScreen';
 import UsernameSelectPage from '../../components/game/UsernameSelectPage';
@@ -10,6 +10,7 @@ import GameplayScreen from '../../components/game/GameplayScreen';
 import PacketInGameInfo from '../../scripts/packets/PacketInGameInfo';
 import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
 import { Player, RoundInfo } from '../../types';
+import { AuthenticationContext } from '../../components/authentication/Authentication';
 
 const env = 'dev';
 const endpoints = {
@@ -31,11 +32,16 @@ const GamePage: FunctionComponent = () => {
     const router = useRouter();
     const { gameId } = router.query as { gameId: string };
 
+    const { userUid } = useContext(AuthenticationContext);
+
     const [username, setUsername] = useState('');
     const [isConnected, setIsConnected] = useState(false);
     const [gameSocket] = useState(new GameSocket());
-    const [players, setPlayers] = useState([] as Player[]);
+    const [players, setPlayers] = useState<Player[]>([]);
     const [roundInfo, setRoundInfo] = useState<RoundInfo>();
+    const [isOwner, setIsOwner] = useState(false);
+    const [initialSettingValues, setInitialSettingValues] =
+        useState<Record<string, string>>();
 
     const joinGame = () => {
         gameSocket
@@ -51,6 +57,10 @@ const GamePage: FunctionComponent = () => {
                             ready: i.isReady(),
                         }))
                     );
+                    setIsOwner(
+                        userUid != null && userUid === packet.getOwnerUid()
+                    );
+                    setInitialSettingValues(packet.getSettings());
                 },
                 () => {
                     // An exception occured while sending data to the game socket.
@@ -108,6 +118,8 @@ const GamePage: FunctionComponent = () => {
                         username={username}
                         players={players}
                         setPlayers={setPlayers}
+                        isOwner={isOwner}
+                        initialSettingValues={initialSettingValues}
                     />
                 )}
                 {roundInfo !== undefined && (

@@ -1,13 +1,24 @@
-import { createContext, FunctionComponent, useEffect, useState } from 'react';
+import {
+    createContext,
+    Dispatch,
+    FunctionComponent,
+    SetStateAction,
+    useEffect,
+    useState,
+} from 'react';
 
 interface IAuthenticationContext {
-    isAuthenticated: undefined | boolean;
-    userUid: undefined | string;
+    isAuthenticated?: boolean;
+    setIsAuthenticated?: Dispatch<SetStateAction<boolean | undefined>>;
+    userUid?: string;
+    setUserUid?: Dispatch<SetStateAction<string>>;
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>({
     isAuthenticated: undefined,
+    setIsAuthenticated: undefined,
     userUid: undefined,
+    setUserUid: undefined,
 });
 
 const Authentication: FunctionComponent = ({ children }) => {
@@ -33,7 +44,9 @@ const Authentication: FunctionComponent = ({ children }) => {
     }, []);
 
     return (
-        <AuthenticationContext.Provider value={{ isAuthenticated, userUid }}>
+        <AuthenticationContext.Provider
+            value={{ isAuthenticated, setIsAuthenticated, userUid, setUserUid }}
+        >
             {children}
         </AuthenticationContext.Provider>
     );

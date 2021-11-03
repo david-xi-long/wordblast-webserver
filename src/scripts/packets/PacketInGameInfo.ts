@@ -5,21 +5,29 @@ export default class PacketInGameInfo extends Packet {
     private readonly gameUid: string;
     private readonly status: string;
     private readonly activePlayerInfos: PlayerInfo[];
+    private readonly ownerUid: string;
+    private readonly settings: Record<string, string>;
 
     constructor(
         gameUid: string,
         status: string,
-        activePlayerInfos: PlayerInfo[]
+        activePlayerInfos: PlayerInfo[],
+        ownerUid: string,
+        settings: Record<string, string>
     ) {
         super();
         this.gameUid = gameUid;
         this.status = status;
         this.activePlayerInfos = activePlayerInfos;
+        this.ownerUid = ownerUid;
+        this.settings = settings;
     }
 
     public getGameUid = () => this.gameUid;
     public getStatus = () => this.status;
     public getActivePlayerInfos = () => this.activePlayerInfos;
+    public getOwnerUid = () => this.ownerUid;
+    public getSettings = () => this.settings;
 
     public static of = (obj: any) =>
         new PacketInGameInfo(
@@ -27,6 +35,8 @@ export default class PacketInGameInfo extends Packet {
             obj.status,
             obj.activePlayerInfos.map(
                 (i) => new PlayerInfo(i.username, i.ready)
-            )
+            ),
+            obj.ownerUid,
+            obj.settings
         );
 }

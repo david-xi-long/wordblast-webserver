@@ -18,13 +18,23 @@ import PacketInStartGame from '../../scripts/packets/PacketInStartGame';
 import PacketOutStartGame from '../../scripts/packets/PacketOutStartGame';
 import PacketInPlayerReadyState from '../../scripts/packets/PacketInPlayerReadyState';
 import { Player } from '../../types';
+import GameSettings from './GameSettings';
 
 const GameLobbyScreen: FunctionComponent<{
     gameSocket: GameSocket;
     username: string;
     players: Player[];
     setPlayers: Dispatch<SetStateAction<Player[]>>;
-}> = ({ gameSocket, username: selectedUsername, players, setPlayers }) => {
+    isOwner: boolean;
+    initialSettingValues: Record<string, string> | undefined;
+}> = ({
+    gameSocket,
+    username: selectedUsername,
+    players,
+    setPlayers,
+    isOwner,
+    initialSettingValues,
+}) => {
     const router = useRouter();
     const { gameId } = router.query as { gameId: string };
 
@@ -139,7 +149,8 @@ const GameLobbyScreen: FunctionComponent<{
 
     return (
         <div className="relative h-screen flex">
-            <div className="absolute p-3 left-0 bottom-0">
+            {/* No longer need to force start games. */}
+            {/* <div className="absolute p-3 left-0 bottom-0">
                 <div className="mt-2">
                     <Button
                         type="button"
@@ -150,7 +161,7 @@ const GameLobbyScreen: FunctionComponent<{
                         Force Start Game
                     </Button>
                 </div>
-            </div>
+            </div> */}
 
             <div className="h-full flex flex-col justify-center items-center flex-grow">
                 <div className="my-auto flex flex-col justify-center items-center">
@@ -173,6 +184,13 @@ const GameLobbyScreen: FunctionComponent<{
                     setUsername={setUsername}
                 />
             </div>
+
+            <GameSettings
+                gameId={gameId}
+                gameSocket={gameSocket}
+                isOwner={isOwner}
+                initialSettingValues={initialSettingValues}
+            />
         </div>
     );
 };
