@@ -127,6 +127,8 @@ const GamePage: FunctionComponent = () => {
                         gameSocket={gameSocket}
                         players={players}
                         roundInfo={roundInfo}
+                        username={username}
+                        gameId={gameId}
                     />
                 )}
             </div>

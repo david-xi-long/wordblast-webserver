@@ -5,16 +5,35 @@ import GameSocket from '../../scripts/game/GameSocket';
 import BombImage from '../../../public/bomb-arrow.png';
 import { uid } from '../../scripts/miscellaneous/math';
 import { Player, RoundInfo } from '../../types';
+import {
+    Input,
+} from '@vechaiui/forms';
+import PacketInPlayerMessage from '../../scripts/packets/PacketInPlayerMessage';
+import PacketOutPlayerMessage from '../../scripts/packets/PacketOutPlayerMessage';
 
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
     players: Player[];
     roundInfo: RoundInfo;
-}> = ({ gameSocket, players, roundInfo }) => {
+    username: string;
+    gameId: string;
+}> = ({ gameSocket, players, roundInfo, username, gameId }) => {
     const [playerSlots, setPlayerSlots] = useState(
         [] as (Player & { uid: string })[]
     );
     const [curPlayerIndex, setCurPlayerIndex] = useState(0);
+    const [word, setWord] = useState("" as string);
+
+    const updateWord = async(e) => {
+        gameSocket.fireAndForget(
+            'update-word',
+            new PacketOutPlayerMessage(
+                gameId,
+                username,
+                e.target.value
+            )
+        );
+    };
 
     useEffect(() => {
         // Set the beginning slots to the players.
@@ -40,6 +59,17 @@ const GameplayPage: NextPage<{
             playerSlots.findIndex((p) => p.username === roundInfo.username)
         );
     }, [roundInfo, playerSlots]);
+
+    // subscribe to update-word once when component renders
+    useEffect(() => {
+        gameSocket.subscribe<PacketInPlayerMessage>(
+            'update-word',
+            (packet: { getMessage: () => string; getUsername: () => string }) => {
+                console.log(packet.getMessage(), packet.getUsername());
+                setWord(packet.getMessage());
+            }
+        );
+    }, []);
 
     return (
         <div className="h-screen w-full flex justify-center items-center">
@@ -69,10 +99,19 @@ const GameplayPage: NextPage<{
                             >
                                 <p className="font-semibold truncate">
                                     {p.username}
+                                    {
+                                        roundInfo.username == p.username &&
+                                        <p>{word}</p>
+                                    }
                                 </p>
                             </div>
                         );
                     })}
+                    {roundInfo.username === username &&
+                        <Input
+                            onChange={(e) => updateWord(e)}
+                        />
+                    } 
                 </div>
             </div>
         </div>
