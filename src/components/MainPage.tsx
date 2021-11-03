@@ -1,15 +1,36 @@
 import { Button } from '@vechaiui/button';
 import { useNotification } from '@vechaiui/notification';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import handleErr from '../scripts/miscellaneous/error';
 import { AuthenticationContext } from './authentication/Authentication';
 
 function MainPage() {
-    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const notification = useNotification();
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [onlineCount, setOnlineCount] = useState<number | undefined>();
+
     const { isAuthenticated } = useContext(AuthenticationContext);
+
+    useEffect(() => {
+        const id = setInterval(async () => {
+            const [response] = await handleErr(
+                fetch('http://localhost:8080/api/game/count')
+            );
+
+            if (response == null) return;
+
+            const { count } = await response.json();
+
+            setOnlineCount(count);
+        }, 10000);
+
+        return () => {
+            clearInterval(id);
+        };
+    }, []);
 
     const callGameEndpoint = async (
         endpoint: string,
@@ -71,42 +92,51 @@ function MainPage() {
     };
 
     return (
-        <div className="mainpage">
-            <code className="text-6xl font-semibold">wordblast.io</code>
-            <div className="mt-6 row space-x-2">
-                <Button
-                    type="submit"
-                    variant="solid"
-                    color="primary"
-                    size="lg"
-                    loading={isLoading}
-                    onClick={joinAvailableGame}
-                >
-                    Multiplayer
-                </Button>
-                <Button
-                    type="submit"
-                    variant="solid"
-                    color="primary"
-                    size="lg"
-                    loading={isLoading}
-                    onClick={singlePlayer}
-                >
-                    Singleplayer
-                </Button>
-                {isAuthenticated && (
+        <div className="min-h-screen flex flex-col justify-center items-center">
+            <div className="my-auto flex flex-col items-center">
+                <code className="text-6xl font-semibold">wordblast.io</code>
+                <div className="mt-6 row space-x-2">
                     <Button
                         type="submit"
                         variant="solid"
                         color="primary"
                         size="lg"
                         loading={isLoading}
-                        onClick={joinNewGame}
+                        onClick={joinAvailableGame}
                     >
-                        Create game
+                        Multiplayer
                     </Button>
-                )}
+                    <Button
+                        type="submit"
+                        variant="solid"
+                        color="primary"
+                        size="lg"
+                        loading={isLoading}
+                        onClick={singlePlayer}
+                    >
+                        Singleplayer
+                    </Button>
+                    {isAuthenticated && (
+                        <Button
+                            type="submit"
+                            variant="solid"
+                            color="primary"
+                            size="lg"
+                            loading={isLoading}
+                            onClick={joinNewGame}
+                        >
+                            Create game
+                        </Button>
+                    )}
+                </div>
             </div>
+            {onlineCount !== undefined && (
+                <span className="mb-2 mr-2 py-2 px-3 bg-neutral-700 rounded-md self-end">
+                    <p className="text-lg font-semibold">
+                        {onlineCount} playing
+                    </p>
+                </span>
+            )}
         </div>
     );
 }
