@@ -58,7 +58,13 @@ const GameplayPage: NextPage<{
         setCurPlayerIndex(
             playerSlots.findIndex((p) => p.username === roundInfo.username)
         );
+        setWord('');
     }, [roundInfo, playerSlots]);
+
+    //input field should be uppercase only
+    const toInputUppercase = e => {
+        e.target.value = ("" + e.target.value).toUpperCase();
+      };
 
     // subscribe to update-word once when component renders
     useEffect(() => {
@@ -107,13 +113,20 @@ const GameplayPage: NextPage<{
                             </div>
                         );
                     })}
-                    {roundInfo.username === username &&
-                        <Input
-                            onChange={(e) => updateWord(e)}
-                        />
-                    } 
                 </div>
             </div>
+                {roundInfo.username === username &&
+                <>
+                    <div style={{position: "absolute", bottom: 25}}>
+                        <Input className="game-input"
+                            onChange={(e) => updateWord(e)}
+                            onInput={toInputUppercase} />
+                    </div>
+                    <div style={{position: "absolute", top: 25, fontSize: 60}}>
+                        IT IS YOUR TURN
+                    </div>
+                </>
+                }
         </div>
     );
 };
