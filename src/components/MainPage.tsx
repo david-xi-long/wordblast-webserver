@@ -2,7 +2,7 @@ import { Button } from '@vechaiui/button';
 import { useNotification } from '@vechaiui/notification';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
-import handleErr from '../scripts/miscellaneous/error';
+import { handleErr } from '../scripts/miscellaneous/error';
 import { AuthenticationContext } from './authentication/Authentication';
 
 function MainPage() {

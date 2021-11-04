@@ -101,10 +101,9 @@ const GameplayPage: NextPage<{
                         >
                             <p className="font-semibold truncate">
                                 {p.username}
-                                {
-                                    roundInfo.username == p.username &&
+                                {roundInfo.username == p.username && (
                                     <p>{word}</p>
-                                }
+                                )}
                             </p>
                         </div>
                     );

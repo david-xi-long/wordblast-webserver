@@ -18,7 +18,6 @@ import PacketInStartGame from '../../scripts/packets/PacketInStartGame';
 import PacketOutStartGame from '../../scripts/packets/PacketOutStartGame';
 import PacketInPlayerReadyState from '../../scripts/packets/PacketInPlayerReadyState';
 import { Player } from '../../types';
-import GameSettings from './GameSettings';
 
 const GameLobbyScreen: FunctionComponent<{
     gameSocket: GameSocket;
@@ -148,7 +147,7 @@ const GameLobbyScreen: FunctionComponent<{
     }
 
     return (
-        <div className="h-screen flex flex-col">
+        <div className="h-screen flex flex-col items-center">
             <div className="my-auto flex flex-col items-center">
                 <LobbyPlayers players={players} />
                 <Button

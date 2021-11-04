@@ -3,6 +3,7 @@ import { Input } from '@vechaiui/forms';
 import { Icon } from '@vechaiui/icon';
 import { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import GameSocket from '../../scripts/game/GameSocket';
+import PacketInUsernameChange from '../../scripts/packets/PacketInUsernameChange';
 import PacketOutUsernameChange from '../../scripts/packets/PacketOutUsernameChange';
 import Edit from '../icons/Edit';
 
@@ -22,7 +23,7 @@ const LobbyUsernameField: FunctionComponent<{
         }
 
         gameSocket
-            .requestResponse(
+            .requestResponse<PacketInUsernameChange>(
                 'change-username',
                 new PacketOutUsernameChange(gameId, username, newUsername)
             )
@@ -33,7 +34,7 @@ const LobbyUsernameField: FunctionComponent<{
                 },
                 () => {
                     // Could not change the username, do nothing.
-                    // Should probably inform user in a better manner.
+                    // TODO: Notification indicated error.
                 }
             );
     };
