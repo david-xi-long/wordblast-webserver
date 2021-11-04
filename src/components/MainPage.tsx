@@ -125,7 +125,7 @@ function MainPage() {
                             loading={isLoading}
                             onClick={joinNewGame}
                         >
-                            Create game
+                            Play with friends
                         </Button>
                     )}
                 </div>
