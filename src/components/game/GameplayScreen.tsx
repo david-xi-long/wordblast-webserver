@@ -8,6 +8,8 @@ import { Player, RoundInfo } from '../../types';
 import { Input } from '@vechaiui/forms';
 import PacketInPlayerMessage from '../../scripts/packets/PacketInPlayerMessage';
 import PacketOutPlayerMessage from '../../scripts/packets/PacketOutPlayerMessage';
+import PacketOutCheckWord from '../../scripts/packets/PacketOutCheckWord';
+import PacketInCheckWord from '../../scripts/packets/PacketInCheckWord';
 
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
@@ -74,6 +76,32 @@ const GameplayPage: NextPage<{
         );
     }, []);
 
+    const sendMessage = (e) => {
+        if (e.keyCode == 13) {
+            console.log('submitting word:', word);
+            gameSocket
+            .requestResponse<PacketInCheckWord>(
+                'check-word',
+                new PacketOutCheckWord(word, gameId)
+            )
+            .then(
+                (packet) => {
+                    if (packet.isValid() == true) {
+                        // Implement word being correct
+                        console.log('Word is valid');
+                    } else {
+                        // Implement word being incorrect
+                        console.log('Word is not valid')
+                    }
+                },
+                () => {
+                    // Something has gone wrong where packet was not received
+                    console.log("packet was not received");
+                }
+            );
+        }
+    }
+
     return (
         <div className="relative h-screen flex justify-center items-center">
             <div
@@ -114,6 +142,7 @@ const GameplayPage: NextPage<{
                     <div style={{ position: 'absolute', bottom: 25 }}>
                         <Input
                             className="game-input"
+                            onKeyDown={(e) => sendMessage(e)}
                             onChange={(e) => updateWord(e)}
                             onInput={toInputUppercase}
                         />
