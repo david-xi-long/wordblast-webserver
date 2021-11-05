@@ -84,7 +84,9 @@ const GamePage: FunctionComponent = () => {
                     timeRemaining: packet.getTimeRemaining(),
                     sentAt: new Date(),
                     players: packet.getPlayers(),
-                    playerLives: packet.getPlayerLives()
+                    playerLives: packet.getPlayerLives(),
+                    previousPlayer: packet.getPreviousPlayer(),
+                    notificationText: packet.getNotificationText()
                 });
             });
         })();

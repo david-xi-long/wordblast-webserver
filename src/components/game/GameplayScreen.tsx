@@ -44,7 +44,7 @@ const GameplayPage: NextPage<{
     for (let i = 0; i < playerList.length; i++) {
         playerMap.set(playerList[i], playerLives[i]);
     }
-
+    
     const updateWord = async (e) => {
         gameSocket.fireAndForget(
             'update-word',
@@ -206,6 +206,9 @@ const GameplayPage: NextPage<{
                     <div style={{position: 'absolute', top: 25, fontSize: 60}}>OUT OF TIME!, -1 LIFE</div>
             )
             }
+            {roundInfo.previousPlayer === username && (
+                <div style={{position: 'absolute', top: 25, fontSize: 30}}>{roundInfo.notificationText}</div>
+            )}
         </div>
     );
 };

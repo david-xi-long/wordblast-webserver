@@ -7,6 +7,8 @@ export default class PacketInRoundInfo extends Packet {
     private readonly timeRemaining: number;
     private readonly players: string[];
     private readonly playerLives: number[];
+    private readonly previousPlayer: string;
+    private readonly notificationText: string;
 
     constructor(
         gameUid: string,
@@ -14,7 +16,9 @@ export default class PacketInRoundInfo extends Packet {
         player: string,
         timeRemaining: number,
         players: string[],
-        playerLives: number[]
+        playerLives: number[],
+        previousPlayer: string,
+        notificationText: string
     ) {
         super();
         this.gameUid = gameUid;
@@ -23,6 +27,8 @@ export default class PacketInRoundInfo extends Packet {
         this.timeRemaining = timeRemaining;
         this.players = players;
         this.playerLives = playerLives;
+        this.previousPlayer = previousPlayer;
+        this.notificationText = notificationText;
     }
 
     public getGameUid = () => this.gameUid;
@@ -31,6 +37,8 @@ export default class PacketInRoundInfo extends Packet {
     public getTimeRemaining = () => this.timeRemaining;
     public getPlayers = () => this.players;
     public getPlayerLives = () => this.playerLives;
+    public getPreviousPlayer = () => this.previousPlayer;
+    public getNotificationText = () => this.notificationText;
 
     public static of = (obj: any) =>
         new PacketInRoundInfo(
@@ -39,6 +47,8 @@ export default class PacketInRoundInfo extends Packet {
             obj.player,
             obj.timeRemaining,
             obj.players,
-            obj.playerLives
+            obj.playerLives,
+            obj.previousPlayer,
+            obj.notificationText
         );
 }

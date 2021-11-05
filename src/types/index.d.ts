@@ -10,4 +10,6 @@ export interface RoundInfo {
     sentAt: Date;
     players: string[];
     playerLives: number[];
+    previousPlayer: string;
+    notificationText: string;
 }
