@@ -15,7 +15,7 @@ function MainPage() {
     const { isAuthenticated } = useContext(AuthenticationContext);
 
     useEffect(() => {
-        const id = setInterval(async () => {
+        const getPlayerCount = async () => {
             const [response] = await handleErr(
                 fetch('http://localhost:8080/api/game/count')
             );
@@ -25,7 +25,10 @@ function MainPage() {
             const { count } = await response.json();
 
             setOnlineCount(count);
-        }, 10000);
+        };
+
+        getPlayerCount();
+        const id = setInterval(getPlayerCount, 10000);
 
         return () => {
             clearInterval(id);
