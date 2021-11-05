@@ -3,7 +3,8 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Input } from '@vechaiui/forms';
 import GameSocket from '../../scripts/game/GameSocket';
-import BombImage from '../../../public/bomb-arrow.png';
+import BombImage from '../../../public/Bomb.png';
+import Arrow from '../../../public/arrow.png';
 import { uid } from '../../scripts/miscellaneous/math';
 import { Player, RoundInfo } from '../../types';
 import PacketInPlayerMessage from '../../scripts/packets/PacketInPlayerMessage';
@@ -37,6 +38,14 @@ const GameplayPage: NextPage<{
     const [word, setWord] = useState('' as string);
     const [timeLeft, setTimeLeft] = useState(1);
 
+    // I was too tired to figure out how to actually send a map over so I did it this way. It's ugly, I know.
+    let playerList = roundInfo.players;
+    let playerLives = roundInfo.playerLives;
+    let playerMap = new Map();
+    for (let i = 0; i < playerList.length; i++) {
+        playerMap.set(playerList[i], playerLives[i]);
+    }
+    
     const updateWord = async (e) => {
         gameSocket.fireAndForget(
             'update-word',
@@ -135,11 +144,14 @@ const GameplayPage: NextPage<{
         <div className="relative h-screen flex justify-center items-center">
             <div className="absolute">
                 <div style={{
-                    transform: `rotate(${45 * curPlayerIndex}deg)`
+                    transform: `rotate(${45 * curPlayerIndex - 45}deg)`,
+                    transition: "300ms ease all",
+                    textAlign: "center",
+                    zIndex: -1,
                 }}>
-                    <Image src={BombImage} height={83} width={100} />
+                    <Image src={Arrow} height={300} width={30} />
                 </div>
-                <div style={{textAlign: "center"}}>time left: {timeLeft}</div>
+
             </div>
 
             <div className="grid grid-cols-3 gap-24">
@@ -149,7 +161,26 @@ const GameplayPage: NextPage<{
                             <div
                                 key={p.uid}
                                 className="h-32 w-32 bg-transparent"
-                            />
+                            >
+                                <div style={{textAlign: "center", paddingLeft: "15px", paddingTop: "15px"}}>
+                                    <Image src={BombImage} height={150} width={150}/>
+                                </div>
+                                <div style={{textAlign: "center", position: "absolute"}}>
+                                    <div>time left: {timeLeft}</div>
+                                    <div>Current Combo: {roundInfo.letterCombo}</div>
+                                </div>
+
+                            </div>
+                        );
+                    if (p.username === '')
+                        return (
+                            <div
+                                key={p.uid}
+                                className="h-32 w-32 bg-neutral-800 flex justify-center items-center"
+                            >
+                                <p className="font-semibold truncate">
+                                </p>
+                            </div>
                         );
                     return (
                         <div
@@ -158,6 +189,7 @@ const GameplayPage: NextPage<{
                         >
                             <p className="font-semibold truncate">
                                 {p.username}
+                                <p> Lives: {playerMap.get(p.username)}</p>
                                 {roundInfo.username == p.username && (
                                     <p style={{textAlign: 'center'}}>{word}</p>
                                 )}
@@ -184,9 +216,12 @@ const GameplayPage: NextPage<{
                 </>
             )}
             {timeLeft <= 0 && roundInfo.username === username && (
-                    <div style={{position: 'absolute', top: 25, fontSize: 60}}>OUT OF TIME!</div>
+                    <div style={{position: 'absolute', top: 25, fontSize: 60}}>OUT OF TIME!, -1 LIFE</div>
             )
             }
+            {roundInfo.previousPlayer === username && roundInfo.username != username && (
+                <div style={{position: 'absolute', top: 25, fontSize: 30}}>{roundInfo.notificationText}</div>
+            )}
         </div>
     );
 };
