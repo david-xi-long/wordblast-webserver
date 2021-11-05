@@ -3,7 +3,8 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Input } from '@vechaiui/forms';
 import GameSocket from '../../scripts/game/GameSocket';
-import BombImage from '../../../public/bomb-arrow.png';
+import BombImage from '../../../public/Bomb.png';
+import Arrow from '../../../public/arrow.png';
 import { uid } from '../../scripts/miscellaneous/math';
 import { Player, RoundInfo } from '../../types';
 import PacketInPlayerMessage from '../../scripts/packets/PacketInPlayerMessage';
@@ -143,12 +144,13 @@ const GameplayPage: NextPage<{
         <div className="relative h-screen flex justify-center items-center">
             <div className="absolute">
                 <div style={{
-                    transform: `rotate(${45 * curPlayerIndex}deg)`
+                    transform: `rotate(${45 * curPlayerIndex - 45}deg)`,
+                    transition: "300ms ease all",
+                    textAlign: "center",
+                    zIndex: -1,
                 }}>
-                    <Image src={BombImage} height={83} width={100} />
+                    <Image src={Arrow} height={300} width={30} />
                 </div>
-                <div style={{textAlign: "center"}}>time left: {timeLeft}</div>
-                <div style={{textAlign: "center"}}>Current Combo: {roundInfo.letterCombo}</div>
 
             </div>
 
@@ -159,7 +161,16 @@ const GameplayPage: NextPage<{
                             <div
                                 key={p.uid}
                                 className="h-32 w-32 bg-transparent"
-                            />
+                            >
+                                <div style={{textAlign: "center", paddingLeft: "15px", paddingTop: "15px"}}>
+                                    <Image src={BombImage} height={150} width={150}/>
+                                </div>
+                                <div style={{textAlign: "center", position: "absolute"}}>
+                                    <div>time left: {timeLeft}</div>
+                                    <div>Current Combo: {roundInfo.letterCombo}</div>
+                                </div>
+
+                            </div>
                         );
                     if (p.username === '')
                         return (
