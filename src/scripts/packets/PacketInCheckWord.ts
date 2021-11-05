@@ -8,7 +8,7 @@ export default class PacketInCheckWord extends Packet{
         this.valid = valid;
     }
 
-    public wordIsValid = () => this.valid;
+    public isValid = () => this.valid;
 
-    public static of = (obj:any) => new PacketInCheckWord(obj.exists);
+    public static of = (obj:any) => new PacketInCheckWord(obj.valid);
 }
