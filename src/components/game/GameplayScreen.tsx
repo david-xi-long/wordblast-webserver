@@ -26,6 +26,14 @@ const GameplayPage: NextPage<{
     const [word, setWord] = useState('' as string);
     const [timeLeft, setTimeLeft] = useState(1);
 
+    // I was too tired to figure out how to actually send a map over so I did it this way. It's ugly, I know.
+    let playerList = roundInfo.players;
+    let playerLives = roundInfo.playerLives;
+    let playerMap = new Map();
+    for (let i = 0; i < playerList.length; i++) {
+        playerMap.set(playerList[i], playerLives[i]);
+    }
+
     const updateWord = async (e) => {
         gameSocket.fireAndForget(
             'update-word',
@@ -138,6 +146,16 @@ const GameplayPage: NextPage<{
                                 className="h-32 w-32 bg-transparent"
                             />
                         );
+                    if (p.username === '')
+                        return (
+                            <div
+                                key={p.uid}
+                                className="h-32 w-32 bg-neutral-800 flex justify-center items-center"
+                            >
+                                <p className="font-semibold truncate">
+                                </p>
+                            </div>
+                        );
                     return (
                         <div
                             key={p.uid}
@@ -145,6 +163,7 @@ const GameplayPage: NextPage<{
                         >
                             <p className="font-semibold truncate">
                                 {p.username}
+                                <p> Lives: {playerMap.get(p.username)}</p>
                                 {roundInfo.username == p.username && (
                                     <p style={{textAlign: 'center'}}>{word}</p>
                                 )}
@@ -171,7 +190,7 @@ const GameplayPage: NextPage<{
                 </>
             )}
             {timeLeft <= 0 && roundInfo.username === username && (
-                    <div style={{position: 'absolute', top: 25, fontSize: 60}}>OUT OF TIME!</div>
+                    <div style={{position: 'absolute', top: 25, fontSize: 60}}>OUT OF TIME!, -1 LIFE</div>
             )
             }
         </div>

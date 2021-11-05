@@ -83,6 +83,8 @@ const GamePage: FunctionComponent = () => {
                     username: packet.getPlayer(),
                     timeRemaining: packet.getTimeRemaining(),
                     sentAt: new Date(),
+                    players: packet.getPlayers(),
+                    playerLives: packet.getPlayerLives()
                 });
             });
         })();

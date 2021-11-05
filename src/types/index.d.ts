@@ -8,4 +8,6 @@ export interface RoundInfo {
     username: string;
     timeRemaining: number;
     sentAt: Date;
+    players: string[];
+    playerLives: number[];
 }
