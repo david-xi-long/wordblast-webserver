@@ -1,15 +1,26 @@
 import { NextPage } from 'next';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { Input } from '@vechaiui/forms';
 import GameSocket from '../../scripts/game/GameSocket';
 import BombImage from '../../../public/bomb-arrow.png';
 import { uid } from '../../scripts/miscellaneous/math';
 import { Player, RoundInfo } from '../../types';
-import { Input } from '@vechaiui/forms';
 import PacketInPlayerMessage from '../../scripts/packets/PacketInPlayerMessage';
 import PacketOutPlayerMessage from '../../scripts/packets/PacketOutPlayerMessage';
 import PacketOutCheckWord from '../../scripts/packets/PacketOutCheckWord';
 import PacketInCheckWord from '../../scripts/packets/PacketInCheckWord';
+
+const rotationIndexPositions = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 7,
+    5: 3,
+    6: 6,
+    7: 5,
+    8: 4,
+};
 
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
@@ -33,7 +44,7 @@ const GameplayPage: NextPage<{
 
     useEffect(() => {
         // Set the beginning slots to the players.
-        const usedSlots = players.map((p) => ({ ...p, uid: uid() }));
+        const usedSlots = players.map((p) => ({ uid: uid(), ...p }));
 
         // Add filler placeholder slots.
         const unusedSlots = Array(8 - usedSlots.length)
@@ -52,7 +63,9 @@ const GameplayPage: NextPage<{
 
     useEffect(() => {
         setCurPlayerIndex(
-            playerSlots.findIndex((p) => p.username === roundInfo.username)
+            rotationIndexPositions[
+                playerSlots.findIndex((p) => p.username === roundInfo.username)
+            ]
         );
         setWord('');
     }, [roundInfo, playerSlots]);
@@ -80,27 +93,27 @@ const GameplayPage: NextPage<{
         if (e.keyCode == 13) {
             console.log('submitting word:', word);
             gameSocket
-            .requestResponse<PacketInCheckWord>(
-                'check-word',
-                new PacketOutCheckWord(word, gameId)
-            )
-            .then(
-                (packet) => {
-                    if (packet.isValid() == true) {
-                        // Implement word being correct
-                        console.log('Word is valid');
-                    } else {
-                        // Implement word being incorrect
-                        console.log('Word is not valid')
+                .requestResponse<PacketInCheckWord>(
+                    'check-word',
+                    new PacketOutCheckWord(word, gameId)
+                )
+                .then(
+                    (packet) => {
+                        if (packet.isValid() == true) {
+                            // Implement word being correct
+                            console.log('Word is valid');
+                        } else {
+                            // Implement word being incorrect
+                            console.log('Word is not valid');
+                        }
+                    },
+                    () => {
+                        // Something has gone wrong where packet was not received
+                        console.log('packet was not received');
                     }
-                },
-                () => {
-                    // Something has gone wrong where packet was not received
-                    console.log("packet was not received");
-                }
-            );
+                );
         }
-    }
+    };
 
     return (
         <div className="relative h-screen flex justify-center items-center">
