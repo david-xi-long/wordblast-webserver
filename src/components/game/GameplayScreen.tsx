@@ -10,6 +10,7 @@ import PacketInPlayerMessage from '../../scripts/packets/PacketInPlayerMessage';
 import PacketOutPlayerMessage from '../../scripts/packets/PacketOutPlayerMessage';
 import PacketOutCheckWord from '../../scripts/packets/PacketOutCheckWord';
 import PacketInCheckWord from '../../scripts/packets/PacketInCheckWord';
+import UsernameSelectPage from './UsernameSelectPage';
 
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
@@ -23,6 +24,7 @@ const GameplayPage: NextPage<{
     );
     const [curPlayerIndex, setCurPlayerIndex] = useState(0);
     const [word, setWord] = useState('' as string);
+    const [timeLeft, setTimeLeft] = useState(1);
 
     const updateWord = async (e) => {
         gameSocket.fireAndForget(
@@ -57,6 +59,14 @@ const GameplayPage: NextPage<{
         setWord('');
     }, [roundInfo, playerSlots]);
 
+    //set timer each with each new round
+    useEffect(() => {
+        //delay to allow 'out of time' message
+        setTimeout(() => {
+        }, 1000)
+        setTimeLeft(Math.round(roundInfo.timeRemaining / 1000) - 1);
+    }, [roundInfo])
+
     //input field should be uppercase only
     const toInputUppercase = (e) => {
         e.target.value = ('' + e.target.value).toUpperCase();
@@ -74,6 +84,12 @@ const GameplayPage: NextPage<{
                 setWord(packet.getMessage());
             }
         );
+        //decrement the timer
+        setInterval(() => {
+            if (timeLeft > 0) {
+                setTimeLeft(time => time - 1)
+            }
+        }, 1000)
     }, []);
 
     const sendMessage = (e) => {
@@ -104,13 +120,13 @@ const GameplayPage: NextPage<{
 
     return (
         <div className="relative h-screen flex justify-center items-center">
-            <div
-                className="absolute"
-                style={{
-                    transform: `rotate(${45 * curPlayerIndex}deg)`,
-                }}
-            >
-                <Image src={BombImage} height={83} width={100} />
+            <div className="absolute">
+                <div style={{
+                    transform: `rotate(${45 * curPlayerIndex}deg)`
+                }}>
+                    <Image src={BombImage} height={83} width={100} />
+                </div>
+                <div style={{textAlign: "center"}}>time left: {timeLeft}</div>
             </div>
 
             <div className="grid grid-cols-3 gap-24">
@@ -130,14 +146,14 @@ const GameplayPage: NextPage<{
                             <p className="font-semibold truncate">
                                 {p.username}
                                 {roundInfo.username == p.username && (
-                                    <p>{word}</p>
+                                    <p style={{textAlign: 'center'}}>{word}</p>
                                 )}
                             </p>
                         </div>
                     );
                 })}
             </div>
-            {roundInfo.username === username && (
+            {roundInfo.username === username && timeLeft > 0 && (
                 <>
                     <div style={{ position: 'absolute', bottom: 25 }}>
                         <Input
@@ -154,6 +170,10 @@ const GameplayPage: NextPage<{
                     </div>
                 </>
             )}
+            {timeLeft <= 0 && roundInfo.username === username && (
+                    <div style={{position: 'absolute', top: 25, fontSize: 60}}>OUT OF TIME!</div>
+            )
+            }
         </div>
     );
 };
