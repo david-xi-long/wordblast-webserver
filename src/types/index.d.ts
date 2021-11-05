@@ -12,4 +12,5 @@ export interface RoundInfo {
     playerLives: number[];
     previousPlayer: string;
     notificationText: string;
+    letterCombo: string;
 }

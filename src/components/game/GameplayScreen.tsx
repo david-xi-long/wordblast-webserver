@@ -148,6 +148,8 @@ const GameplayPage: NextPage<{
                     <Image src={BombImage} height={83} width={100} />
                 </div>
                 <div style={{textAlign: "center"}}>time left: {timeLeft}</div>
+                <div style={{textAlign: "center"}}>Current Combo: {roundInfo.letterCombo}</div>
+
             </div>
 
             <div className="grid grid-cols-3 gap-24">
@@ -206,7 +208,7 @@ const GameplayPage: NextPage<{
                     <div style={{position: 'absolute', top: 25, fontSize: 60}}>OUT OF TIME!, -1 LIFE</div>
             )
             }
-            {roundInfo.previousPlayer === username && (
+            {roundInfo.previousPlayer === username && roundInfo.username != username && (
                 <div style={{position: 'absolute', top: 25, fontSize: 30}}>{roundInfo.notificationText}</div>
             )}
         </div>

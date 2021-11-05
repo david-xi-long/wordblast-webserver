@@ -86,7 +86,8 @@ const GamePage: FunctionComponent = () => {
                     players: packet.getPlayers(),
                     playerLives: packet.getPlayerLives(),
                     previousPlayer: packet.getPreviousPlayer(),
-                    notificationText: packet.getNotificationText()
+                    notificationText: packet.getNotificationText(),
+                    letterCombo: packet.getLetterCombo()
                 });
             });
         })();
