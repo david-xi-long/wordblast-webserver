@@ -191,7 +191,9 @@ const GameplayPage: NextPage<{
                                 {p.username}
                                 <p> Lives: {playerMap.get(p.username)}</p>
                                 {roundInfo.username == p.username && (
-                                    <p style={{textAlign: 'center'}}>{word}</p>
+                                    <p>
+                                        <Word word={word} letterCombo={roundInfo.letterCombo}/>
+                                    </p>
                                 )}
                             </p>
                         </div>
@@ -225,5 +227,33 @@ const GameplayPage: NextPage<{
         </div>
     );
 };
+
+//maps out the word the current player is typing character by character and
+//colors in the letter combination green.
+function Word(props) {
+    const wordArray = [...props.word]
+    const sIndex = props.word.indexOf(props.letterCombo.toString());
+    const eIndex = sIndex + props.letterCombo.length;
+    console.log(sIndex, eIndex, props.letterCombo);
+    return (
+        <div style={{display: 'flex'}}>
+            {wordArray.map((w, i) => {
+                if (sIndex == -1)
+                    return (
+                        <p>{w}</p>
+                    )
+                else if (i >= sIndex && i < eIndex)
+                return (
+                    <p style={{color: 'lightgreen'}}>{w}</p>
+                )
+                else
+                return (
+                    <p>{w}</p>
+                )
+            })}
+        </div>
+    )
+
+}
 
 export default GameplayPage;
