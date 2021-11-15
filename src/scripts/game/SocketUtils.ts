@@ -10,6 +10,7 @@ import PacketInNextTurn from '../packets/PacketInNextTurn';
 import PacketInPlayerReadyState from '../packets/PacketInPlayerReadyState';
 import PacketInRoundInfo from '../packets/PacketInRoundInfo';
 import PacketInSettingChange from '../packets/PacketInSettingChange';
+import PacketInPlayerEliminated from '../packets/PacketInPlayerEliminated';
 
 export default class SocketUtils {
     public static resolvePacket = (data: any) => {
@@ -48,6 +49,9 @@ export default class SocketUtils {
                 break;
             case 'PACKET_OUT_SETTING_CHANGE':
                 packet = PacketInSettingChange.of(data);
+                break;
+            case 'PACKET_OUT_PLAYER_ELIMINATED':
+                packet = PacketInPlayerEliminated.of(data);
                 break;
             case 'PACKET_OUT_EXCEPTION':
                 throw new Error(`Received exception packet: ${data.message}`);
