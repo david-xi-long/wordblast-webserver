@@ -12,6 +12,7 @@ import PacketOutPlayerMessage from '../../scripts/packets/PacketOutPlayerMessage
 import PacketOutCheckWord from '../../scripts/packets/PacketOutCheckWord';
 import PacketInCheckWord from '../../scripts/packets/PacketInCheckWord';
 import PacketInPlayerEliminated from '../../scripts/packets/PacketInPlayerEliminated';
+import PacketInDefinition from '../../scripts/packets/PacketInDefinition';
 
 const rotationIndexPositions = {
     0: 0,
@@ -109,6 +110,12 @@ const GameplayPage: NextPage<{
         );
 
         // decrement the timer
+
+        gameSocket.subscribe<PacketInDefinition>('definition', (packet) => {
+            //alert("WORD:" + packet.getWord() + "Definition: " + packet.getDefinition());
+        });
+        
+        //decrement the timer
         setInterval(() => {
             if (timeLeft > 0) {
                 setTimeLeft((time) => time - 1);
