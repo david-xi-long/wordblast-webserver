@@ -12,6 +12,7 @@ import PacketOutPlayerMessage from '../../scripts/packets/PacketOutPlayerMessage
 import PacketOutCheckWord from '../../scripts/packets/PacketOutCheckWord';
 import PacketInCheckWord from '../../scripts/packets/PacketInCheckWord';
 import PacketInPlayerEliminated from '../../scripts/packets/PacketInPlayerEliminated';
+import PacketInDefinition from '../../scripts/packets/PacketInDefinition';
 
 const rotationIndexPositions = {
     0: 0,
@@ -109,6 +110,12 @@ const GameplayPage: NextPage<{
         );
 
         // decrement the timer
+
+        gameSocket.subscribe<PacketInDefinition>('definition', (packet) => {
+            //alert("WORD:" + packet.getWord() + "Definition: " + packet.getDefinition());
+        });
+        
+        //decrement the timer
         setInterval(() => {
             if (timeLeft > 0) {
                 setTimeLeft((time) => time - 1);
@@ -124,8 +131,11 @@ const GameplayPage: NextPage<{
             )
             .then((packet) => {
                 if (packet.isValid()) {
+                    console.log("word", guess, "is valid")
                     // TODO: Implement word being correct
                 } else {
+                    console.log("word", guess, "is invalid")
+                    setWord("");
                     // TODO: Implement word being incorrect
                 }
             });
@@ -194,18 +204,16 @@ const GameplayPage: NextPage<{
                             key={p.uid}
                             className="h-32 w-32 bg-neutral-800 flex justify-center items-center"
                         >
-                            <p className="font-semibold truncate">
+                            <div className="font-semibold truncate">
                                 {p.username}
                                 <p> Lives: {playerMap.get(p.username)}</p>
                                 {roundInfo.username == p.username && (
-                                    <p>
-                                        <Word
-                                            word={word}
-                                            letterCombo={roundInfo.letterCombo}
-                                        />
-                                    </p>
+                                <Word
+                                    word={word}
+                                    letterCombo={roundInfo.letterCombo}
+                                />
                                 )}
-                            </p>
+                            </div>
                         </div>
                     );
                 })}
@@ -214,6 +222,7 @@ const GameplayPage: NextPage<{
                 <>
                     <div style={{ position: 'absolute', bottom: 25 }}>
                         <Input
+                            value={word}
                             className="game-input"
                             onKeyDown={(e) => {
                                 if (e.key !== 'Enter') return;
@@ -253,14 +262,14 @@ function Word(props) {
     const wordArray = [...props.word];
     const sIndex = props.word.indexOf(props.letterCombo.toString());
     const eIndex = sIndex + props.letterCombo.length;
-    console.log(sIndex, eIndex, props.letterCombo);
+    // console.log(sIndex, eIndex, props.letterCombo);
     return (
         <div style={{ display: 'flex' }}>
             {wordArray.map((w, i) => {
-                if (sIndex == -1) return <p>{w}</p>;
+                if (sIndex == -1) return <p key={i}>{w}</p>;
                 else if (i >= sIndex && i < eIndex)
-                    return <p style={{ color: 'lightgreen' }}>{w}</p>;
-                else return <p>{w}</p>;
+                    return <p key={i} style={{ color: 'lightgreen' }}>{w}</p>;
+                else return <p key={i} >{w}</p>;
             })}
         </div>
     );
