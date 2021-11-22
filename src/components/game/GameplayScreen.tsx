@@ -204,7 +204,7 @@ const GameplayPage: NextPage<{
                             key={p.uid}
                             className="h-32 w-32 bg-neutral-800 flex justify-center items-center"
                         >
-                            <div className="font-semibold truncate">
+                            <div className="font-semibold truncate center">
                                 {p.username}
                                 <p> Lives: {playerMap.get(p.username)}</p>
                                 {roundInfo.username == p.username && (
@@ -264,7 +264,7 @@ function Word(props) {
     const eIndex = sIndex + props.letterCombo.length;
     // console.log(sIndex, eIndex, props.letterCombo);
     return (
-        <div style={{ display: 'flex' }}>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
             {wordArray.map((w, i) => {
                 if (sIndex == -1) return <p key={i}>{w}</p>;
                 else if (i >= sIndex && i < eIndex)

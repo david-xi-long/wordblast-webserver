@@ -162,6 +162,10 @@
     animation: below_bomb 0.2s ease-in-out infinite alternate;
 }
 
+.center {
+    text-align: center;
+}
+
 @keyframes below_bomb {
     0% {
         transform: scale(1.0);
