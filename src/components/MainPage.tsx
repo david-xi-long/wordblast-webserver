@@ -66,6 +66,8 @@ function MainPage() {
         router.push(`/game/${uid}`);
     };
 
+    const goToTutorial = () => router.push('/tutorial')
+
     const joinAvailableGame = () => callGameEndpoint('available');
 
     const joinNewGame = () =>
@@ -99,6 +101,19 @@ function MainPage() {
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center">
+            <div className="right-top-btn self-end mt-2 mr-2">
+                <Button
+                    className="flex-grow"
+                    type="submit"
+                    variant="solid"
+                    color="primary"
+                    size={smallScreen ? 'lg' : 'md'}
+                    loading={isLoading}
+                    onClick={goToTutorial}
+                >
+                    How To Play
+                </Button>
+            </div>
             <div className="my-auto flex flex-col items-center">
                 <code
                     id="logo"
