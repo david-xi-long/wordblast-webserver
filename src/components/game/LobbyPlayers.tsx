@@ -24,13 +24,13 @@ const LobbyPlayers: FunctionComponent<{ players: Player[] }> = ({
     }, [players]);
 
     return (
-        <div>
-            <h1 className="font-bold text-3xl mb-3">Players</h1>
-            <div className="grid grid-cols-4 gap-3">
+        <div className="max-w-[39rem] flex flex-col justify-center items-center">
+            <h1 className="font-bold text-3xl mb-8">Players</h1>
+            <div className="flex flex-wrap justify-center items-center gap-3">
                 {playerSlots.map((v) => (
                     <div
                         key={v.uid}
-                        className={`h-36 w-36 px-2 py-1 pb-2 flex flex-col justify-between ${
+                        className={`h-36 w-36 px-2 py-1 pb-2 flex-shrink-0 flex flex-col justify-between ${
                             v.username.length === 0
                                 ? 'bg-neutral-800'
                                 : 'bg-neutral-700'

@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { FunctionComponent, useContext, useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import Chatbox from '../../components/game/Chatbox';
 import GameLobbyScreen from '../../components/game/GameLobbyScreen';
 import UsernameSelectPage from '../../components/game/UsernameSelectPage';
@@ -30,6 +31,8 @@ export const getServerSideProps = async (context) => {
 };
 
 const GamePage: FunctionComponent = () => {
+    const isSmallScreen = useMediaQuery({ maxWidth: 1024 });
+
     const router = useRouter();
     const { gameId } = router.query as { gameId: string };
 
@@ -87,7 +90,7 @@ const GamePage: FunctionComponent = () => {
                     playerLives: packet.getPlayerLives(),
                     previousPlayer: packet.getPreviousPlayer(),
                     notificationText: packet.getNotificationText(),
-                    letterCombo: packet.getLetterCombo()
+                    letterCombo: packet.getLetterCombo(),
                 });
             });
         })();
@@ -145,9 +148,11 @@ const GamePage: FunctionComponent = () => {
                 isOwner={isOwner}
                 initialSettingValues={initialSettingValues}
             />
-            <Chatbox username={username}>
-                <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />
-            </Chatbox>
+            {!isSmallScreen && (
+                <Chatbox username={username}>
+                    <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />
+                </Chatbox>
+            )}
         </div>
     );
 };

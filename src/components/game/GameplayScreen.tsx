@@ -132,7 +132,7 @@ const GameplayPage: NextPage<{
     };
 
     return (
-        <div className="relative h-screen flex justify-center items-center">
+        <div className="p-8 relative h-screen flex justify-center items-center">
             <div className="absolute">
                 <div
                     style={{
@@ -224,14 +224,14 @@ const GameplayPage: NextPage<{
                         />
                     </div>
                     <div
-                        style={{ position: 'absolute', top: 25, fontSize: 60 }}
+                        style={{ position: 'absolute', top: 25, fontSize: 45 }}
                     >
                         IT IS YOUR TURN
                     </div>
                 </>
             )}
             {timeLeft <= 0 && roundInfo.username === username && (
-                <div style={{ position: 'absolute', top: 25, fontSize: 60 }}>
+                <div style={{ position: 'absolute', top: 25, fontSize: 45 }}>
                     OUT OF TIME!, -1 LIFE
                 </div>
             )}

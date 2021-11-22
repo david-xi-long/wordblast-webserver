@@ -147,7 +147,7 @@ const GameLobbyScreen: FunctionComponent<{
     }
 
     return (
-        <div className="h-screen flex flex-col items-center">
+        <div className="p-8 pb-0 min-h-screen flex flex-col items-center">
             <div className="my-auto flex flex-col items-center">
                 <LobbyPlayers players={players} />
                 <Button

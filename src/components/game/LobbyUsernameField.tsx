@@ -41,7 +41,7 @@ const LobbyUsernameField: FunctionComponent<{
 
     return (
         <div
-            className={`${
+            className={`mt-8 ${
                 editingUsername ? 'mb-2' : 'mb-4'
             } flex flex-col items-center`}
         >

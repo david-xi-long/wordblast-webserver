@@ -2,10 +2,13 @@ import { Button } from '@vechaiui/button';
 import { useNotification } from '@vechaiui/notification';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { handleErr } from '../scripts/miscellaneous/error';
 import { AuthenticationContext } from './authentication/Authentication';
 
 function MainPage() {
+    const smallScreen = useMediaQuery({ minWidth: 768 });
+
     const router = useRouter();
     const notification = useNotification();
 
@@ -97,23 +100,30 @@ function MainPage() {
     return (
         <div className="min-h-screen flex flex-col justify-center items-center">
             <div className="my-auto flex flex-col items-center">
-                <code className="text-6xl font-semibold">wordblast.io</code>
-                <div className="mt-6 row space-x-2">
+                <code
+                    id="logo"
+                    className="text-4xl sm:text-5xl md:text-6xl font-semibold"
+                >
+                    wordblast.io
+                </code>
+                <div className="px-8 mt-6 flex flex-wrap gap-2 justify-center items-center">
                     <Button
+                        className="flex-grow"
                         type="submit"
                         variant="solid"
                         color="primary"
-                        size="lg"
+                        size={smallScreen ? 'lg' : 'md'}
                         loading={isLoading}
                         onClick={joinAvailableGame}
                     >
                         Multiplayer
                     </Button>
                     <Button
+                        className="flex-grow"
                         type="submit"
                         variant="solid"
                         color="primary"
-                        size="lg"
+                        size={smallScreen ? 'lg' : 'md'}
                         loading={isLoading}
                         onClick={singlePlayer}
                     >
@@ -121,10 +131,11 @@ function MainPage() {
                     </Button>
                     {isAuthenticated && (
                         <Button
+                            className="flex-grow"
                             type="submit"
                             variant="solid"
                             color="primary"
-                            size="lg"
+                            size={smallScreen ? 'lg' : 'md'}
                             loading={isLoading}
                             onClick={joinNewGame}
                         >
@@ -135,7 +146,7 @@ function MainPage() {
             </div>
             {onlineCount !== undefined && (
                 <span className="mb-2 mr-2 py-2 px-3 bg-neutral-700 rounded-md self-end">
-                    <p className="text-lg font-semibold">
+                    <p className="text-sm md:text-lg font-semibold">
                         {onlineCount} playing
                     </p>
                 </span>
