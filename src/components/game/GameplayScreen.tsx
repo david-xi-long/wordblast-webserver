@@ -148,12 +148,14 @@ const GameplayPage: NextPage<{
                     style={{
                         transform: `rotate(${45 * curPlayerIndex - 45}deg)`,
                         transition: '300ms ease all',
-                        textAlign: 'center',
                         zIndex: -1,
                     }}
                 >
-                    <Image src={Arrow} height={300} width={30} />
+                    <div style={{animation: "below_bomb 0.2s ease-in-out infinite alternate",}}>
+                        <Image src={Arrow} height={300} width={30} />
+                    </div>
                 </div>
+                <div className="below_bomb"/>
             </div>
 
             <div className="grid grid-cols-3 gap-24">
@@ -171,22 +173,20 @@ const GameplayPage: NextPage<{
                                         paddingTop: '15px',
                                     }}
                                 >
-                                    <Image
-                                        src={BombImage}
-                                        height={150}
-                                        width={150}
-                                    />
-                                </div>
-                                <div
-                                    style={{
-                                        textAlign: 'center',
-                                        position: 'absolute',
-                                    }}
-                                >
-                                    <div>time left: {timeLeft}</div>
-                                    <div>
-                                        Current Combo: {roundInfo.letterCombo}
+                                    <div className="bomb">
+                                        <Image
+                                            src={BombImage}
+                                            height={200}
+                                            width={200}
+                                        />
+                                        <div className="innerCenter">
+                                            {roundInfo.letterCombo}
+                                        </div>
+                                        <div>
+                                            time left: {timeLeft}
+                                        </div>
                                     </div>
+                                    <div className="below_bomb"/>
                                 </div>
                             </div>
                         );
