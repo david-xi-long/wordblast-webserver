@@ -1,56 +1,91 @@
-import { FunctionComponent, useEffect, useState } from 'react';
-import { uid } from '../../scripts/miscellaneous/math';
+import { Dispatch, FunctionComponent, SetStateAction, useEffect } from 'react';
+import PacketInPlayerReadyState from '../../scripts/packets/in/PacketInPlayerReadyState';
+import PacketInPlayerState from '../../scripts/packets/in/PacketInPlayerState';
+import PacketInUsernameChange from '../../scripts/packets/in/PacketInUsernameChange';
+import GameSocket from '../../scripts/socket/GameSocket';
 import { Player } from '../../types';
+import Slots from '../utils/Slots';
+import StateIndicator from '../utils/StateIndicator';
 
-const LobbyPlayers: FunctionComponent<{ players: Player[] }> = ({
-    players,
-}) => {
-    const [playerSlots, setPlayerSlots] = useState(
-        [] as (Player & { uid: string })[]
-    );
+const LobbyPlayers: FunctionComponent<{
+    gameSocket: GameSocket;
+    players: Player[];
+    setPlayers: Dispatch<SetStateAction<Player[]>>;
+}> = ({ gameSocket, players, setPlayers }) => {
+    const setPlayerState = (playerName: string, state: boolean) => {
+        const hasPlayer =
+            players.find((p) => p.username === playerName) !== undefined;
+
+        if (state && !hasPlayer) {
+            setPlayers((curPlayers) => [
+                ...curPlayers,
+                { username: playerName, ready: false },
+            ]);
+        }
+
+        if (!state) {
+            setPlayers((curPlayers) =>
+                curPlayers.filter((p) => p.username !== playerName)
+            );
+        }
+    };
+
+    const changeUsername = (oldUsername: string, newUsername: string) => {
+        setPlayers((curPlayers) =>
+            curPlayers.map((p) =>
+                p.username === oldUsername ? { ...p, username: newUsername } : p
+            )
+        );
+    };
+
+    const setPlayerReadyState = (playerName: string, state: boolean) => {
+        setPlayers((curPlayers) =>
+            curPlayers.map((p) =>
+                p.username === playerName ? { ...p, ready: state } : p
+            )
+        );
+    };
+
+    const registerInitHandlers = () => {
+        gameSocket.subscribe<PacketInPlayerState>('player-state', (packet) => {
+            setPlayerState(packet.getUsername(), packet.getState());
+        });
+
+        gameSocket.subscribe<PacketInUsernameChange>(
+            'change-username',
+            (packet) => {
+                changeUsername(
+                    packet.getOldUsername(),
+                    packet.getNewUsername()
+                );
+            }
+        );
+
+        gameSocket.subscribe<PacketInPlayerReadyState>(
+            'player-ready-state',
+            (packet) =>
+                setPlayerReadyState(packet.getUsername(), packet.isReady())
+        );
+    };
 
     useEffect(() => {
-        const usedSlots = players.map((p) => ({ ...p, uid: uid() }));
-
-        const unusedSlots = Array(8 - usedSlots.length)
-            .fill(0)
-            .map(() => ({
-                uid: uid(),
-                username: '',
-                ready: false,
-            }));
-
-        setPlayerSlots([...usedSlots, ...unusedSlots]);
-    }, [players]);
+        registerInitHandlers();
+    }, []);
 
     return (
         <div className="max-w-[39rem] flex flex-col justify-center items-center">
             <h1 className="font-bold text-3xl mb-8">Players</h1>
-            <div className="flex flex-wrap justify-center items-center gap-3">
-                {playerSlots.map((v) => (
-                    <div
-                        key={v.uid}
-                        className={`h-36 w-36 px-2 py-1 pb-2 flex-shrink-0 flex flex-col justify-between ${
-                            v.username.length === 0
-                                ? 'bg-neutral-800'
-                                : 'bg-neutral-700'
-                        }`}
-                    >
-                        {v.username.length !== 0 && (
-                            <>
-                                <p className="truncate font-semibold">
-                                    {v.username}
-                                </p>
-                                <div
-                                    className={`self-end h-3 w-3 rounded-full ${
-                                        v.ready ? 'bg-green-500' : 'bg-red-500'
-                                    }`}
-                                />
-                            </>
-                        )}
-                    </div>
-                ))}
-            </div>
+            <Slots
+                items={players.map((p) => ({ uid: p.username, ...p }))}
+                map={(player) => (
+                    <>
+                        <p className="truncate font-semibold">
+                            {player.username}
+                        </p>
+                        <StateIndicator ready={player.ready} />
+                    </>
+                )}
+            />
         </div>
     );
 };

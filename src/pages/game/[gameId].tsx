@@ -5,11 +5,11 @@ import { useMediaQuery } from 'react-responsive';
 import Chatbox from '../../components/game/Chatbox';
 import GameLobbyScreen from '../../components/game/GameLobbyScreen';
 import UsernameSelectPage from '../../components/game/UsernameSelectPage';
-import GameSocket from '../../scripts/game/GameSocket';
-import PacketInRoundInfo from '../../scripts/packets/PacketInRoundInfo';
+import GameSocket from '../../scripts/socket/GameSocket';
+import PacketInRoundInfo from '../../scripts/packets/in/PacketInRoundInfo';
 import GameplayScreen from '../../components/game/GameplayScreen';
-import PacketInGameInfo from '../../scripts/packets/PacketInGameInfo';
-import PacketOutGameJoin from '../../scripts/packets/PacketOutGameJoin';
+import PacketInGameInfo from '../../scripts/packets/in/PacketInGameInfo';
+import PacketOutGameJoin from '../../scripts/packets/out/PacketOutGameJoin';
 import { Player, RoundInfo } from '../../types';
 import { AuthenticationContext } from '../../components/authentication/Authentication';
 import GameSettings from '../../components/game/GameSettings';
@@ -123,12 +123,11 @@ const GamePage: FunctionComponent = () => {
             <div className="flex-grow">
                 {roundInfo === undefined && (
                     <GameLobbyScreen
+                        gameId={gameId}
                         gameSocket={gameSocket}
                         username={username}
                         players={players}
                         setPlayers={setPlayers}
-                        isOwner={isOwner}
-                        initialSettingValues={initialSettingValues}
                     />
                 )}
                 {roundInfo !== undefined && (
@@ -141,6 +140,7 @@ const GamePage: FunctionComponent = () => {
                     />
                 )}
             </div>
+
             <GameSettings
                 disabled={!isOwner || roundInfo !== undefined}
                 gameId={gameId}
@@ -148,6 +148,7 @@ const GamePage: FunctionComponent = () => {
                 isOwner={isOwner}
                 initialSettingValues={initialSettingValues}
             />
+
             {!isSmallScreen && (
                 <Chatbox username={username}>
                     <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />

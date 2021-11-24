@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect, useState } from 'react';
-import GameSocket from '../../scripts/game/GameSocket';
-import PacketInSettingChange from '../../scripts/packets/PacketInSettingChange';
-import PacketOutSettingChange from '../../scripts/packets/PacketOutSettingChange';
+import GameSocket from '../../scripts/socket/GameSocket';
+import PacketInSettingChange from '../../scripts/packets/in/PacketInSettingChange';
+import PacketOutSettingChange from '../../scripts/packets/out/PacketOutSettingChange';
 import Settings from './Settings';
 
 const gameSettingsInfo = {

@@ -10,9 +10,9 @@ import {
 import { Input, Button } from '@vechaiui/react';
 import { useForm } from 'react-hook-form';
 import Card from '../vechai-extensions/Card';
-import GameSocket from '../../scripts/game/GameSocket';
-import PacketInPlayerMessage from '../../scripts/packets/PacketInPlayerMessage';
-import PacketOutPlayerMessage from '../../scripts/packets/PacketOutPlayerMessage';
+import GameSocket from '../../scripts/socket/GameSocket';
+import PacketInPlayerMessage from '../../scripts/packets/in/PacketInPlayerMessage';
+import PacketOutPlayerMessage from '../../scripts/packets/out/PacketOutPlayerMessage';
 
 interface ChatboxMessage {
     uid: number;

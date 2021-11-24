@@ -156,9 +156,12 @@
 
 .bomb {
     position: relative;
-    background-repeat:no-repeat;
-    z-index:5;
+    background-repeat: no-repeat;
+    z-index: 5;
     transform-origin: 0 0;
+}
+
+.bomb-animation {
     animation: below_bomb 0.2s ease-in-out infinite alternate;
 }
 
@@ -168,7 +171,7 @@
 
 @keyframes below_bomb {
     0% {
-        transform: scale(1.0);
+        transform: scale(1);
     }
     100% {
         transform: scale(1.01);
@@ -180,5 +183,5 @@
     position: absolute;
     top: 45%;
     left: 43%;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
 }

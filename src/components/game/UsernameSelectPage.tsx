@@ -4,10 +4,10 @@ import { FormControl, FormErrorMessage, Input } from '@vechaiui/forms';
 import { useRouter } from 'next/router';
 import { FunctionComponent, Dispatch, SetStateAction, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import GameSocket from '../../scripts/game/GameSocket';
-import { uid } from '../../scripts/miscellaneous/math';
-import PacketInUsernameSelect from '../../scripts/packets/PacketInUsernameSelect';
-import PacketOutUsernameSelect from '../../scripts/packets/PacketOutUsernameSelect';
+import GameSocket from '../../scripts/socket/GameSocket';
+import { uid } from '../../scripts/utils/math';
+import PacketInUsernameSelect from '../../scripts/packets/in/PacketInUsernameSelect';
+import PacketOutUsernameSelect from '../../scripts/packets/out/PacketOutUsernameSelect';
 
 const UsernameSelectPage: FunctionComponent<{
     setUsername: Dispatch<SetStateAction<string>>;

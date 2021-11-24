@@ -1,42 +1,17 @@
 import { Button } from '@vechaiui/button';
 import { useNotification } from '@vechaiui/notification';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { handleErr } from '../scripts/miscellaneous/error';
 import { AuthenticationContext } from './authentication/Authentication';
+import PlayerCount from './utils/PlayerCount';
 
 function MainPage() {
     const smallScreen = useMediaQuery({ minWidth: 768 });
-
     const router = useRouter();
     const notification = useNotification();
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [onlineCount, setOnlineCount] = useState<number | undefined>();
-
     const { isAuthenticated } = useContext(AuthenticationContext);
-
-    useEffect(() => {
-        const getPlayerCount = async () => {
-            const [response] = await handleErr(
-                fetch('http://localhost:8080/api/game/count')
-            );
-
-            if (response == null) return;
-
-            const { count } = await response.json();
-
-            setOnlineCount(count);
-        };
-
-        getPlayerCount();
-        const id = setInterval(getPlayerCount, 10000);
-
-        return () => {
-            clearInterval(id);
-        };
-    }, []);
+    const [isLoading, setIsLoading] = useState(false);
 
     const callGameEndpoint = async (
         endpoint: string,
@@ -66,8 +41,6 @@ function MainPage() {
         router.push(`/game/${uid}`);
     };
 
-    const goToTutorial = () => router.push('/tutorial')
-
     const joinAvailableGame = () => callGameEndpoint('available');
 
     const joinNewGame = () =>
@@ -76,44 +49,47 @@ function MainPage() {
             credentials: 'include',
         });
 
-    const singlePlayer = async () => {
-        setIsLoading(true);
+    const goToTutorial = () => router.push('/tutorial');
 
-        const response = await fetch(
-            'http://localhost:8080/api/game/singlePlayer'
-        );
+    // const singlePlayer = async () => {
+    //     setIsLoading(true);
 
-        setIsLoading(false);
+    //     const response = await fetch(
+    //         'http://localhost:8080/api/game/singlePlayer'
+    //     );
 
-        if (response.status !== 200) {
-            notification({
-                title: 'Error',
-                description: 'An unexpected error occurred. Try again later.',
-                status: 'error',
-            });
-            return;
-        }
+    //     setIsLoading(false);
 
-        const { uid } = await response.json();
+    //     if (response.status !== 200) {
+    //         notification({
+    //             title: 'Error',
+    //             description: 'An unexpected error occurred. Try again later.',
+    //             status: 'error',
+    //         });
+    //         return;
+    //     }
 
-        router.push(`/game/SinglePlayerLobby`);
-    };
+    //     const { uid } = await response.json();
+
+    //     router.push(`/game/SinglePlayerLobby`);
+    // };
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center">
-            <div className="right-top-btn self-end mt-2 mr-2">
+            <div className="self-end mt-2 mr-2">
                 <Button
-                    className="flex-grow"
                     type="submit"
                     variant="solid"
                     color="primary"
-                    size={smallScreen ? 'lg' : 'md'}
+                    size={!smallScreen ? 'lg' : 'md'}
                     loading={isLoading}
                     onClick={goToTutorial}
+                    suppressHydrationWarning
                 >
                     How To Play
                 </Button>
             </div>
+
             <div className="my-auto flex flex-col items-center">
                 <code
                     id="logo"
@@ -121,51 +97,56 @@ function MainPage() {
                 >
                     wordblast.io
                 </code>
+
                 <div className="px-8 mt-6 flex flex-wrap gap-2 justify-center items-center">
                     <Button
                         className="flex-grow"
                         type="submit"
                         variant="solid"
                         color="primary"
-                        size={smallScreen ? 'lg' : 'md'}
+                        size={!smallScreen ? 'lg' : 'md'}
                         loading={isLoading}
                         onClick={joinAvailableGame}
+                        suppressHydrationWarning
                     >
                         Multiplayer
                     </Button>
-                    <Button
+
+                    {/* <Button
                         className="flex-grow"
                         type="submit"
                         variant="solid"
                         color="primary"
-                        size={smallScreen ? 'lg' : 'md'}
+                        size={!smallScreen ? 'lg' : 'md'}
                         loading={isLoading}
                         onClick={singlePlayer}
+                        suppressHydrationWarning
                     >
                         Singleplayer
+                    </Button> */}
+
+                    <Button
+                        title={
+                            isAuthenticated
+                                ? 'Create New Game'
+                                : 'Login to create custom games.'
+                        }
+                        disabled={!isAuthenticated}
+                        className="flex-grow"
+                        type="submit"
+                        variant="solid"
+                        color="primary"
+                        size={!smallScreen ? 'lg' : 'md'}
+                        loading={isLoading}
+                        onClick={joinNewGame}
+                        suppressHydrationWarning
+                    >
+                        Create New Game
                     </Button>
-                    {isAuthenticated && (
-                        <Button
-                            className="flex-grow"
-                            type="submit"
-                            variant="solid"
-                            color="primary"
-                            size={smallScreen ? 'lg' : 'md'}
-                            loading={isLoading}
-                            onClick={joinNewGame}
-                        >
-                            Play with friends
-                        </Button>
-                    )}
                 </div>
             </div>
-            {onlineCount !== undefined && (
-                <span className="mb-2 mr-2 py-2 px-3 bg-neutral-700 rounded-md self-end">
-                    <p className="text-sm md:text-lg font-semibold">
-                        {onlineCount} playing
-                    </p>
-                </span>
-            )}
+
+            <PlayerCount />
         </div>
     );
 }
