@@ -46,6 +46,7 @@ const LobbyUsernameField: FunctionComponent<{
             } flex flex-col items-center`}
         >
             <h2 className="font-semibold text-lg mb-1">Your username:</h2>
+
             <div className={editingUsername ? 'w-0 min-w-full' : ''}>
                 {editingUsername && (
                     <Input
@@ -61,6 +62,7 @@ const LobbyUsernameField: FunctionComponent<{
                         }}
                     />
                 )}
+
                 {!editingUsername && (
                     <div className="flex items-center">
                         <p>{username}</p>

@@ -17,6 +17,7 @@ const SettingOption: FunctionComponent<{
         <h2 className="text-neutral-300 font-semibold text-lg">
             {settings[setting].title}
         </h2>
+
         {settings[setting].selectorType === 'input' && (
             <Input
                 className="max-w-[75px]"
@@ -26,6 +27,7 @@ const SettingOption: FunctionComponent<{
                 disabled={disabled}
             />
         )}
+
         {settings[setting].selectorType === 'switch' && (
             <Switch
                 checked={settings[setting].value}

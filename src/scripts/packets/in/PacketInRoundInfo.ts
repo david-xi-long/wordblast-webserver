@@ -5,8 +5,8 @@ export default class PacketInRoundInfo extends Packet {
     private readonly round: number;
     private readonly player: string;
     private readonly timeRemaining: number;
+    private readonly turnLength: number;
     private readonly players: string[];
-    private readonly playerLives: number[];
     private readonly previousPlayer: string;
     private readonly notificationText: string;
     private readonly letterCombo: string;
@@ -16,8 +16,8 @@ export default class PacketInRoundInfo extends Packet {
         round: number,
         player: string,
         timeRemaining: number,
+        turnLength: number,
         players: string[],
-        playerLives: number[],
         previousPlayer: string,
         notificationText: string,
         letterCombo: string
@@ -27,8 +27,8 @@ export default class PacketInRoundInfo extends Packet {
         this.round = round;
         this.player = player;
         this.timeRemaining = timeRemaining;
+        this.turnLength = turnLength;
         this.players = players;
-        this.playerLives = playerLives;
         this.previousPlayer = previousPlayer;
         this.notificationText = notificationText;
         this.letterCombo = letterCombo;
@@ -38,8 +38,8 @@ export default class PacketInRoundInfo extends Packet {
     public getRound = () => this.round;
     public getPlayer = () => this.player;
     public getTimeRemaining = () => this.timeRemaining;
+    public getTurnLength = () => this.turnLength;
     public getPlayers = () => this.players;
-    public getPlayerLives = () => this.playerLives;
     public getPreviousPlayer = () => this.previousPlayer;
     public getNotificationText = () => this.notificationText;
     public getLetterCombo = () => this.letterCombo;
@@ -50,10 +50,23 @@ export default class PacketInRoundInfo extends Packet {
             obj.round,
             obj.player,
             obj.timeRemaining,
+            obj.turnLength,
             obj.players,
-            obj.playerLives,
             obj.previousPlayer,
             obj.notificationText,
             obj.letterCombo
         );
+
+    public toRoundInfo = () => ({
+        round: this.getRound(),
+        username: this.getPlayer(),
+        timeRemaining: this.getTimeRemaining(),
+        turnLength: this.turnLength,
+        // TODO: ????
+        sentAt: new Date(),
+        players: this.getPlayers(),
+        previousPlayer: this.getPreviousPlayer(),
+        notificationText: this.getNotificationText(),
+        letterCombo: this.getLetterCombo(),
+    });
 }

@@ -13,6 +13,8 @@ import PacketOutGameJoin from '../../scripts/packets/out/PacketOutGameJoin';
 import { Player, RoundInfo } from '../../types';
 import { AuthenticationContext } from '../../components/authentication/Authentication';
 import GameSettings from '../../components/game/GameSettings';
+import PacketInPlayerJoin from '../../scripts/packets/in/PacketInPlayerJoin';
+import PacketInPlayerQuit from '../../scripts/packets/in/PacketInPlayerQuit';
 
 const env = 'dev';
 const endpoints = {
@@ -33,13 +35,14 @@ export const getServerSideProps = async (context) => {
 const GamePage: FunctionComponent = () => {
     const isSmallScreen = useMediaQuery({ maxWidth: 1024 });
 
+    const { userUid } = useContext(AuthenticationContext);
+
     const router = useRouter();
     const { gameId } = router.query as { gameId: string };
 
-    const { userUid } = useContext(AuthenticationContext);
-
-    const [username, setUsername] = useState('');
     const [isConnected, setIsConnected] = useState(false);
+    const [hasJoinedGame, setHasJoinedGame] = useState(false);
+    const [username, setUsername] = useState('');
     const [gameSocket] = useState(new GameSocket());
     const [players, setPlayers] = useState<Player[]>([]);
     const [roundInfo, setRoundInfo] = useState<RoundInfo>();
@@ -55,12 +58,7 @@ const GamePage: FunctionComponent = () => {
             )
             .then(
                 (packet) => {
-                    setPlayers(
-                        packet.getActivePlayerInfos().map((i) => ({
-                            username: i.getUsername(),
-                            ready: i.isReady(),
-                        }))
-                    );
+                    setPlayers(packet.getActivePlayerInfos());
                     setIsOwner(
                         userUid != null && userUid === packet.getOwnerUid()
                     );
@@ -74,26 +72,30 @@ const GamePage: FunctionComponent = () => {
             );
     };
 
+    const registerInitHandlers = async () => {
+        await gameSocket.connect();
+
+        setIsConnected(true);
+
+        gameSocket.subscribe<PacketInRoundInfo>('round-info', (packet) => {
+            setRoundInfo(packet.toRoundInfo());
+        });
+
+        gameSocket.subscribe<PacketInPlayerJoin>('player-join', (packet) => {
+            setPlayers((curPlayers) => [...curPlayers, packet.getPlayer()]);
+        });
+
+        gameSocket.subscribe<PacketInPlayerQuit>('player-quit', (packet) => {
+            const quitUsername = packet.getPlayer().username;
+
+            setPlayers((curPlayers) =>
+                curPlayers.filter((player) => player.username === quitUsername)
+            );
+        });
+    };
+
     useEffect(() => {
-        (async () => {
-            await gameSocket.connect();
-
-            setIsConnected(true);
-
-            gameSocket.subscribe<PacketInRoundInfo>('round-info', (packet) => {
-                setRoundInfo({
-                    round: packet.getRound(),
-                    username: packet.getPlayer(),
-                    timeRemaining: packet.getTimeRemaining(),
-                    sentAt: new Date(),
-                    players: packet.getPlayers(),
-                    playerLives: packet.getPlayerLives(),
-                    previousPlayer: packet.getPreviousPlayer(),
-                    notificationText: packet.getNotificationText(),
-                    letterCombo: packet.getLetterCombo(),
-                });
-            });
-        })();
+        registerInitHandlers();
 
         return () => {
             gameSocket.disconnect();
@@ -101,7 +103,9 @@ const GamePage: FunctionComponent = () => {
     }, []);
 
     useEffect(() => {
-        if (username.length === 0) return;
+        if (hasJoinedGame || username.length === 0) return;
+        setHasJoinedGame(true);
+
         joinGame();
     }, [username]);
 
@@ -130,10 +134,12 @@ const GamePage: FunctionComponent = () => {
                         setPlayers={setPlayers}
                     />
                 )}
+
                 {roundInfo !== undefined && (
                     <GameplayScreen
                         gameSocket={gameSocket}
                         players={players}
+                        setPlayers={setPlayers}
                         roundInfo={roundInfo}
                         username={username}
                         gameId={gameId}

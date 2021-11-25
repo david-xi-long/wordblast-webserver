@@ -1,27 +1,15 @@
 import { NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Input } from '@vechaiui/forms';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player, RoundInfo } from '../../types';
-import PacketInPlayerMessage from '../../scripts/packets/in/PacketInPlayerMessage';
 import PacketOutPlayerMessage from '../../scripts/packets/out/PacketOutPlayerMessage';
 import PacketOutCheckWord from '../../scripts/packets/out/PacketOutCheckWord';
 import PacketInCheckWord from '../../scripts/packets/in/PacketInCheckWord';
 import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEliminated';
 import PacketInDefinition from '../../scripts/packets/in/PacketInDefinition';
-import CircleSlots from '../utils/CircleSlots';
-import Bomb from './Bomb';
-
-const rotationIndexPositions = {
-    0: 0,
-    1: 1,
-    2: 2,
-    3: 7,
-    5: 3,
-    6: 6,
-    7: 5,
-    8: 4,
-};
+import Countdown from './Countdown';
+import GameplayPlayerSlots from './GameplayPlayerSlots';
 
 // maps out the word the current player is typing character by character and
 // colors in the letter combination green.
@@ -52,9 +40,16 @@ function Word(props) {
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
     players: Player[];
+    setPlayers: Dispatch<SetStateAction<Player[]>>;
     roundInfo: RoundInfo;
     username: string;
     gameId: string;
+<<<<<<< HEAD
+}> = ({ gameSocket, players, setPlayers, roundInfo, username, gameId }) => {
+    const [eliminated, setEliminated] = useState(false);
+
+    const registerInitHandlers = () => {
+=======
 }> = ({ gameSocket, players, roundInfo, username, gameId }) => {
     const [curPlayerIndex, setCurPlayerIndex] = useState(0);
     const [word, setWord] = useState('' as string);
@@ -94,6 +89,7 @@ const GameplayPage: NextPage<{
     }, [roundInfo]);
 
     useEffect(() => {
+>>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
         gameSocket.subscribe<PacketInPlayerEliminated>(
             'player-eliminated',
             (packet) => {
@@ -102,6 +98,15 @@ const GameplayPage: NextPage<{
             }
         );
 
+<<<<<<< HEAD
+        gameSocket.subscribe<PacketInDefinition>('definition', (packet) => {
+            // alert("WORD:" + packet.getWord() + "Definition: " + packet.getDefinition());
+        });
+    };
+
+    useEffect(() => {
+        registerInitHandlers();
+=======
         gameSocket.subscribe<PacketInPlayerMessage>('update-word', (packet) => {
             setWord(packet.getMessage());
         });
@@ -116,7 +121,15 @@ const GameplayPage: NextPage<{
                 setTimeLeft((time) => time - 1);
             }
         }, 1000);
+>>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
     }, []);
+
+    const updateWord = async (e) => {
+        gameSocket.fireAndForget(
+            'update-word',
+            new PacketOutPlayerMessage(gameId, username, e.target.value)
+        );
+    };
 
     const sendWordGuess = (guess: string) => {
         gameSocket
@@ -130,13 +143,53 @@ const GameplayPage: NextPage<{
                     // TODO: Implement word being correct
                 } else {
                     console.log('word', guess, 'is invalid');
+<<<<<<< HEAD
+=======
                     setWord('');
+>>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
                     // TODO: Implement word being incorrect
                 }
             });
     };
 
     return (
+<<<<<<< HEAD
+        <div className="p-8 pb-0 h-screen flex flex-col justify-center items-center">
+            <div className="m-8 mb-16 h-24 flex flex-col justify-center items-center overflow-hidden">
+                <p className="text-4xl font-bold">
+                    {roundInfo.username === username && <>IT IS YOUR TURN</>}
+                    {roundInfo.previousPlayer === username &&
+                        roundInfo.username !== username &&
+                        roundInfo.notificationText}
+                </p>
+            </div>
+
+            <GameplayPlayerSlots
+                gameSocket={gameSocket}
+                roundInfo={roundInfo}
+                players={players}
+                setPlayers={setPlayers}
+            />
+
+            <Input
+                className="mx-8 mt-16 mb-12 game-input"
+                style={{
+                    visibility:
+                        roundInfo.username === username ? 'initial' : 'hidden',
+                }}
+                onKeyDown={(e) => {
+                    if (e.key !== 'Enter') return;
+                    sendWordGuess(e.currentTarget.value);
+                }}
+                onChange={(e) => updateWord(e)}
+                onInput={(e) => {
+                    e.currentTarget.value =
+                        `${e.currentTarget.value}`.toUpperCase();
+                }}
+            />
+
+            <Countdown roundInfo={roundInfo} />
+=======
         <div className="p-8 h-screen flex justify-center items-center">
             <CircleSlots
                 middle={
@@ -200,6 +253,7 @@ const GameplayPage: NextPage<{
                         {roundInfo.notificationText}
                     </div>
                 )}
+>>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
         </div>
     );
 };

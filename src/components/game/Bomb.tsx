@@ -6,8 +6,7 @@ import Arrow from '../../../public/arrow.png';
 const Bomb: FunctionComponent<{
     deg: number;
     combo: string;
-    timeLeft: number;
-}> = ({ deg, combo, timeLeft }) => (
+}> = ({ deg, combo }) => (
     <div className="relative flex justify-center items-center bomb-animation">
         <div
             className="absolute"
@@ -20,8 +19,12 @@ const Bomb: FunctionComponent<{
 
         <div className="absolute bomb">
             <Image src={BombImage} height={200} width={200} />
+<<<<<<< HEAD
+            <p className="innerCenter font-bold">{combo}</p>
+=======
             <p className="innerCenter">{combo}</p>
             <p>Time Left: {timeLeft}</p>
+>>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
         </div>
     </div>
 );

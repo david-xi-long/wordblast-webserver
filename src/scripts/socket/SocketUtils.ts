@@ -1,6 +1,5 @@
 import Packet from '../packets/Packet';
 import PacketInGameInfo from '../packets/in/PacketInGameInfo';
-import PacketInPlayerState from '../packets/in/PacketInPlayerState';
 import PacketInCheckWord from '../packets/in/PacketInCheckWord';
 import PacketInPlayerMessage from '../packets/in/PacketInPlayerMessage';
 import PacketInUsernameChange from '../packets/in/PacketInUsernameChange';
@@ -12,7 +11,9 @@ import PacketInRoundInfo from '../packets/in/PacketInRoundInfo';
 import PacketInSettingChange from '../packets/in/PacketInSettingChange';
 import PacketInPlayerEliminated from '../packets/in/PacketInPlayerEliminated';
 import PacketInDefinition from '../packets/in/PacketInDefinition';
-
+import PacketInLivesChange from '../packets/in/PacketInLivesChange';
+import PacketInPlayerJoin from '../packets/in/PacketInPlayerJoin';
+import PacketInPlayerQuit from '../packets/in/PacketInPlayerQuit';
 export default class SocketUtils {
     public static resolvePacket = (data: any) => {
         let packet: Packet;
@@ -26,9 +27,6 @@ export default class SocketUtils {
                 break;
             case 'PACKET_OUT_USERNAME_SELECT':
                 packet = PacketInUsernameSelect.of(data);
-                break;
-            case 'PACKET_OUT_PLAYER_STATE':
-                packet = PacketInPlayerState.of(data);
                 break;
             case 'PACKET_OUT_CHECK_WORD':
                 packet = PacketInCheckWord.of(data);
@@ -56,6 +54,15 @@ export default class SocketUtils {
                 break;
             case 'PACKET_OUT_DEFINITION':
                 packet = PacketInDefinition.of(data);
+                break;
+            case 'PACKET_OUT_LIVES_CHANGE':
+                packet = PacketInLivesChange.of(data);
+                break;
+            case 'PACKET_OUT_PLAYER_JOIN':
+                packet = PacketInPlayerJoin.of(data);
+                break;
+            case 'PACKET_OUT_PLAYER_QUIT':
+                packet = PacketInPlayerQuit.of(data);
                 break;
             case 'PACKET_OUT_EXCEPTION':
                 throw new Error(`Received exception packet: ${data.message}`);

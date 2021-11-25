@@ -44,7 +44,7 @@ const UsernameSelectPage: FunctionComponent<{
 
                     setIsLoading(false);
                 },
-                (err) => {
+                () => {
                     // An exception occured while sending data to the game socket.
                     // Redirect to the main page, as the game is probably broken.
                     router.replace('/');

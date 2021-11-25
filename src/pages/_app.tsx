@@ -6,6 +6,7 @@ import {
     colors,
     extendTheme,
 } from '@vechaiui/react';
+import { MantineProvider } from '@mantine/core';
 import Authentication from '../components/authentication/Authentication';
 
 export const midnight: ColorScheme = {
@@ -34,11 +35,17 @@ const theme = extendTheme({
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
-        <VechaiProvider theme={theme} colorScheme="midnight">
-            <Authentication>
-                <Component {...pageProps} />
-            </Authentication>
-        </VechaiProvider>
+        <MantineProvider
+            withGlobalStyles
+            withNormalizeCSS
+            theme={{ colorScheme: 'dark' }}
+        >
+            <VechaiProvider theme={theme} colorScheme="midnight">
+                <Authentication>
+                    <Component {...pageProps} />
+                </Authentication>
+            </VechaiProvider>
+        </MantineProvider>
     );
 }
 
