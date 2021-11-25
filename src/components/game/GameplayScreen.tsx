@@ -50,6 +50,12 @@ const GameplayPage: NextPage<{
 
     const registerInitHandlers = () => {
 =======
+<<<<<<< HEAD
+}> = ({ gameSocket, players, setPlayers, roundInfo, username, gameId }) => {
+    const [eliminated, setEliminated] = useState(false);
+
+    const registerInitHandlers = () => {
+=======
 }> = ({ gameSocket, players, roundInfo, username, gameId }) => {
     const [curPlayerIndex, setCurPlayerIndex] = useState(0);
     const [word, setWord] = useState('' as string);
@@ -90,6 +96,7 @@ const GameplayPage: NextPage<{
 
     useEffect(() => {
 >>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
+>>>>>>> 106f1b1451907ab985d143ed13f83e594ab112e8
         gameSocket.subscribe<PacketInPlayerEliminated>(
             'player-eliminated',
             (packet) => {
@@ -98,6 +105,8 @@ const GameplayPage: NextPage<{
             }
         );
 
+<<<<<<< HEAD
+=======
 <<<<<<< HEAD
         gameSocket.subscribe<PacketInDefinition>('definition', (packet) => {
             // alert("WORD:" + packet.getWord() + "Definition: " + packet.getDefinition());
@@ -111,10 +120,16 @@ const GameplayPage: NextPage<{
             setWord(packet.getMessage());
         });
 
+>>>>>>> 106f1b1451907ab985d143ed13f83e594ab112e8
         gameSocket.subscribe<PacketInDefinition>('definition', (packet) => {
             // alert("WORD:" + packet.getWord() + "Definition: " + packet.getDefinition());
         });
+    };
 
+<<<<<<< HEAD
+    useEffect(() => {
+        registerInitHandlers();
+=======
         // decrement the timer
         setInterval(() => {
             if (timeLeft > 0) {
@@ -122,6 +137,7 @@ const GameplayPage: NextPage<{
             }
         }, 1000);
 >>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
+>>>>>>> 106f1b1451907ab985d143ed13f83e594ab112e8
     }, []);
 
     const updateWord = async (e) => {
@@ -145,8 +161,11 @@ const GameplayPage: NextPage<{
                     console.log('word', guess, 'is invalid');
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
                     setWord('');
 >>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
+>>>>>>> 106f1b1451907ab985d143ed13f83e594ab112e8
                     // TODO: Implement word being incorrect
                 }
             });
@@ -154,6 +173,9 @@ const GameplayPage: NextPage<{
 
     return (
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 106f1b1451907ab985d143ed13f83e594ab112e8
         <div className="p-8 pb-0 h-screen flex flex-col justify-center items-center">
             <div className="m-8 mb-16 h-24 flex flex-col justify-center items-center overflow-hidden">
                 <p className="text-4xl font-bold">
@@ -169,6 +191,8 @@ const GameplayPage: NextPage<{
                 roundInfo={roundInfo}
                 players={players}
                 setPlayers={setPlayers}
+<<<<<<< HEAD
+=======
             />
 
             <Input
@@ -212,48 +236,27 @@ const GameplayPage: NextPage<{
                         )}
                     </div>
                 )}
+>>>>>>> 106f1b1451907ab985d143ed13f83e594ab112e8
             />
 
-            {roundInfo.username === username && timeLeft > 0 && (
-                <>
-                    <div style={{ position: 'absolute', bottom: 25 }}>
-                        <Input
-                            value={word}
-                            className="game-input"
-                            onKeyDown={(e) => {
-                                if (e.key !== 'Enter') return;
-                                sendWordGuess(e.currentTarget.value);
-                            }}
-                            onChange={(e) => updateWord(e)}
-                            onInput={(e) => {
-                                e.currentTarget.value =
-                                    `${e.currentTarget.value}`.toUpperCase();
-                            }}
-                        />
-                    </div>
-                    <div
-                        style={{ position: 'absolute', top: 25, fontSize: 45 }}
-                    >
-                        IT IS YOUR TURN
-                    </div>
-                </>
-            )}
+            <Input
+                className="mx-8 mt-16 mb-12 game-input"
+                style={{
+                    visibility:
+                        roundInfo.username === username ? 'initial' : 'hidden',
+                }}
+                onKeyDown={(e) => {
+                    if (e.key !== 'Enter') return;
+                    sendWordGuess(e.currentTarget.value);
+                }}
+                onChange={(e) => updateWord(e)}
+                onInput={(e) => {
+                    e.currentTarget.value =
+                        `${e.currentTarget.value}`.toUpperCase();
+                }}
+            />
 
-            {timeLeft <= 0 && roundInfo.username === username && (
-                <div style={{ position: 'absolute', top: 25, fontSize: 45 }}>
-                    OUT OF TIME!, -1 LIFE
-                </div>
-            )}
-
-            {roundInfo.previousPlayer === username &&
-                roundInfo.username !== username && (
-                    <div
-                        style={{ position: 'absolute', top: 25, fontSize: 30 }}
-                    >
-                        {roundInfo.notificationText}
-                    </div>
-                )}
->>>>>>> fc3dee96e59c682db9f78b449654008a917e8a12
+            <Countdown roundInfo={roundInfo} />
         </div>
     );
 };
