@@ -51,29 +51,6 @@ function MainPage() {
 
     const goToTutorial = () => router.push('/tutorial');
 
-    // const singlePlayer = async () => {
-    //     setIsLoading(true);
-
-    //     const response = await fetch(
-    //         'http://localhost:8080/api/game/singlePlayer'
-    //     );
-
-    //     setIsLoading(false);
-
-    //     if (response.status !== 200) {
-    //         notification({
-    //             title: 'Error',
-    //             description: 'An unexpected error occurred. Try again later.',
-    //             status: 'error',
-    //         });
-    //         return;
-    //     }
-
-    //     const { uid } = await response.json();
-
-    //     router.push(`/game/SinglePlayerLobby`);
-    // };
-
     return (
         <div className="min-h-screen flex flex-col justify-center items-center">
             <div className="self-end mt-2 mr-2">
@@ -109,21 +86,8 @@ function MainPage() {
                         onClick={joinAvailableGame}
                         suppressHydrationWarning
                     >
-                        Multiplayer
+                        Join Random Game
                     </Button>
-
-                    {/* <Button
-                        className="flex-grow"
-                        type="submit"
-                        variant="solid"
-                        color="primary"
-                        size={!smallScreen ? 'lg' : 'md'}
-                        loading={isLoading}
-                        onClick={singlePlayer}
-                        suppressHydrationWarning
-                    >
-                        Singleplayer
-                    </Button> */}
 
                     <Button
                         title={

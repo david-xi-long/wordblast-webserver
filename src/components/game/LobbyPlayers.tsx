@@ -1,6 +1,5 @@
 import { Dispatch, FunctionComponent, SetStateAction, useEffect } from 'react';
 import PacketInPlayerReadyState from '../../scripts/packets/in/PacketInPlayerReadyState';
-import PacketInPlayerState from '../../scripts/packets/in/PacketInPlayerState';
 import PacketInUsernameChange from '../../scripts/packets/in/PacketInUsernameChange';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player } from '../../types';
@@ -12,24 +11,6 @@ const LobbyPlayers: FunctionComponent<{
     players: Player[];
     setPlayers: Dispatch<SetStateAction<Player[]>>;
 }> = ({ gameSocket, players, setPlayers }) => {
-    const setPlayerState = (playerName: string, state: boolean) => {
-        const hasPlayer =
-            players.find((p) => p.username === playerName) !== undefined;
-
-        if (state && !hasPlayer) {
-            setPlayers((curPlayers) => [
-                ...curPlayers,
-                { username: playerName, ready: false },
-            ]);
-        }
-
-        if (!state) {
-            setPlayers((curPlayers) =>
-                curPlayers.filter((p) => p.username !== playerName)
-            );
-        }
-    };
-
     const changeUsername = (oldUsername: string, newUsername: string) => {
         setPlayers((curPlayers) =>
             curPlayers.map((p) =>
@@ -47,10 +28,6 @@ const LobbyPlayers: FunctionComponent<{
     };
 
     const registerInitHandlers = () => {
-        gameSocket.subscribe<PacketInPlayerState>('player-state', (packet) => {
-            setPlayerState(packet.getUsername(), packet.getState());
-        });
-
         gameSocket.subscribe<PacketInUsernameChange>(
             'change-username',
             (packet) => {

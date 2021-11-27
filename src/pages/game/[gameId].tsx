@@ -15,6 +15,9 @@ import { AuthenticationContext } from '../../components/authentication/Authentic
 import GameSettings from '../../components/game/GameSettings';
 import PacketInPlayerJoin from '../../scripts/packets/in/PacketInPlayerJoin';
 import PacketInPlayerQuit from '../../scripts/packets/in/PacketInPlayerQuit';
+import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEliminated';
+import GamePopup from '../../components/game/GamePopup';
+import PacketInLivesChange from '../../scripts/packets/in/PacketInLivesChange';
 
 const env = 'dev';
 const endpoints = {
@@ -72,26 +75,49 @@ const GamePage: FunctionComponent = () => {
             );
     };
 
+    const removePlayer = (removeUsername: string) => {
+        setPlayers((curPlayers) =>
+            curPlayers.filter((player) => player.username !== removeUsername)
+        );
+    };
+
     const registerInitHandlers = async () => {
         await gameSocket.connect();
 
         setIsConnected(true);
-
-        gameSocket.subscribe<PacketInRoundInfo>('round-info', (packet) => {
-            setRoundInfo(packet.toRoundInfo());
-        });
 
         gameSocket.subscribe<PacketInPlayerJoin>('player-join', (packet) => {
             setPlayers((curPlayers) => [...curPlayers, packet.getPlayer()]);
         });
 
         gameSocket.subscribe<PacketInPlayerQuit>('player-quit', (packet) => {
-            const quitUsername = packet.getPlayer().username;
-
-            setPlayers((curPlayers) =>
-                curPlayers.filter((player) => player.username === quitUsername)
-            );
+            removePlayer(packet.getPlayer().username);
         });
+
+        gameSocket.subscribe<PacketInRoundInfo>('round-info', (packet) => {
+            setRoundInfo(packet.toRoundInfo());
+        });
+
+        gameSocket.subscribe<PacketInLivesChange>('lives-change', (packet) => {
+            setPlayers((curPlayers) => {
+                const changedPlayer = curPlayers.find(
+                    (player) => player.username === packet.getUsername()
+                );
+
+                if (changedPlayer !== undefined) {
+                    changedPlayer.lives = packet.getLives();
+                }
+
+                return [...curPlayers];
+            });
+        });
+
+        gameSocket.subscribe<PacketInPlayerEliminated>(
+            'player-eliminated',
+            (packet) => {
+                removePlayer(packet.getUsername());
+            }
+        );
     };
 
     useEffect(() => {
@@ -123,7 +149,7 @@ const GamePage: FunctionComponent = () => {
     }
 
     return (
-        <div className="flex">
+        <div className="relative flex">
             <div className="flex-grow">
                 {roundInfo === undefined && (
                     <GameLobbyScreen
@@ -160,6 +186,8 @@ const GamePage: FunctionComponent = () => {
                     <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />
                 </Chatbox>
             )}
+
+            <GamePopup username={username} gameSocket={gameSocket} />
         </div>
     );
 };

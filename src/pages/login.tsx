@@ -16,7 +16,7 @@ const LoginPage: NextPage = () => {
     }, [isAuthenticated]);
 
     return (
-        <main className="h-screen w-full flex flex-col justify-center items-center">
+        <main className="min-h-screen w-full flex flex-col justify-center items-center">
             <Card>
                 <LogInForm />
             </Card>

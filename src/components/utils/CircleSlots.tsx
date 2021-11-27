@@ -39,7 +39,7 @@ const CircleSlots = <T extends { uid: string }>({
     }, [items]);
 
     return (
-        <div className="grid grid-cols-3 gap-24">
+        <div className="grid grid-cols-3 gap-20">
             {slots.map((s, i) => {
                 let backgroundColor = s.used
                     ? 'bg-neutral-700'

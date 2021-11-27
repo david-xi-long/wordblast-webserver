@@ -53,7 +53,7 @@ const UsernameSelectPage: FunctionComponent<{
     };
 
     return (
-        <div className="h-screen w-full flex flex-col justify-center items-center">
+        <div className="min-h-screen w-full flex flex-col justify-center items-center">
             <form onSubmit={handleSubmit(submit)}>
                 <h2 className="font-semibold text-xl">
                     Enter your username below
