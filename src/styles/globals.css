@@ -169,6 +169,7 @@
     text-align: center;
 }
 
+/* bomb ticking animation */
 @keyframes below_bomb {
     0% {
         transform: scale(1);
@@ -177,6 +178,18 @@
         transform: scale(1.01);
     }
 }
+
+/* shake input form on wrong input */
+.shake-input {
+    animation: shake 0.15s ease-in-out 0s 1;
+}
+
+@keyframes shake {
+    0% { margin-left: 0rem; }
+    25% { margin-left: 0.5rem; }
+    75% { margin-left: -0.5rem; }
+    100% { margin-left: 0rem; }
+  }
 
 .innerCenter {
     font-size: 30px;

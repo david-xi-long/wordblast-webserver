@@ -10,6 +10,7 @@ import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEli
 import PacketInDefinition from '../../scripts/packets/in/PacketInDefinition';
 import Countdown from './Countdown';
 import GameplayPlayerSlots from './GameplayPlayerSlots';
+import { SelectDropdown } from '@mantine/core/lib/src/components/Select/SelectDropdown/SelectDropdown';
 
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
@@ -21,7 +22,7 @@ const GameplayPage: NextPage<{
 }> = ({ gameSocket, players, setPlayers, roundInfo, username, gameId }) => {
     const [eliminated, setEliminated] = useState(false);
     const [word, setWord] = useState('');
-
+    const [onError, setError] = useState(false)
     const registerInitHandlers = () => {
         gameSocket.subscribe<PacketInPlayerEliminated>(
             'player-eliminated',
@@ -45,6 +46,7 @@ const GameplayPage: NextPage<{
             'update-word',
             new PacketOutPlayerMessage(gameId, username, e.target.value)
         );
+        setError(false)
     };
 
     const sendWordGuess = (guess: string) => {
@@ -59,7 +61,7 @@ const GameplayPage: NextPage<{
                     // TODO: Implement word being correct
                 } else {
                     console.log('word', guess, 'is invalid');
-                    // TODO: Implement word being incorrect
+                    setError(true)
                 }
             });
     };
@@ -85,7 +87,7 @@ const GameplayPage: NextPage<{
             />
 
             <Input
-                className="my-10 mx-8 game-input"
+                className={`my-10 mx-8 game-input ${onError ? "shake-input" : ""}`}
                 style={{
                     visibility:
                         roundInfo.username === username ? 'initial' : 'hidden',
