@@ -56,8 +56,9 @@ const GameplayPlayerSlots: FunctionComponent<{
     gameSocket: GameSocket;
     players: Player[];
     setPlayers: Dispatch<SetStateAction<Player[]>>;
-}> = ({ roundInfo, gameSocket, players, setPlayers }) => {
-    const [word, setWord] = useState('');
+    word: string;
+    setWord: Dispatch<SetStateAction<string>>;
+}> = ({ roundInfo, gameSocket, players, setPlayers, word, setWord }) => {
     const [curPlayerIndex, setCurPlayerIndex] = useState(0);
 
     useEffect(() => {

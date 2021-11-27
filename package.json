@@ -9,8 +9,8 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@mantine/core": "^3.2.2",
-        "@mantine/hooks": "^3.2.2",
+        "@mantine/core": "^3.2.3",
+        "@mantine/hooks": "^3.2.3",
         "@mantine/next": "^3.2.2",
         "next": "11.1.2",
         "react": "17.0.2",

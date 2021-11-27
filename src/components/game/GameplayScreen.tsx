@@ -20,6 +20,7 @@ const GameplayPage: NextPage<{
     gameId: string;
 }> = ({ gameSocket, players, setPlayers, roundInfo, username, gameId }) => {
     const [eliminated, setEliminated] = useState(false);
+    const [word, setWord] = useState('');
 
     const registerInitHandlers = () => {
         gameSocket.subscribe<PacketInPlayerEliminated>(
@@ -79,6 +80,8 @@ const GameplayPage: NextPage<{
                 roundInfo={roundInfo}
                 players={players}
                 setPlayers={setPlayers}
+                word={word}
+                setWord={setWord}
             />
 
             <Input
@@ -87,6 +90,7 @@ const GameplayPage: NextPage<{
                     visibility:
                         roundInfo.username === username ? 'initial' : 'hidden',
                 }}
+                value={word}
                 onKeyDown={(e) => {
                     if (e.key !== 'Enter') return;
                     sendWordGuess(e.currentTarget.value);
