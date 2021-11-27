@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 
 const SignupPage: NextPage = () => (
-    <main className="h-screen w-full flex flex-col justify-center items-center">
+    <main className="min-h-screen w-full flex flex-col justify-center items-center">
         <div className="center-screen">
             <h1 className="max-w-3xl">How to Play</h1>
         </div>

@@ -64,8 +64,8 @@ const GameplayPage: NextPage<{
     };
 
     return (
-        <div className="p-8 pb-0 h-screen flex flex-col justify-center items-center">
-            <div className="m-8 mb-16 h-24 flex flex-col justify-center items-center overflow-hidden">
+        <div className="p-8 pb-0 min-h-screen flex flex-col justify-center items-center">
+            <div className="m-8 h-24 flex-shrink-0 flex flex-col justify-center items-center overflow-hidden">
                 <p className="text-4xl font-bold">
                     {roundInfo.username === username && <>IT IS YOUR TURN</>}
                     {roundInfo.previousPlayer === username &&
@@ -82,7 +82,7 @@ const GameplayPage: NextPage<{
             />
 
             <Input
-                className="mx-8 mt-16 mb-12 game-input"
+                className="my-10 mx-8 game-input"
                 style={{
                     visibility:
                         roundInfo.username === username ? 'initial' : 'hidden',

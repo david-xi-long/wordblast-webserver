@@ -76,20 +76,6 @@ const GameplayPlayerSlots: FunctionComponent<{
         gameSocket.subscribe<PacketInPlayerMessage>('update-word', (packet) => {
             setWord(packet.getMessage());
         });
-
-        gameSocket.subscribe<PacketInLivesChange>('lives-change', (packet) => {
-            setPlayers((curPlayers) => {
-                const changedPlayer = curPlayers.find(
-                    (player) => player.username === packet.getUsername()
-                );
-
-                if (changedPlayer !== undefined) {
-                    changedPlayer.lives = packet.getLives();
-                }
-
-                return [...curPlayers];
-            });
-        });
     };
 
     useEffect(() => {

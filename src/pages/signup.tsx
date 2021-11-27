@@ -3,7 +3,7 @@ import SignUpForm from '../components/authentication/SignUpForm';
 import Card from '../components/vechai-extensions/Card';
 
 const SignupPage: NextPage = () => (
-    <main className="h-screen w-full flex flex-col justify-center items-center">
+    <main className="min-h-screen w-full flex flex-col justify-center items-center">
         <Card>
             <SignUpForm />
         </Card>

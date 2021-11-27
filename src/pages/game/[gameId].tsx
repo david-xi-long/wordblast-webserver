@@ -15,10 +15,9 @@ import { AuthenticationContext } from '../../components/authentication/Authentic
 import GameSettings from '../../components/game/GameSettings';
 import PacketInPlayerJoin from '../../scripts/packets/in/PacketInPlayerJoin';
 import PacketInPlayerQuit from '../../scripts/packets/in/PacketInPlayerQuit';
-import PacketInGameEnd from '../../scripts/packets/in/PacketInGameEnd';
 import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEliminated';
-import PopupMenu from '../../components/game/PopupMenu';
-import EliminationPopupMenu from '../../components/game/EliminationPopupMenu';
+import GamePopup from '../../components/game/GamePopup';
+import PacketInLivesChange from '../../scripts/packets/in/PacketInLivesChange';
 
 const env = 'dev';
 const endpoints = {
@@ -87,10 +86,6 @@ const GamePage: FunctionComponent = () => {
 
         setIsConnected(true);
 
-        gameSocket.subscribe<PacketInRoundInfo>('round-info', (packet) => {
-            setRoundInfo(packet.toRoundInfo());
-        });
-
         gameSocket.subscribe<PacketInPlayerJoin>('player-join', (packet) => {
             setPlayers((curPlayers) => [...curPlayers, packet.getPlayer()]);
         });
@@ -99,16 +94,30 @@ const GamePage: FunctionComponent = () => {
             removePlayer(packet.getPlayer().username);
         });
 
+        gameSocket.subscribe<PacketInRoundInfo>('round-info', (packet) => {
+            setRoundInfo(packet.toRoundInfo());
+        });
+
+        gameSocket.subscribe<PacketInLivesChange>('lives-change', (packet) => {
+            setPlayers((curPlayers) => {
+                const changedPlayer = curPlayers.find(
+                    (player) => player.username === packet.getUsername()
+                );
+
+                if (changedPlayer !== undefined) {
+                    changedPlayer.lives = packet.getLives();
+                }
+
+                return [...curPlayers];
+            });
+        });
+
         gameSocket.subscribe<PacketInPlayerEliminated>(
             'player-eliminated',
             (packet) => {
                 removePlayer(packet.getUsername());
             }
         );
-
-        gameSocket.subscribe<PacketInGameEnd>('game-end', () => {
-            router.push('/');
-        });
     };
 
     useEffect(() => {
@@ -178,7 +187,7 @@ const GamePage: FunctionComponent = () => {
                 </Chatbox>
             )}
 
-            <EliminationPopupMenu username={username} gameSocket={gameSocket} />
+            <GamePopup username={username} gameSocket={gameSocket} />
         </div>
     );
 };
