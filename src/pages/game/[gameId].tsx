@@ -15,6 +15,10 @@ import { AuthenticationContext } from '../../components/authentication/Authentic
 import GameSettings from '../../components/game/GameSettings';
 import PacketInPlayerJoin from '../../scripts/packets/in/PacketInPlayerJoin';
 import PacketInPlayerQuit from '../../scripts/packets/in/PacketInPlayerQuit';
+import PacketInGameEnd from '../../scripts/packets/in/PacketInGameEnd';
+import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEliminated';
+import PopupMenu from '../../components/game/PopupMenu';
+import EliminationPopupMenu from '../../components/game/EliminationPopupMenu';
 
 const env = 'dev';
 const endpoints = {
@@ -72,6 +76,12 @@ const GamePage: FunctionComponent = () => {
             );
     };
 
+    const removePlayer = (removeUsername: string) => {
+        setPlayers((curPlayers) =>
+            curPlayers.filter((player) => player.username !== removeUsername)
+        );
+    };
+
     const registerInitHandlers = async () => {
         await gameSocket.connect();
 
@@ -86,11 +96,18 @@ const GamePage: FunctionComponent = () => {
         });
 
         gameSocket.subscribe<PacketInPlayerQuit>('player-quit', (packet) => {
-            const quitUsername = packet.getPlayer().username;
+            removePlayer(packet.getPlayer().username);
+        });
 
-            setPlayers((curPlayers) =>
-                curPlayers.filter((player) => player.username === quitUsername)
-            );
+        gameSocket.subscribe<PacketInPlayerEliminated>(
+            'player-eliminated',
+            (packet) => {
+                removePlayer(packet.getUsername());
+            }
+        );
+
+        gameSocket.subscribe<PacketInGameEnd>('game-end', () => {
+            router.push('/');
         });
     };
 
@@ -123,7 +140,7 @@ const GamePage: FunctionComponent = () => {
     }
 
     return (
-        <div className="flex">
+        <div className="relative flex">
             <div className="flex-grow">
                 {roundInfo === undefined && (
                     <GameLobbyScreen
@@ -160,6 +177,8 @@ const GamePage: FunctionComponent = () => {
                     <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />
                 </Chatbox>
             )}
+
+            <EliminationPopupMenu username={username} gameSocket={gameSocket} />
         </div>
     );
 };
