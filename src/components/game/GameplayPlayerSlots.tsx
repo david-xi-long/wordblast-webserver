@@ -31,21 +31,21 @@ const Word: FunctionComponent<{ word: string; letterCombo: string }> = ({
 }) => {
     const wordArray = word.split('');
     const sIndex = word.indexOf(letterCombo.toString());
-    const eIndex = sIndex + letterCombo.length;
+    const eIndex = sIndex == -1 ? -1 : sIndex + letterCombo.length;
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
             {wordArray.map((w, i) => {
-                if (sIndex === -1) return <p key={Math.random()}>{w}</p>;
-
+                if (i == word.length - 1 && word.length == eIndex) return <div className="fly-in lightgreen" key={Math.random()}>{w}</div>;
+                if (i == word.length - 1) return <div className="fly-in" key={Math.random()}>{w}</div>;
+                if (sIndex === -1) return <div key={Math.random()}>{w}</div>;
                 if (i >= sIndex && i < eIndex)
                     return (
-                        <p key={Math.random()} style={{ color: 'lightgreen' }}>
+                        <div key={Math.random()} className="lightgreen">
                             {w}
-                        </p>
+                        </div>
                     );
-
-                return <p key={Math.random()}>{w}</p>;
+                return <div key={Math.random()}>{w}</div>;
             })}
         </div>
     );

@@ -169,6 +169,10 @@
     text-align: center;
 }
 
+.lightgreen {
+    color: lightgreen;
+}
+
 /* bomb ticking animation */
 @keyframes below_bomb {
     0% {
@@ -190,6 +194,16 @@
     75% { margin-left: -0.5rem; }
     100% { margin-left: 0rem; }
   }
+
+/* fly in text */
+.fly-in {
+    animation: fly-in 0.1s linear;
+}
+
+@keyframes fly-in {
+    0% { transform: translateY(-25%); }
+    100% { transform: translateY(0%); }
+}
 
 .innerCenter {
     font-size: 30px;
