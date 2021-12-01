@@ -57,7 +57,7 @@ const GamePage: FunctionComponent = () => {
         gameSocket
             .requestResponse<PacketInGameInfo>(
                 'join-game',
-                new PacketOutGameJoin(gameId, username)
+                new PacketOutGameJoin(gameId, username, userUid)
             )
             .then(
                 (packet) => {
