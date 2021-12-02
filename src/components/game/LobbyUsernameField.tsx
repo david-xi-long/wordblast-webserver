@@ -1,7 +1,5 @@
-import { IconButton } from '@vechaiui/button';
-import { Input } from '@vechaiui/forms';
-import { Icon } from '@vechaiui/icon';
 import { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
+import { ActionIcon, TextInput } from '@mantine/core';
 import GameSocket from '../../scripts/socket/GameSocket';
 import PacketInUsernameChange from '../../scripts/packets/in/PacketInUsernameChange';
 import PacketOutUsernameChange from '../../scripts/packets/out/PacketOutUsernameChange';
@@ -49,16 +47,15 @@ const LobbyUsernameField: FunctionComponent<{
 
             <div className={editingUsername ? 'w-0 min-w-full' : ''}>
                 {editingUsername && (
-                    <Input
-                        size="md"
+                    <TextInput
                         defaultValue={username}
                         className="mt-1"
                         onKeyDown={(e) => {
-                            if (e.key === 'Escape') {
-                                setEditingUsername(false);
-                            } else if (e.key === 'Enter') {
-                                submitUsername(e.currentTarget.value);
-                            }
+                            if (e.key !== 'Enter') return;
+                            submitUsername(e.currentTarget.value);
+                        }}
+                        onBlur={() => {
+                            setEditingUsername(false);
                         }}
                     />
                 )}
@@ -66,18 +63,13 @@ const LobbyUsernameField: FunctionComponent<{
                 {!editingUsername && (
                     <div className="flex items-center">
                         <p>{username}</p>
-                        <IconButton
-                            variant="ghost"
-                            size="xs"
+                        <ActionIcon
+                            variant="transparent"
                             className="ml-1.5"
                             onClick={() => setEditingUsername(true)}
                         >
-                            <Icon
-                                as={Edit}
-                                label="Edit username"
-                                className="h-4 w-4"
-                            />
-                        </IconButton>
+                            <Edit className="h-4 w-4" />
+                        </ActionIcon>
                     </div>
                 )}
             </div>

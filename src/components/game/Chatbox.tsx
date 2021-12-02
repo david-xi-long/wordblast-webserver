@@ -7,9 +7,8 @@ import {
     useEffect,
     useState,
 } from 'react';
-import { Input, Button } from '@vechaiui/react';
-import { useForm } from 'react-hook-form';
-import Card from '../vechai-extensions/Card';
+import { Button, Card, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/hooks';
 import GameSocket from '../../scripts/socket/GameSocket';
 import PacketInPlayerMessage from '../../scripts/packets/in/PacketInPlayerMessage';
 import PacketOutPlayerMessage from '../../scripts/packets/out/PacketOutPlayerMessage';
@@ -38,13 +37,22 @@ const Chatbox: FunctionComponent<{ username: string }> & ChatboxImpls = ({
     const [messages, setMessages] = useState([] as ChatboxMessage[]);
     const [sendMessage, setSendMessage] = useState(() => (message) => {});
 
-    const { register, handleSubmit, setValue } = useForm();
+    const form = useForm({
+        initialValues: {
+            text: '',
+        },
+
+        validationRules: {
+            text: (value) => value.length > 0,
+        },
+    });
 
     const addMessage = (message: ChatboxMessage) =>
         setMessages((curMessages) => [...curMessages, message]);
 
     const submitFormHandler = ({ text }: { text: string }) => {
-        setValue('text', '');
+        form.setFieldValue('text', '');
+
         sendMessage({
             uid: Math.random(),
             username,
@@ -54,48 +62,39 @@ const Chatbox: FunctionComponent<{ username: string }> & ChatboxImpls = ({
 
     return (
         <ChatboxContext.Provider value={{ addMessage, setSendMessage }}>
-            <div className="chatbox">
+            <div className="h-screen chatbox">
                 <div className="messages-container">
                     {/* Need this div to show the messages in the correct order */}
                     <div>
                         {messages.map((message) => (
-                            <div
-                                key={message.uid}
-                                className="message-container"
-                            >
-                                <Card className="message-card">
-                                    <p className="message-username">
-                                        {message.username}
-                                    </p>
-                                    <p className="message-text">
-                                        {message.text}
-                                    </p>
-                                </Card>
-                            </div>
+                            <Card key={message.uid} className="mt-2.5">
+                                <p className="font-semibold text-sm text-blue-200">
+                                    {message.username}
+                                </p>
+                                <p className="text-sm">{message.text}</p>
+                            </Card>
                         ))}
                     </div>
                 </div>
-                <form onSubmit={handleSubmit(submitFormHandler)}>
-                    <Input.Group size="lg">
-                        <Input
-                            placeholder="Type your message here."
-                            variant="solid"
-                            autoComplete="off"
-                            className="chat-input"
-                            {...register('text')}
-                        />
-                        <Input.RightElement>
-                            <Button
-                                type="submit"
-                                size="sm"
-                                variant="solid"
-                                color="primary"
-                                className="send-button"
-                            >
+
+                <form onSubmit={form.onSubmit(submitFormHandler)}>
+                    <TextInput
+                        placeholder="Type your message here."
+                        autoComplete="off"
+                        value={form.values.text}
+                        onChange={(event) =>
+                            form.setFieldValue(
+                                'text',
+                                event.currentTarget.value
+                            )
+                        }
+                        rightSection={
+                            <Button type="submit" size="xs" compact>
                                 Send
                             </Button>
-                        </Input.RightElement>
-                    </Input.Group>
+                        }
+                        rightSectionWidth={56}
+                    />
                 </form>
             </div>
             {children}

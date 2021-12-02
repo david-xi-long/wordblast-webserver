@@ -28,8 +28,8 @@ const PlayerCount: FunctionComponent = () => {
     return (
         <>
             {onlineCount !== undefined && (
-                <span className="mb-2 mr-2 py-2 px-3 bg-neutral-700 rounded-md self-end">
-                    <p className="text-sm md:text-lg font-semibold">
+                <span className="absolute right-2 bottom-2 py-1.5 px-2.5 bg-neutral-800 rounded-md self-end">
+                    <p className="text-xs md:text-base font-semibold">
                         {onlineCount} playing
                     </p>
                 </span>

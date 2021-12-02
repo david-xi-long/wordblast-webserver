@@ -1,5 +1,5 @@
 import { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
-import { Button } from '@vechaiui/button';
+import { Button } from '@mantine/core';
 import GameSocket from '../../scripts/socket/GameSocket';
 import PacketOutPlayerReadyState from '../../scripts/packets/out/PacketOutPlayerReadyState';
 import LobbyPlayerSlots from './LobbyPlayerSlots';
@@ -43,9 +43,7 @@ const GameLobbyScreen: FunctionComponent<{
                 />
 
                 <Button
-                    size="lg"
-                    type="button"
-                    variant="solid"
+                    variant="filled"
                     color="primary"
                     onClick={toggleReadyState}
                     className="mt-8"

@@ -30,7 +30,7 @@ const Countdown: FunctionComponent<{ roundInfo: RoundInfo }> = ({
             <div
                 className="mb-2 text-right"
                 style={{
-                    width: `calc(${(contTimeLeft / roundInfo.turnLength) * 100}%)`,
+                    width: `${(contTimeLeft / roundInfo.turnLength) * 100}%`,
                     transition: '100ms ease all',
                 }}
             >

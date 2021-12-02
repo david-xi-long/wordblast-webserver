@@ -1,9 +1,9 @@
+import { Card } from '@mantine/core';
 import { NextPage } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import { useContext, useEffect } from 'react';
 import { AuthenticationContext } from '../components/authentication/Authentication';
 import LogInForm from '../components/authentication/LogInForm';
-import Card from '../components/vechai-extensions/Card';
 
 const LoginPage: NextPage = () => {
     const router = useRouter();

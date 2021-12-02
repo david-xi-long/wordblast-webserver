@@ -1,6 +1,3 @@
-const tailwindForms = require('@tailwindcss/forms');
-const vechaiCore = require('@vechaiui/core');
-
 module.exports = {
     mode: 'jit',
     purge: [
@@ -10,10 +7,16 @@ module.exports = {
     ],
     darkMode: 'class', // or 'media' or 'class'
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                mont: ['Montserrat', 'sans-serif'],
+            },
+        },
     },
     variants: {
         extend: {},
     },
-    plugins: [tailwindForms, vechaiCore],
+    corePlugins: {
+        preflight: false,
+    },
 };
