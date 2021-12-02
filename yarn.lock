@@ -182,21 +182,21 @@
   "resolved" "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.0.tgz"
   "version" "1.2.0"
 
-"@mantine/core@^3.2.2":
-  "integrity" "sha512-6XWZcKsrURmz0lW/5tFL4YVU+ySlqvuGeU0xB7AXsHVH+vuYLyvsjZ3ZVSsKtwBgDfXEL4IWWX/iuU3sOZauYQ=="
-  "resolved" "https://registry.npmjs.org/@mantine/core/-/core-3.2.2.tgz"
-  "version" "3.2.2"
+"@mantine/core@^3.2.3":
+  "integrity" "sha512-RXxGoN7BBMjwKN1DDpombwEUUHmS1TqSt+U0r4pz/Us+3a81cOuhZ8tn9Cj6pmXx7q69hnUSDzy3PgZXoNDHig=="
+  "resolved" "https://registry.npmjs.org/@mantine/core/-/core-3.2.3.tgz"
+  "version" "3.2.3"
   dependencies:
-    "@mantine/styles" "3.2.2"
+    "@mantine/styles" "3.2.3"
     "@popperjs/core" "^2.9.3"
     "clsx" "^1.1.1"
     "react-popper" "^2.2.5"
     "react-textarea-autosize" "^8.3.2"
 
-"@mantine/hooks@^3.2.2", "@mantine/hooks@3.2.2":
-  "integrity" "sha512-ABeRsRmcG1E6x4waHw6aiA9Jgc7rt6Y5PoxGgLOsQoOkGN0klCE6wlC3zcXvAjCMCQSYe10tC4Gk0GITnIqtaA=="
-  "resolved" "https://registry.npmjs.org/@mantine/hooks/-/hooks-3.2.2.tgz"
-  "version" "3.2.2"
+"@mantine/hooks@^3.2.3", "@mantine/hooks@3.2.3":
+  "integrity" "sha512-YkuD+4IfKmwuVhmYlXnhAZzJ/Mzu5Pa8Ime+QjAR+yZ+16/+Rwd5q0922EWieGCPGk1SRCO/d7DQgWegXfxb3g=="
+  "resolved" "https://registry.npmjs.org/@mantine/hooks/-/hooks-3.2.3.tgz"
+  "version" "3.2.3"
 
 "@mantine/next@^3.2.2":
   "integrity" "sha512-Jy8MteFNuAoPwBKL87Ue0XkJ5/8BaCJgY+WwJnpjzxxiz1JG5r1BWAw5qDiSmJ3SZ/u7KHDnqDLjBcnePJ52Tg=="
@@ -223,6 +223,18 @@
   "integrity" "sha512-i7tixZ97LeEh6/ozDHBppEZESra/8AEShuKOR/NvDCXb7Q8se9jkStvj0QRu1AC748kMZL1VXF7exbR6pTsnLA=="
   "resolved" "https://registry.npmjs.org/@mantine/styles/-/styles-3.2.2.tgz"
   "version" "3.2.2"
+  dependencies:
+    "@emotion/cache" "^11.4.0"
+    "@emotion/react" "^11.4.1"
+    "@emotion/serialize" "^1.0.2"
+    "@emotion/utils" "^1.0.0"
+    "clsx" "^1.1.1"
+    "csstype" "^3.0.9"
+
+"@mantine/styles@3.2.3":
+  "integrity" "sha512-oJ6mn8imTBUpfzBNlxo7ewTOdI1oWd+8AwHGOZHVIorzzvd9OGJHHneR+RC8SwxzPyAI2I688cYCenUf7PD70w=="
+  "resolved" "https://registry.npmjs.org/@mantine/styles/-/styles-3.2.3.tgz"
+  "version" "3.2.3"
   dependencies:
     "@emotion/cache" "^11.4.0"
     "@emotion/react" "^11.4.1"

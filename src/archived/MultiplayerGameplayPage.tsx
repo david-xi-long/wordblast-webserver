@@ -87,8 +87,8 @@ const MultiplayerGameplayPage: FunctionComponent<{
             'next-turn',
             (packet: { getLetterCombo: () => any }) => {
                 setGoNextTurn(true);
-                var letterCombo = packet.getLetterCombo();
-                var element = document.getElementById('A' + currentPlayer);
+                let letterCombo = packet.getLetterCombo();
+                let element = document.getElementById('A' + currentPlayer);
                 if (element != null) {
                     element.style.visibility = 'hidden';
                 }
@@ -100,10 +100,10 @@ const MultiplayerGameplayPage: FunctionComponent<{
                 if (element != null) {
                     element.style.visibility = 'visible';
                 }
-                var form = document.getElementById(
+                const form = document.getElementById(
                     'inputForm'
                 ) as HTMLInputElement;
-                var button = document.getElementById(
+                const button = document.getElementById(
                     'inputButton'
                 ) as HTMLInputElement;
                 if (form != null) {
@@ -115,29 +115,29 @@ const MultiplayerGameplayPage: FunctionComponent<{
                         button.disabled = false;
                     }
                 }
-                var timeleft = timeToAnswer;
-                var testTimer = setInterval(function () {
-                    var element = document.getElementById('Timer');
+                let timeleft = timeToAnswer;
+                const testTimer = setInterval( () => {
+                     element = document.getElementById('Timer');
                     if (element != null) {
                         if (timeleft <= 0) {
                             clearInterval(testTimer);
                             element.innerHTML = 'Finished';
-                            if (playerLoc == currentPlayer) {
+                            if (playerLoc === currentPlayer) {
                                 gameSocket.fireAndForget(
                                     'next-turn',
                                     new PacketOutNextTurn(gameId, outOfTime)
                                 );
                                 alert('Ran out of time!');
                                 lives--;
-                                var livesElement =
+                                const livesElement =
                                     document.getElementById('lives');
                                 if (livesElement != null) {
                                     livesElement.innerHTML =
-                                        'Lives remaining: ' + lives;
+                                        `Lives remaining: ${lives}`;
                                 }
                             }
                         } else {
-                            element.innerHTML = timeleft + ' seconds remaining';
+                            element.innerHTML = `${timeleft}  seconds remaining`;
                         }
                         timeleft -= 1;
                     }

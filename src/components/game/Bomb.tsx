@@ -7,7 +7,10 @@ const Bomb: FunctionComponent<{
     deg: number;
     combo: string;
 }> = ({ deg, combo }) => (
-    <div className="relative flex justify-center items-center bomb-animation">
+    <div style={{
+        cursor: 'none',
+        pointerEvents: 'none'
+    }} className="relative flex justify-center items-center bomb-animation">
         <div
             className="absolute"
             style={{
