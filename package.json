@@ -9,6 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@bigheads/core": "^0.3.3",
         "@mantine/core": "^3.2.3",
         "@mantine/hooks": "^3.2.3",
         "@mantine/next": "^3.2.2",

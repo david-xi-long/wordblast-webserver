@@ -1,5 +1,6 @@
 export interface Player {
     username: string;
+    bigHeadOptions: Record<string, string | boolean>;
     ready: boolean;
     lives: number;
 }

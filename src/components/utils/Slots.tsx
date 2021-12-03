@@ -36,8 +36,8 @@ const Slots = <T extends { uid: string }>({ items, map }: IProps<T>) => {
             {slots.map((s) => (
                 <div
                     key={s.uid}
-                    className={`h-36 w-36 px-2 py-1 pb-2 flex-shrink-0 flex flex-col justify-between ${
-                        s.used ? 'bg-neutral-700' : 'bg-neutral-800'
+                    className={`h-[6.75rem] w-64 p-1.5 pr-6 flex-shrink-0 flex flex-col justify-between rounded-md ${
+                        s.used ? 'bg-neutral-800' : 'bg-neutral-900'
                     }`}
                 >
                     {s.used && map(s.item)}
