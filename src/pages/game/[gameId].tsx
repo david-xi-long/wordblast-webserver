@@ -18,6 +18,7 @@ import PacketInPlayerQuit from '../../scripts/packets/in/PacketInPlayerQuit';
 import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEliminated';
 import GamePopup from '../../components/game/GamePopup';
 import PacketInLivesChange from '../../scripts/packets/in/PacketInLivesChange';
+import randomOptions from '../../scripts/utils/bigHead';
 
 const env = 'dev';
 const endpoints = {
@@ -57,7 +58,12 @@ const GamePage: FunctionComponent = () => {
         gameSocket
             .requestResponse<PacketInGameInfo>(
                 'join-game',
-                new PacketOutGameJoin(gameId, username, userUid)
+                new PacketOutGameJoin(
+                    gameId,
+                    username,
+                    userUid,
+                    randomOptions()
+                )
             )
             .then(
                 (packet) => {

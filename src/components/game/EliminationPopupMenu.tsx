@@ -1,4 +1,4 @@
-import { Button } from '@vechaiui/button';
+import { Button } from '@mantine/core';
 import router from 'next/router';
 import { FunctionComponent, useEffect } from 'react';
 import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEliminated';
@@ -44,21 +44,13 @@ const EliminationPopupMenu: FunctionComponent<{
             <h1 className="text-5xl font-bold">You have been eliminated.</h1>
             <div className="mt-8 gap-8 flex justify-center">
                 <Button
-                    size="lg"
                     type="button"
-                    variant="solid"
-                    color="primary"
+                    size="md"
                     onClick={() => router.push('/')}
                 >
                     Main Menu
                 </Button>
-                <Button
-                    size="lg"
-                    type="button"
-                    variant="solid"
-                    color="primary"
-                    onClick={() => closeFn()}
-                >
+                <Button type="button" size="md" onClick={() => closeFn()}>
                     Spectate
                 </Button>
             </div>

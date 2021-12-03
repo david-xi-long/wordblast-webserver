@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    h1,
+    h2,
+    h3,
+    h4,
+    p {
+        margin: 0;
+    }
+
+    button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+    }
+}
+
+:root {
+    color-scheme: dark;
+}
+
 .page-container {
     display: flex;
 }
@@ -189,11 +209,19 @@
 }
 
 @keyframes shake {
-    0% { margin-left: 0rem; }
-    25% { margin-left: 0.5rem; }
-    75% { margin-left: -0.5rem; }
-    100% { margin-left: 0rem; }
-  }
+    0% {
+        margin-left: 0rem;
+    }
+    25% {
+        margin-left: 0.5rem;
+    }
+    75% {
+        margin-left: -0.5rem;
+    }
+    100% {
+        margin-left: 0rem;
+    }
+}
 
 /* fly in text */
 .fly-in {
@@ -201,8 +229,12 @@
 }
 
 @keyframes fly-in {
-    0% { transform: translateY(-25%); }
-    100% { transform: translateY(0%); }
+    0% {
+        transform: translateY(-25%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
 }
 
 .innerCenter {

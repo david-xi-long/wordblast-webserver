@@ -17,11 +17,11 @@ const Bomb: FunctionComponent<{
                 transform: `rotate(${deg}deg)`,
             }}
         >
-            <Image src={Arrow} height={300} width={30} />
+            <Image src={Arrow} height={225} width={30} />
         </div>
 
         <div className="absolute bomb">
-            <Image src={BombImage} height={200} width={200} />
+            <Image src={BombImage} height={115} width={115} />
             <p className="innerCenter font-bold">{combo}</p>
         </div>
     </div>

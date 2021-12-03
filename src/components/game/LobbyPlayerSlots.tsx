@@ -1,7 +1,9 @@
+import { BigHead } from '@bigheads/core';
 import { Dispatch, FunctionComponent, SetStateAction, useEffect } from 'react';
 import PacketInPlayerReadyState from '../../scripts/packets/in/PacketInPlayerReadyState';
 import PacketInUsernameChange from '../../scripts/packets/in/PacketInUsernameChange';
 import GameSocket from '../../scripts/socket/GameSocket';
+import randomOptions from '../../scripts/utils/bigHead';
 import { Player } from '../../types';
 import Slots from '../utils/Slots';
 import StateIndicator from '../utils/StateIndicator';
@@ -55,12 +57,25 @@ const LobbyPlayers: FunctionComponent<{
             <Slots
                 items={players.map((p) => ({ uid: p.username, ...p }))}
                 map={(player) => (
-                    <>
-                        <p className="truncate font-semibold">
-                            {player.username}
-                        </p>
-                        <StateIndicator ready={player.ready} />
-                    </>
+                    <div className="flex items-center space-x-2">
+                        <span className="inline-block h-24 w-24 flex-shrink-0">
+                            <BigHead {...player.bigHeadOptions} mask={false} />
+                        </span>
+
+                        <div className="truncate">
+                            <h2 className="text-neutral-300 text-base font-semibold truncate">
+                                {player.username}
+                            </h2>
+
+                            <div className="flex justify-between items-center space-x-2">
+                                <p className="text-neutral-400 text-sm font-semibold truncate">
+                                    Level 1
+                                </p>
+
+                                <StateIndicator ready={player.ready} />
+                            </div>
+                        </div>
+                    </div>
                 )}
             />
         </div>

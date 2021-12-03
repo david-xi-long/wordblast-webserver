@@ -1,3 +1,4 @@
+import { BigHead } from '@bigheads/core';
 import { Dispatch, FunctionComponent, SetStateAction, useEffect } from 'react';
 import PacketInPlayerReadyState from '../../scripts/packets/in/PacketInPlayerReadyState';
 import PacketInUsernameChange from '../../scripts/packets/in/PacketInUsernameChange';
@@ -56,10 +57,12 @@ const LobbyPlayers: FunctionComponent<{
                 items={players.map((p) => ({ uid: p.username, ...p }))}
                 map={(player) => (
                     <>
-                        <p className="truncate font-semibold">
+                        <BigHead />
+
+                        {/* <p className="truncate font-semibold">
                             {player.username}
-                        </p>
-                        <StateIndicator ready={player.ready} />
+                        </p> */}
+                        {/* <StateIndicator ready={player.ready} /> */}
                     </>
                 )}
             />

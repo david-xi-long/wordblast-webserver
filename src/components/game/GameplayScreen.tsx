@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Input } from '@vechaiui/forms';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { TextInput } from '@mantine/core';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player, RoundInfo } from '../../types';
 import PacketOutPlayerMessage from '../../scripts/packets/out/PacketOutPlayerMessage';
@@ -10,7 +10,7 @@ import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEli
 import PacketInDefinition from '../../scripts/packets/in/PacketInDefinition';
 import Countdown from './Countdown';
 import GameplayPlayerSlots from './GameplayPlayerSlots';
-import { SelectDropdown } from '@mantine/core/lib/src/components/Select/SelectDropdown/SelectDropdown';
+// import { SelectDropdown } from '@mantine/core/lib/src/components/Select/SelectDropdown/SelectDropdown';
 import Popup from '../../components/game/popup'
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
@@ -22,7 +22,9 @@ const GameplayPage: NextPage<{
 }> = ({ gameSocket, players, setPlayers, roundInfo, username, gameId }) => {
     const [eliminated, setEliminated] = useState(false);
     const [word, setWord] = useState('');
-    const [onError, setError] = useState(false)
+    const [onError, setError] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
     const registerInitHandlers = () => {
         gameSocket.subscribe<PacketInPlayerEliminated>(
             'player-eliminated',
@@ -40,7 +42,7 @@ const GameplayPage: NextPage<{
     useEffect(() => {
         registerInitHandlers();
     }, []);
-    
+
 
     const [action, setAction] = useState("");
     const [showWarning, setshowWarning] = useState(false)
@@ -49,7 +51,7 @@ const GameplayPage: NextPage<{
             'update-word',
             new PacketOutPlayerMessage(gameId, username, e.target.value)
         );
-        setError(false)
+        setError(false);
     };
 
     const sendWordGuess = (guess: string) => {
@@ -64,7 +66,7 @@ const GameplayPage: NextPage<{
                     // TODO: Implement word being correct
                 } else {
                     console.log('word', guess, 'is invalid');
-                    setError(true)
+                    setError(true);
                 }
             });
     };
@@ -79,7 +81,7 @@ const GameplayPage: NextPage<{
                         roundInfo.notificationText}
                 </p>
             </div>
-                
+
             <GameplayPlayerSlots
                 gameSocket={gameSocket}
                 roundInfo={roundInfo}
@@ -89,10 +91,10 @@ const GameplayPage: NextPage<{
                 setWord={setWord}
             />
 
-            
+
             <Popup onWarning={setshowWarning} title="Warning" message={warningMessage} buttonText="Dismiss" showWarning={showWarning}  >   </Popup>
-            
-            
+
+
             <Input
                 className={`my-10 mx-8 game-input ${onError ? "shake-input" : ""}`}
                 style={{
@@ -100,40 +102,43 @@ const GameplayPage: NextPage<{
                         roundInfo.username === username ? 'initial' : 'hidden',
                 }}
                 value={word}
+                onChange={(e) => updateWord(e)}
                 onKeyDown={(e) => {
-                    if (e.key !== 'Enter') return;                   
+                    if (e.key !== 'Enter') return;
                     sendWordGuess(e.currentTarget.value);
                 }}
                 onCopy={(e) => {
                     setAction("copy a word");
                     setshowWarning(true);
-                    e.preventDefault();                    
-                    
+                    e.preventDefault();
+
                 }}
                 onPaste={(e) => {
                     setAction("paste a word");
                     setshowWarning(true);
-                    e.preventDefault();            
+                    e.preventDefault();
                 }}
                 onCut={(e) => {
                     setAction("cut a word");
                     setshowWarning(true);
-                    e.preventDefault();            
+                    e.preventDefault();
                 }}
                 onDrop={(e) => {
                     setAction("drop a word");
                     setshowWarning(true);
-                    e.preventDefault();            
+                    e.preventDefault();
                 }}
-                
-                onChange={(e) => updateWord(e)}
+
+
                 onInput={(e) => {
                     e.currentTarget.value =
                         `${e.currentTarget.value}`.toUpperCase();
                 }}
             />
 
-            <Countdown roundInfo={roundInfo} />
+            <span className="mt-auto mb-2 w-full">
+                <Countdown roundInfo={roundInfo} />
+            </span>
         </div>
     );
 };

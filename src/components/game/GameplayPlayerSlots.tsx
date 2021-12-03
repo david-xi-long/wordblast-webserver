@@ -1,3 +1,4 @@
+import { BigHead } from '@bigheads/core';
 import {
     Dispatch,
     FunctionComponent,
@@ -9,6 +10,7 @@ import PacketInLivesChange from '../../scripts/packets/in/PacketInLivesChange';
 import PacketInPlayerMessage from '../../scripts/packets/in/PacketInPlayerMessage';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player, RoundInfo } from '../../types';
+import Heart from '../icons/Heart';
 import CircleSlots from '../utils/CircleSlots';
 import Bomb from './Bomb';
 
@@ -25,28 +27,37 @@ const rotationIndexPositions = {
 
 // maps out the word the current player is typing character by character and
 // colors in the letter combination green.
-const Word: FunctionComponent<{ word: string; letterCombo: string }> = ({
-    word,
-    letterCombo,
-}) => {
+const Word: FunctionComponent<{
+    word: string;
+    letterCombo: string;
+    hidden: boolean;
+}> = ({ word, letterCombo, hidden }) => {
     const wordArray = word.split('');
     const sIndex = word.indexOf(letterCombo.toString());
-    const eIndex = sIndex == -1 ? -1 : sIndex + letterCombo.length;
+    const eIndex = sIndex === -1 ? -1 : sIndex + letterCombo.length;
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
-            {wordArray.map((w, i) => {
-                if (i == word.length - 1 && word.length == eIndex) return <div className="fly-in lightgreen" key={Math.random()}>{w}</div>;
-                if (i == word.length - 1) return <div className="fly-in" key={Math.random()}>{w}</div>;
-                if (sIndex === -1) return <div key={Math.random()}>{w}</div>;
-                if (i >= sIndex && i < eIndex)
-                    return (
-                        <div key={Math.random()} className="lightgreen">
-                            {w}
-                        </div>
-                    );
-                return <div key={Math.random()}>{w}</div>;
-            })}
+        <div
+            style={{
+                visibility: hidden ? 'hidden' : 'initial',
+                display: 'flex',
+                justifyContent: 'center',
+                overflow: 'hidden',
+            }}
+            className="truncate"
+        >
+            {wordArray.map((w, i) => (
+                <div
+                    className={`
+                        ${i === word.length - 1 ? 'fly-in' : ''}
+                        ${i >= sIndex && i < eIndex ? 'lightgreen' : ''}
+                    `}
+                    key={Math.random()}
+                >
+                    {w}
+                </div>
+            ))}
+            {' '}
         </div>
     );
 };
@@ -93,14 +104,33 @@ const GameplayPlayerSlots: FunctionComponent<{
             }
             items={players.map((p) => ({ uid: p.username, ...p }))}
             map={(player) => (
-                <div className="font-semibold truncate center">
-                    {player.username}
+                <div className="flex flex-col items-center truncate">
+                    <span className="inline-block h-24 w-24 mb-1">
+                        <BigHead {...player.bigHeadOptions} />
+                    </span>
 
-                    <p>Lives: {player.lives}</p>
+                    <span className="inline-block h-5">
+                        {Array(player.lives)
+                            .fill(0)
+                            .map(() => (
+                                <Heart
+                                    key={Math.random()}
+                                    height="h-5"
+                                    width="w-5"
+                                    color="text-red-400"
+                                />
+                            ))}
+                    </span>
 
-                    {roundInfo.username === player.username && (
-                        <Word word={word} letterCombo={roundInfo.letterCombo} />
-                    )}
+                    <p className="mt-0.5 text-neutral-300 font-semibold text-sm truncate">
+                        {player.username}
+                    </p>
+
+                    <Word
+                        word={word}
+                        letterCombo={roundInfo.letterCombo}
+                        hidden={roundInfo.username !== player.username}
+                    />
                 </div>
             )}
         />
