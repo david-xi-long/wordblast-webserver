@@ -11,7 +11,7 @@ import PacketInDefinition from '../../scripts/packets/in/PacketInDefinition';
 import Countdown from './Countdown';
 import GameplayPlayerSlots from './GameplayPlayerSlots';
 import { SelectDropdown } from '@mantine/core/lib/src/components/Select/SelectDropdown/SelectDropdown';
-
+import Popup from '../../components/game/popup'
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
     players: Player[];
@@ -40,7 +40,10 @@ const GameplayPage: NextPage<{
     useEffect(() => {
         registerInitHandlers();
     }, []);
+    
 
+    const [action, setAction] = useState("");
+    const [showWarning, setshowWarning] = useState(false)
     const updateWord = async (e) => {
         gameSocket.fireAndForget(
             'update-word',
@@ -65,7 +68,7 @@ const GameplayPage: NextPage<{
                 }
             });
     };
-
+    const warningMessage = `You just tried to ${action} and that is not allowed!`
     return (
         <div className="p-8 pb-0 min-h-screen flex flex-col justify-center items-center">
             <div className="m-8 h-24 flex-shrink-0 flex flex-col justify-center items-center overflow-hidden">
@@ -76,7 +79,7 @@ const GameplayPage: NextPage<{
                         roundInfo.notificationText}
                 </p>
             </div>
-
+                
             <GameplayPlayerSlots
                 gameSocket={gameSocket}
                 roundInfo={roundInfo}
@@ -86,6 +89,10 @@ const GameplayPage: NextPage<{
                 setWord={setWord}
             />
 
+            
+            <Popup onWarning={setshowWarning} title="Warning" message={warningMessage} buttonText="Dismiss" showWarning={showWarning}  >   </Popup>
+            
+            
             <Input
                 className={`my-10 mx-8 game-input ${onError ? "shake-input" : ""}`}
                 style={{
@@ -94,9 +101,31 @@ const GameplayPage: NextPage<{
                 }}
                 value={word}
                 onKeyDown={(e) => {
-                    if (e.key !== 'Enter') return;
+                    if (e.key !== 'Enter') return;                   
                     sendWordGuess(e.currentTarget.value);
                 }}
+                onCopy={(e) => {
+                    setAction("copy a word");
+                    setshowWarning(true);
+                    e.preventDefault();                    
+                    
+                }}
+                onPaste={(e) => {
+                    setAction("paste a word");
+                    setshowWarning(true);
+                    e.preventDefault();            
+                }}
+                onCut={(e) => {
+                    setAction("cut a word");
+                    setshowWarning(true);
+                    e.preventDefault();            
+                }}
+                onDrop={(e) => {
+                    setAction("drop a word");
+                    setshowWarning(true);
+                    e.preventDefault();            
+                }}
+                
                 onChange={(e) => updateWord(e)}
                 onInput={(e) => {
                     e.currentTarget.value =
