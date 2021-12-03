@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { TextInput } from '@mantine/core';
+import { Input } from '@mantine/core';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player, RoundInfo } from '../../types';
 import PacketOutPlayerMessage from '../../scripts/packets/out/PacketOutPlayerMessage';
@@ -11,7 +11,7 @@ import PacketInDefinition from '../../scripts/packets/in/PacketInDefinition';
 import Countdown from './Countdown';
 import GameplayPlayerSlots from './GameplayPlayerSlots';
 // import { SelectDropdown } from '@mantine/core/lib/src/components/Select/SelectDropdown/SelectDropdown';
-import Popup from '../../components/game/popup'
+import Popup from './popup'
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
     players: Player[];

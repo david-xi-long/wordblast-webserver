@@ -48,7 +48,7 @@ const Popup: FunctionComponent<PopupProps> = ({title, message, buttonText, showW
             <div
               className={cx(
                 "relative flex flex-col w-full mx-auto my-24 rounded shadow-lg",
-                "bg-white border border-gray-200",
+                "bg-black border border-gray-200",
                 "dark:bg-neutral-800 dark:border-neutral-700",
                 "max-w-md"
               )}
