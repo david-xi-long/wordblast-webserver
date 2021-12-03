@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { TextInput } from '@mantine/core';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player, RoundInfo } from '../../types';
@@ -22,6 +22,8 @@ const GameplayPage: NextPage<{
     const [eliminated, setEliminated] = useState(false);
     const [word, setWord] = useState('');
     const [onError, setError] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
     const registerInitHandlers = () => {
         gameSocket.subscribe<PacketInPlayerEliminated>(
             'player-eliminated',
@@ -39,6 +41,12 @@ const GameplayPage: NextPage<{
     useEffect(() => {
         registerInitHandlers();
     }, []);
+
+    useEffect(() => {
+        if (inputRef.current === null || roundInfo.username !== username)
+            return;
+        inputRef.current.focus();
+    }, [roundInfo]);
 
     const updateWord = async (e) => {
         gameSocket.fireAndForget(
@@ -67,33 +75,33 @@ const GameplayPage: NextPage<{
 
     return (
         <div className="p-8 pb-0 min-h-screen flex flex-col justify-center items-center">
-            <div className="m-8 h-24 flex-shrink-0 flex flex-col justify-center items-center overflow-hidden">
+            {/* <div className="m-8 h-24 flex-shrink-0 flex flex-col justify-center items-center overflow-hidden">
                 <p className="text-4xl font-bold">
                     {roundInfo.username === username && <>IT IS YOUR TURN</>}
                     {roundInfo.previousPlayer === username &&
                         roundInfo.username !== username &&
                         roundInfo.notificationText}
                 </p>
-            </div>
+            </div> */}
 
-            <GameplayPlayerSlots
-                gameSocket={gameSocket}
-                roundInfo={roundInfo}
-                players={players}
-                setPlayers={setPlayers}
-                word={word}
-                setWord={setWord}
-            />
+            <span className="mt-auto">
+                <GameplayPlayerSlots
+                    gameSocket={gameSocket}
+                    roundInfo={roundInfo}
+                    players={players}
+                    setPlayers={setPlayers}
+                    word={word}
+                    setWord={setWord}
+                />
+            </span>
 
             <TextInput
+                ref={inputRef}
                 size="xl"
-                className={`my-10 mx-8 game-input ${
+                className={`mt-16 mx-8 game-input ${
                     onError ? 'shake-input' : ''
                 }`}
-                style={{
-                    visibility:
-                        roundInfo.username === username ? 'initial' : 'hidden',
-                }}
+                disabled={roundInfo.username !== username}
                 value={word}
                 onChange={(e) => updateWord(e)}
                 onKeyDown={(e) => {
@@ -106,7 +114,9 @@ const GameplayPage: NextPage<{
                 }}
             />
 
-            <Countdown roundInfo={roundInfo} />
+            <span className="mt-auto mb-2 w-full">
+                <Countdown roundInfo={roundInfo} />
+            </span>
         </div>
     );
 };
