@@ -18,7 +18,7 @@ const UsernameSelectPage: FunctionComponent<{
 
     const form = useForm({
         initialValues: {
-            username: `Guest-${uid()}`,
+            username: `Guest-${uid(4)}`,
         },
         validationRules: {
             username: (value) => value.length > 0,

@@ -6,6 +6,7 @@ import {
     useEffect,
     useState,
 } from 'react';
+import PacketInExperienceChange from '../../scripts/packets/in/PacketInExperienceChange';
 import PacketInLivesChange from '../../scripts/packets/in/PacketInLivesChange';
 import PacketInPlayerMessage from '../../scripts/packets/in/PacketInPlayerMessage';
 import GameSocket from '../../scripts/socket/GameSocket';
@@ -13,6 +14,7 @@ import { Player, RoundInfo } from '../../types';
 import Heart from '../icons/Heart';
 import CircleSlots from '../utils/CircleSlots';
 import Bomb from './Bomb';
+import ExperienceAnimator from './ExperienceAnimator';
 
 const rotationIndexPositions = {
     0: 0,
@@ -31,7 +33,8 @@ const Word: FunctionComponent<{
     word: string;
     letterCombo: string;
     hidden: boolean;
-}> = ({ word, letterCombo, hidden }) => {
+    className: string;
+}> = ({ word, letterCombo, hidden, className }) => {
     const wordArray = word.split('');
     const sIndex = word.indexOf(letterCombo.toString());
     const eIndex = sIndex === -1 ? -1 : sIndex + letterCombo.length;
@@ -44,7 +47,7 @@ const Word: FunctionComponent<{
                 justifyContent: 'center',
                 overflow: 'hidden',
             }}
-            className="truncate"
+            className={className}
         >
             {wordArray.map((w, i) => (
                 <div
@@ -88,6 +91,20 @@ const GameplayPlayerSlots: FunctionComponent<{
         gameSocket.subscribe<PacketInPlayerMessage>('update-word', (packet) => {
             setWord(packet.getMessage());
         });
+
+        gameSocket.subscribe<PacketInExperienceChange>(
+            'experience-change',
+            (packet) => {
+                setPlayers((curPlayers) =>
+                    curPlayers.map((curPlayer) => {
+                        if (curPlayer.username === packet.getUsername()) {
+                            curPlayer.experience += packet.getExperienceDelta();
+                        }
+                        return curPlayer;
+                    })
+                );
+            }
+        );
     };
 
     useEffect(() => {
@@ -104,34 +121,47 @@ const GameplayPlayerSlots: FunctionComponent<{
             }
             items={players.map((p) => ({ uid: p.username, ...p }))}
             map={(player) => (
-                <div className="flex flex-col items-center truncate">
-                    <span className="inline-block h-24 w-24 mb-1">
-                        <BigHead {...player.bigHeadOptions} />
-                    </span>
+                <>
+                    <div className="flex flex-col items-center">
+                        <span className="inline-block h-24 w-24 mb-1">
+                            <BigHead {...player.bigHeadOptions} />
+                        </span>
 
-                    <span className="inline-block h-5">
-                        {Array(player.lives)
-                            .fill(0)
-                            .map(() => (
-                                <Heart
-                                    key={Math.random()}
-                                    height="h-5"
-                                    width="w-5"
-                                    color="text-red-400"
-                                />
-                            ))}
-                    </span>
+                        <span className="inline-block h-5">
+                            {Array(player.lives)
+                                .fill(0)
+                                .map(() => (
+                                    <Heart
+                                        key={Math.random()}
+                                        height="h-5"
+                                        width="w-5"
+                                        color="text-red-400"
+                                    />
+                                ))}
+                        </span>
 
-                    <p className="mt-0.5 text-neutral-300 font-semibold text-sm truncate">
-                        {player.username}
-                    </p>
+                        <div className="w-32 mt-0.5 font-semibold text-sm flex justify-center gap-1">
+                            <p className="text-neutral-300 truncate">
+                                {player.username}
+                            </p>
+                            <p className="text-neutral-400 text-sm">
+                                ({player.experience})
+                            </p>
+                        </div>
 
-                    <Word
-                        word={word}
-                        letterCombo={roundInfo.letterCombo}
-                        hidden={roundInfo.username !== player.username}
+                        <Word
+                            word={word}
+                            letterCombo={roundInfo.letterCombo}
+                            hidden={roundInfo.username !== player.username}
+                            className="w-32"
+                        />
+                    </div>
+
+                    <ExperienceAnimator
+                        gameSocket={gameSocket}
+                        player={player}
                     />
-                </div>
+                </>
             )}
         />
     );

@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { Input } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player, RoundInfo } from '../../types';
 import PacketOutPlayerMessage from '../../scripts/packets/out/PacketOutPlayerMessage';
@@ -24,7 +24,11 @@ const GameplayPage: NextPage<{
     const [eliminated, setEliminated] = useState(false);
     const [word, setWord] = useState('');
     const [onError, setError] = useState(false);
+    const [action, setAction] = useState('');
+    const [showWarning, setshowWarning] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const warningMessage = `You just tried to ${action} and that is not allowed!`;
 
     const registerInitHandlers = () => {
         gameSocket.subscribe<PacketInPlayerEliminated>(
@@ -44,8 +48,12 @@ const GameplayPage: NextPage<{
         registerInitHandlers();
     }, []);
 
-    const [action, setAction] = useState('');
-    const [showWarning, setshowWarning] = useState(false);
+    useEffect(() => {
+        if (inputRef.current === null || roundInfo.username !== username)
+            return;
+        inputRef.current.focus();
+    }, [roundInfo]);
+
     const updateWord = async (e) => {
         gameSocket.fireAndForget(
             'update-word',
@@ -71,27 +79,27 @@ const GameplayPage: NextPage<{
             });
     };
 
-    const warningMessage = `You just tried to ${action} and that is not allowed!`;
-
     return (
         <div className="p-8 pb-0 min-h-screen flex flex-col justify-center items-center">
-            <div className="m-8 h-24 flex-shrink-0 flex flex-col justify-center items-center overflow-hidden">
+            {/* <div className="m-8 h-24 flex-shrink-0 flex flex-col justify-center items-center overflow-hidden">
                 <p className="text-4xl font-bold">
                     {roundInfo.username === username && <>IT IS YOUR TURN</>}
                     {roundInfo.previousPlayer === username &&
                         roundInfo.username !== username &&
                         roundInfo.notificationText}
                 </p>
-            </div>
+            </div> */}
 
-            <GameplayPlayerSlots
-                gameSocket={gameSocket}
-                roundInfo={roundInfo}
-                players={players}
-                setPlayers={setPlayers}
-                word={word}
-                setWord={setWord}
-            />
+            <span className="mt-auto">
+                <GameplayPlayerSlots
+                    gameSocket={gameSocket}
+                    roundInfo={roundInfo}
+                    players={players}
+                    setPlayers={setPlayers}
+                    word={word}
+                    setWord={setWord}
+                />
+            </span>
 
             <Popup
                 onWarning={setshowWarning}
@@ -103,8 +111,10 @@ const GameplayPage: NextPage<{
                 {' '}
             </Popup>
 
-            <Input
-                className={`my-10 mx-8 game-input ${
+            <TextInput
+                ref={inputRef}
+                size="xl"
+                className={`mt-16 mx-8 w-[400px] ${
                     onError ? 'shake-input' : ''
                 }`}
                 style={{

@@ -33,7 +33,7 @@ const PopupMenu: FunctionComponent<{
     if (!isOpen) return <></>;
 
     return (
-        <div className="absolute h-screen w-screen bg-black bg-opacity-95 flex flex-col justify-center items-center z-50">
+        <div className="absolute h-screen w-screen bg-black bg-opacity-80 flex flex-col justify-center items-center z-50">
             <div className={css(styles.slide, styles.fade)}>{children}</div>
         </div>
     );
