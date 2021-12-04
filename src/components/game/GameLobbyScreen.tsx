@@ -5,15 +5,18 @@ import PacketOutPlayerReadyState from '../../scripts/packets/out/PacketOutPlayer
 import LobbyPlayerSlots from './LobbyPlayerSlots';
 import LobbyUsernameField from './LobbyUsernameField';
 import { Player } from '../../types';
+import GameCodeCard from './GameCodeCard';
 
 const GameLobbyScreen: FunctionComponent<{
-    gameId: string;
+    gameUid: string;
+    gameSid: string;
     gameSocket: GameSocket;
     username: string;
     players: Player[];
     setPlayers: Dispatch<SetStateAction<Player[]>>;
 }> = ({
-    gameId,
+    gameUid,
+    gameSid,
     gameSocket,
     username: selectedUsername,
     players,
@@ -29,12 +32,12 @@ const GameLobbyScreen: FunctionComponent<{
 
         gameSocket.fireAndForget(
             'player-ready-state',
-            new PacketOutPlayerReadyState(gameId, username, newState)
+            new PacketOutPlayerReadyState(gameUid, username, newState)
         );
     };
 
     return (
-        <div className="p-8 pb-0 min-h-screen flex flex-col items-center">
+        <div className="relative m-8 mb-0 min-h-[calc(100vh-2rem)] flex flex-col items-center">
             <div className="my-auto flex flex-col items-center">
                 <LobbyPlayerSlots
                     gameSocket={gameSocket}
@@ -53,10 +56,15 @@ const GameLobbyScreen: FunctionComponent<{
             </div>
 
             <LobbyUsernameField
-                gameId={gameId}
+                gameUid={gameUid}
                 gameSocket={gameSocket}
                 username={username}
                 setUsername={setUsername}
+            />
+
+            <GameCodeCard
+                gameSid={gameSid}
+                className="absolute left-0 bottom-0"
             />
         </div>
     );

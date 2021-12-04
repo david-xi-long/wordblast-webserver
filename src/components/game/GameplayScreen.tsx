@@ -11,15 +11,16 @@ import PacketInDefinition from '../../scripts/packets/in/PacketInDefinition';
 import Countdown from './Countdown';
 import GameplayPlayerSlots from './GameplayPlayerSlots';
 // import { SelectDropdown } from '@mantine/core/lib/src/components/Select/SelectDropdown/SelectDropdown';
-import Popup from './popup'
+import Popup from './popup';
+
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
     players: Player[];
     setPlayers: Dispatch<SetStateAction<Player[]>>;
     roundInfo: RoundInfo;
     username: string;
-    gameId: string;
-}> = ({ gameSocket, players, setPlayers, roundInfo, username, gameId }) => {
+    gameUid: string;
+}> = ({ gameSocket, players, setPlayers, roundInfo, username, gameUid }) => {
     const [eliminated, setEliminated] = useState(false);
     const [word, setWord] = useState('');
     const [onError, setError] = useState(false);
@@ -43,13 +44,12 @@ const GameplayPage: NextPage<{
         registerInitHandlers();
     }, []);
 
-
-    const [action, setAction] = useState("");
-    const [showWarning, setshowWarning] = useState(false)
+    const [action, setAction] = useState('');
+    const [showWarning, setshowWarning] = useState(false);
     const updateWord = async (e) => {
         gameSocket.fireAndForget(
             'update-word',
-            new PacketOutPlayerMessage(gameId, username, e.target.value)
+            new PacketOutPlayerMessage(gameUid, username, e.target.value)
         );
         setError(false);
     };
@@ -58,7 +58,7 @@ const GameplayPage: NextPage<{
         gameSocket
             .requestResponse<PacketInCheckWord>(
                 'check-word',
-                new PacketOutCheckWord(guess, gameId)
+                new PacketOutCheckWord(guess, gameUid)
             )
             .then((packet) => {
                 if (packet.isValid()) {
@@ -70,7 +70,9 @@ const GameplayPage: NextPage<{
                 }
             });
     };
-    const warningMessage = `You just tried to ${action} and that is not allowed!`
+
+    const warningMessage = `You just tried to ${action} and that is not allowed!`;
+
     return (
         <div className="p-8 pb-0 min-h-screen flex flex-col justify-center items-center">
             <div className="m-8 h-24 flex-shrink-0 flex flex-col justify-center items-center overflow-hidden">
@@ -91,12 +93,20 @@ const GameplayPage: NextPage<{
                 setWord={setWord}
             />
 
-
-            <Popup onWarning={setshowWarning} title="Warning" message={warningMessage} buttonText="Dismiss" showWarning={showWarning}  >   </Popup>
-
+            <Popup
+                onWarning={setshowWarning}
+                title="Warning"
+                message={warningMessage}
+                buttonText="Dismiss"
+                showWarning={showWarning}
+            >
+                {' '}
+            </Popup>
 
             <Input
-                className={`my-10 mx-8 game-input ${onError ? "shake-input" : ""}`}
+                className={`my-10 mx-8 game-input ${
+                    onError ? 'shake-input' : ''
+                }`}
                 style={{
                     visibility:
                         roundInfo.username === username ? 'initial' : 'hidden',
@@ -108,28 +118,25 @@ const GameplayPage: NextPage<{
                     sendWordGuess(e.currentTarget.value);
                 }}
                 onCopy={(e) => {
-                    setAction("copy a word");
+                    setAction('copy a word');
                     setshowWarning(true);
                     e.preventDefault();
-
                 }}
                 onPaste={(e) => {
-                    setAction("paste a word");
+                    setAction('paste a word');
                     setshowWarning(true);
                     e.preventDefault();
                 }}
                 onCut={(e) => {
-                    setAction("cut a word");
+                    setAction('cut a word');
                     setshowWarning(true);
                     e.preventDefault();
                 }}
                 onDrop={(e) => {
-                    setAction("drop a word");
+                    setAction('drop a word');
                     setshowWarning(true);
                     e.preventDefault();
                 }}
-
-
                 onInput={(e) => {
                     e.currentTarget.value =
                         `${e.currentTarget.value}`.toUpperCase();

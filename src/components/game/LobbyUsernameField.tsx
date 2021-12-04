@@ -6,11 +6,11 @@ import PacketOutUsernameChange from '../../scripts/packets/out/PacketOutUsername
 import Edit from '../icons/Edit';
 
 const LobbyUsernameField: FunctionComponent<{
-    gameId: string;
+    gameUid: string;
     gameSocket: GameSocket;
     username: string;
     setUsername: Dispatch<SetStateAction<string>>;
-}> = ({ gameId, gameSocket, username, setUsername }) => {
+}> = ({ gameUid, gameSocket, username, setUsername }) => {
     const [editingUsername, setEditingUsername] = useState(false);
 
     const submitUsername = (newUsername: string) => {
@@ -23,7 +23,7 @@ const LobbyUsernameField: FunctionComponent<{
         gameSocket
             .requestResponse<PacketInUsernameChange>(
                 'change-username',
-                new PacketOutUsernameChange(gameId, username, newUsername)
+                new PacketOutUsernameChange(gameUid, username, newUsername)
             )
             .then(
                 () => {

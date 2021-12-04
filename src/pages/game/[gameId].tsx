@@ -29,37 +29,44 @@ const endpoints = {
 // This is ran on the web server.
 // Inform the client whether the game exists or not.
 export const getServerSideProps = async (context) => {
+    const props = { gameExists: false, gameUid: null };
+
     const response = await fetch(`${endpoints[env]}${context.params?.gameId}`);
 
-    return {
-        props: { gameExists: response.status === 200 },
-    };
+    props.gameExists = response.status === 200;
+
+    if (response.status === 200) {
+        const { uid } = await response.json();
+        props.gameUid = uid;
+    }
+
+    return { props };
 };
 
-const GamePage: FunctionComponent = () => {
+const GamePage: FunctionComponent<{ gameUid: string }> = ({ gameUid }) => {
     const isSmallScreen = useMediaQuery({ maxWidth: 1024 });
 
     const { userUid } = useContext(AuthenticationContext);
 
     const router = useRouter();
-    const { gameId } = router.query as { gameId: string };
+    const { gameId: gameSid } = router.query as { gameId: string };
 
     const [isConnected, setIsConnected] = useState(false);
     const [hasJoinedGame, setHasJoinedGame] = useState(false);
     const [username, setUsername] = useState('');
     const [gameSocket] = useState(new GameSocket());
-    const [players, setPlayers] = useState<Player[]>([]);
-    const [roundInfo, setRoundInfo] = useState<RoundInfo>();
-    const [isOwner, setIsOwner] = useState(false);
     const [initialSettingValues, setInitialSettingValues] =
         useState<Record<string, string>>();
+    const [isOwner, setIsOwner] = useState(false);
+    const [players, setPlayers] = useState<Player[]>([]);
+    const [roundInfo, setRoundInfo] = useState<RoundInfo>();
 
     const joinGame = () => {
         gameSocket
             .requestResponse<PacketInGameInfo>(
                 'join-game',
                 new PacketOutGameJoin(
-                    gameId,
+                    gameUid,
                     username,
                     userUid,
                     randomOptions()
@@ -148,8 +155,9 @@ const GamePage: FunctionComponent = () => {
     if (username === '') {
         return (
             <UsernameSelectPage
-                setUsername={setUsername}
+                gameUid={gameUid}
                 gameSocket={gameSocket}
+                setUsername={setUsername}
             />
         );
     }
@@ -159,7 +167,8 @@ const GamePage: FunctionComponent = () => {
             <div className="flex-grow">
                 {roundInfo === undefined && (
                     <GameLobbyScreen
-                        gameId={gameId}
+                        gameUid={gameUid}
+                        gameSid={gameSid}
                         gameSocket={gameSocket}
                         username={username}
                         players={players}
@@ -174,14 +183,14 @@ const GamePage: FunctionComponent = () => {
                         setPlayers={setPlayers}
                         roundInfo={roundInfo}
                         username={username}
-                        gameId={gameId}
+                        gameUid={gameUid}
                     />
                 )}
             </div>
 
             <GameSettings
                 disabled={!isOwner || roundInfo !== undefined}
-                gameId={gameId}
+                gameUid={gameUid}
                 gameSocket={gameSocket}
                 isOwner={isOwner}
                 initialSettingValues={initialSettingValues}
@@ -189,7 +198,7 @@ const GamePage: FunctionComponent = () => {
 
             {!isSmallScreen && (
                 <Chatbox username={username}>
-                    <Chatbox.Game gameId={gameId} gameSocket={gameSocket} />
+                    <Chatbox.Game gameUid={gameUid} gameSocket={gameSocket} />
                 </Chatbox>
             )}
 
@@ -200,9 +209,10 @@ const GamePage: FunctionComponent = () => {
 
 const NotFoundPage: FunctionComponent = () => <div>Game not found.</div>;
 
-// Prop types defined by NextPage.
-// eslint-disable-next-line react/prop-types
-const Proxy: NextPage<{ gameExists: boolean }> = ({ gameExists }) =>
-    gameExists ? <GamePage /> : <NotFoundPage />;
+const Proxy: NextPage<{ gameExists: boolean; gameUid: string | null }> = ({
+    gameExists,
+    gameUid,
+}) =>
+    gameExists ? <GamePage gameUid={gameUid as string} /> : <NotFoundPage />;
 
 export default Proxy;
