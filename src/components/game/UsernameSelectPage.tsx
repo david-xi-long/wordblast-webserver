@@ -8,18 +8,17 @@ import PacketInUsernameSelect from '../../scripts/packets/in/PacketInUsernameSel
 import PacketOutUsernameSelect from '../../scripts/packets/out/PacketOutUsernameSelect';
 
 const UsernameSelectPage: FunctionComponent<{
-    setUsername: Dispatch<SetStateAction<string>>;
+    gameUid: string;
     gameSocket: GameSocket;
-}> = ({ setUsername, gameSocket }) => {
+    setUsername: Dispatch<SetStateAction<string>>;
+}> = ({ gameUid, gameSocket, setUsername }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [usernameExists, setUsernameExists] = useState(false);
     const router = useRouter();
 
-    const { gameId } = router.query as { gameId: string };
-
     const form = useForm({
         initialValues: {
-            username: `Guest-${uid()}`,
+            username: `Guest-${uid(4)}`,
         },
         validationRules: {
             username: (value) => value.length > 0,
@@ -32,7 +31,7 @@ const UsernameSelectPage: FunctionComponent<{
         gameSocket
             .requestResponse<PacketInUsernameSelect>(
                 'select-username',
-                new PacketOutUsernameSelect(gameId, username)
+                new PacketOutUsernameSelect(gameUid, username)
             )
             .then(
                 (packet) => {

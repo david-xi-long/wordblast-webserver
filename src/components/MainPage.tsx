@@ -19,9 +19,6 @@ const NewMainPage: FunctionComponent = () => {
 
     const { isAuthenticated } = useContext(AuthenticationContext);
 
-    // TODO: Disable login button if already logged in.
-    // TODO: Disable custom game button if not logged in.
-
     const callGameEndpoint = async (
         endpoint: string,
         // eslint-disable-next-line no-undef
@@ -41,9 +38,9 @@ const NewMainPage: FunctionComponent = () => {
             return;
         }
 
-        const { uid } = await response.json();
+        const { sid } = await response.json();
 
-        router.push(`/game/${uid}`);
+        router.push(`/game/${sid}`);
     };
 
     const joinAvailableGame = () => callGameEndpoint('available');

@@ -49,7 +49,7 @@ const CircleSlots = <T extends { uid: string }>({
                 return (
                     <div
                         key={s.uid}
-                        className={`h-40 w-40 p-1.5 flex justify-center items-center rounded-md ${backgroundColor}`}
+                        className={`relative h-40 w-40 p-1.5 flex justify-center items-center rounded-md ${backgroundColor}`}
                     >
                         {i === 4 && middle}
                         {i !== 4 && s.used && map(s.item)}

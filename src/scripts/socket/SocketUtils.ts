@@ -15,6 +15,7 @@ import PacketInLivesChange from '../packets/in/PacketInLivesChange';
 import PacketInPlayerJoin from '../packets/in/PacketInPlayerJoin';
 import PacketInPlayerQuit from '../packets/in/PacketInPlayerQuit';
 import PacketInGameEnd from '../packets/in/PacketInGameEnd';
+import PacketInExperienceChange from '../packets/in/PacketInExperienceChange';
 
 export default class SocketUtils {
     public static resolvePacket = (data: any) => {
@@ -65,6 +66,9 @@ export default class SocketUtils {
                 break;
             case 'PACKET_OUT_GAME_END':
                 packet = PacketInGameEnd.of(data);
+                break;
+            case 'PACKET_OUT_EXPERIENCE_CHANGE':
+                packet = PacketInExperienceChange.of(data);
                 break;
             case 'PACKET_OUT_EXCEPTION':
                 throw new Error(`Received exception packet: ${data.message}`);

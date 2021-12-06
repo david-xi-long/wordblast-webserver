@@ -3,6 +3,8 @@ export interface Player {
     bigHeadOptions: Record<string, string | boolean>;
     ready: boolean;
     lives: number;
+    experience: number;
+    experienceDelta: number;
 }
 
 export interface RoundInfo {

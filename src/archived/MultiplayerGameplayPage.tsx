@@ -116,8 +116,8 @@ const MultiplayerGameplayPage: FunctionComponent<{
                     }
                 }
                 let timeleft = timeToAnswer;
-                const testTimer = setInterval( () => {
-                     element = document.getElementById('Timer');
+                const testTimer = setInterval(() => {
+                    element = document.getElementById('Timer');
                     if (element != null) {
                         if (timeleft <= 0) {
                             clearInterval(testTimer);
@@ -132,8 +132,7 @@ const MultiplayerGameplayPage: FunctionComponent<{
                                 const livesElement =
                                     document.getElementById('lives');
                                 if (livesElement != null) {
-                                    livesElement.innerHTML =
-                                        `Lives remaining: ${lives}`;
+                                    livesElement.innerHTML = `Lives remaining: ${lives}`;
                                 }
                             }
                         } else {

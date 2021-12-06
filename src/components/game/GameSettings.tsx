@@ -34,11 +34,11 @@ const gameSettingsInfo = {
 
 const GameSettings: FunctionComponent<{
     disabled: boolean;
-    gameId: string;
+    gameUid: string;
     gameSocket: GameSocket;
     isOwner: boolean;
     initialSettingValues: Record<string, string> | undefined;
-}> = ({ disabled, gameId, gameSocket, isOwner, initialSettingValues }) => {
+}> = ({ disabled, gameUid, gameSocket, isOwner, initialSettingValues }) => {
     const [settings, setSettings] = useState<any>();
 
     const setSetting = (
@@ -68,7 +68,7 @@ const GameSettings: FunctionComponent<{
 
         gameSocket.fireAndForget(
             'setting-change',
-            new PacketOutSettingChange(gameId, setting, `${value}`)
+            new PacketOutSettingChange(gameUid, setting, `${value}`)
         );
     };
 

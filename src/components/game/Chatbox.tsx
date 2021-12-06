@@ -27,7 +27,7 @@ const ChatboxContext = createContext({
 });
 
 interface ChatboxImpls {
-    Game: FunctionComponent<{ gameId: string; gameSocket: GameSocket }>;
+    Game: FunctionComponent<{ gameUid: string; gameSocket: GameSocket }>;
 }
 
 const Chatbox: FunctionComponent<{ username: string }> & ChatboxImpls = ({
@@ -102,7 +102,7 @@ const Chatbox: FunctionComponent<{ username: string }> & ChatboxImpls = ({
     );
 };
 
-const Game: ChatboxImpls['Game'] = ({ gameId, gameSocket }) => {
+const Game: ChatboxImpls['Game'] = ({ gameUid, gameSocket }) => {
     const { addMessage, setSendMessage } = useContext(ChatboxContext);
 
     // Run only once after the component has mounted.
@@ -125,7 +125,7 @@ const Game: ChatboxImpls['Game'] = ({ gameId, gameSocket }) => {
             gameSocket.fireAndForget(
                 'chat-message',
                 new PacketOutPlayerMessage(
-                    gameId,
+                    gameUid,
                     message.username,
                     message.text
                 )
