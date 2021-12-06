@@ -87,6 +87,11 @@ const NewMainPage: FunctionComponent = () => {
                                 Login
                             </Button>
                         </Link>
+                        <Link href="/tutorial" passHref>
+                            <Button variant="light" color="gray">
+                                Tutorial
+                            </Button>
+                        </Link>
                     </nav>
                 )}
 
@@ -158,8 +163,8 @@ const NewMainPage: FunctionComponent = () => {
                     {appearBomb && <MainBomb />}
                 </section>
 
-                <section>TODO: Leaderboard Section</section>
-                <section>TODO: Tutorial Section</section>
+                {/* <section>TODO: Leaderboard Section</section>
+                <section>TODO: Tutorial Section</section> */}
             </main>
 
             <PlayerCount />
