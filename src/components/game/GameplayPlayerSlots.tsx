@@ -7,7 +7,6 @@ import {
     useState,
 } from 'react';
 import PacketInExperienceChange from '../../scripts/packets/in/PacketInExperienceChange';
-import PacketInLivesChange from '../../scripts/packets/in/PacketInLivesChange';
 import PacketInPlayerMessage from '../../scripts/packets/in/PacketInPlayerMessage';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player, RoundInfo } from '../../types';
@@ -98,7 +97,9 @@ const GameplayPlayerSlots: FunctionComponent<{
                 setPlayers((curPlayers) =>
                     curPlayers.map((curPlayer) => {
                         if (curPlayer.username === packet.getUsername()) {
-                            curPlayer.experience += packet.getExperienceDelta();
+                            curPlayer.experienceDelta =
+                                (curPlayer.experienceDelta || 0) +
+                                packet.getExperienceDelta();
                         }
                         return curPlayer;
                     })
@@ -145,7 +146,7 @@ const GameplayPlayerSlots: FunctionComponent<{
                                 {player.username}
                             </p>
                             <p className="text-neutral-400 text-sm">
-                                ({player.experience})
+                                {player.experienceDelta || 0}xp
                             </p>
                         </div>
 

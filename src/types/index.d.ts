@@ -4,6 +4,7 @@ export interface Player {
     ready: boolean;
     lives: number;
     experience: number;
+    experienceDelta: number;
 }
 
 export interface RoundInfo {

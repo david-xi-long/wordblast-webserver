@@ -3,10 +3,12 @@ import { Dispatch, FunctionComponent, SetStateAction, useEffect } from 'react';
 import PacketInPlayerReadyState from '../../scripts/packets/in/PacketInPlayerReadyState';
 import PacketInUsernameChange from '../../scripts/packets/in/PacketInUsernameChange';
 import GameSocket from '../../scripts/socket/GameSocket';
-import randomOptions from '../../scripts/utils/bigHead';
 import { Player } from '../../types';
 import Slots from '../utils/Slots';
 import StateIndicator from '../utils/StateIndicator';
+
+const calcLevel = (experience: number, base = 250, exponent = 1.25) =>
+    Math.floor((experience / base) ** (1 / exponent));
 
 const LobbyPlayers: FunctionComponent<{
     gameSocket: GameSocket;
@@ -69,7 +71,7 @@ const LobbyPlayers: FunctionComponent<{
 
                             <div className="flex justify-between items-center space-x-2">
                                 <p className="text-neutral-400 text-sm font-semibold truncate">
-                                    Level 1
+                                    Level {calcLevel(player.experience)}
                                 </p>
 
                                 <StateIndicator ready={player.ready} />
