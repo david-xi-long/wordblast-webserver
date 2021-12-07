@@ -13,6 +13,7 @@ const Statistics: FunctionComponent = () => {
     const [experience, setExperience] = useState(0);
     const [totalWords, setTotalWords] = useState(0);
     const [WPM, setWPM] = useState(0);
+    const [level, setLevel] = useState(0);
     
     const callStatsEndpoint = async () => {
         if (userUid !== undefined) {
@@ -30,6 +31,7 @@ const Statistics: FunctionComponent = () => {
                 setWPM(data.WPM);
                 setExperience(data.Experience);
                 setTotalWords(data.TotalWords);
+                setLevel(data.Level);
             });
         }
         setIsLoading(false);
@@ -54,20 +56,21 @@ const Statistics: FunctionComponent = () => {
         <div>
         { isAuthenticated && (
         <>
-        <div id = "stats" style={{
+        <div className={'px-3.5 pr-4 py-2.5 bg-neutral-900 ring-1 ring-neutral-800 rounded-md items-center'} id = "stats" style={{
             visibility: 'visible',
             position: 'absolute',
-            backgroundColor: 'dimgrey',
+            //backgroundColor: 'dimgrey',
             outline: '5px solid darkgrey',
-            color: 'black',
-            left: '50%',
-            top: '37.5%'
+            //color: 'black',
+            right: '4%',
+            top: '4%'
             }}>
             <div className="text-2xl tracking-wide space-y-1" >
                 Total Games Played: {gamesPlayed} <br></br>
                 Total Valid Words: {totalWords} <br></br>
                 Words Per Minute: {WPM} <br></br>
                 Experience: {experience} <br></br>
+                Level: {level} <br></br>
             </div>
             <div className="mt-8 gap-8 flex justify-center">
                 <Button

@@ -180,8 +180,9 @@ const NewMainPage: FunctionComponent = () => {
                             </MainButton>
                         </div>
                     </div>
-
-                    {showStats && (<Statistics />)}
+                    <div>
+                        {showStats && (<Statistics />)}
+                    </div>
                     {appearBomb && <MainBomb />}
 
                 </section>
