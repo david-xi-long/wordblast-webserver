@@ -95,11 +95,11 @@ const NewMainPage: FunctionComponent = () => {
                                 Login
                             </Button>
                         </Link>
-                        <Link href="/tutorial" passHref>
+                        {/* <Link href="/tutorial" passHref>
                             <Button variant="light" color="gray">
                                 Tutorial
                             </Button>
-                        </Link>
+                        </Link> */}
                     </nav>
                 )}
 
