@@ -14,6 +14,7 @@ const Statistics: FunctionComponent = () => {
     const [totalWords, setTotalWords] = useState(0);
     const [WPM, setWPM] = useState(0);
     const [level, setLevel] = useState(0);
+    const [averageWordLength, setAverageWordLength] = useState(0);
     
     const callStatsEndpoint = async () => {
         if (userUid !== undefined) {
@@ -31,6 +32,7 @@ const Statistics: FunctionComponent = () => {
                 setExperience(data.Experience);
                 setTotalWords(data.TotalWords);
                 setLevel(data.Level);
+                setAverageWordLength(data.AverageWordLength);
             });
         }
         setIsLoading(false);
@@ -68,6 +70,7 @@ const Statistics: FunctionComponent = () => {
                 <div> Words Per Minute: {WPM} </div>
                 <div> Experience: {experience} </div>
                 <div> Level: {level} </div>
+                <div> Average Word Length: {averageWordLength} </div>
             </div>
             <div className="mt-8 gap-8 flex justify-center">
                 <Button
