@@ -29,6 +29,7 @@ const GameplayPage: NextPage<{
     const [showWarning, setshowWarning] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const largeSlots = useMediaQuery({ query: '(min-width: 650px)' });
+    const [definition, setDefinition] = useState('');
 
     const warningMessage = `You just tried to ${action} and that is not allowed!`;
 
@@ -42,7 +43,11 @@ const GameplayPage: NextPage<{
         );
 
         gameSocket.subscribe<PacketInDefinition>('definition', (packet) => {
-            // alert("WORD:" + packet.getWord() + "Definition: " + packet.getDefinition());
+            setDefinition(
+                `${packet
+                    .getWord()
+                    .toLocaleUpperCase()}: ${packet.getDefinition()}`
+            );
         });
     };
 
@@ -95,6 +100,8 @@ const GameplayPage: NextPage<{
                         roundInfo.notificationText}
                 </p>
             </div> */}
+
+            <div className="font-semibold text-2xl">{definition}</div>
 
             <span className="mt-auto">
                 <GameplayPlayerSlots

@@ -1,4 +1,4 @@
-import { Alert } from '@vechaiui/alert';
+/*import { Alert } from '@vechaiui/alert';
 import { Button } from '@vechaiui/button';
 import {
     FormControl,
@@ -328,6 +328,6 @@ const MultiplayerGameplayPage: FunctionComponent<{
             </div>
         </>
     );
-};
+}; */
 
-export default MultiplayerGameplayPage;
+export {};

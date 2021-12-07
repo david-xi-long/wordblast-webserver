@@ -1,4 +1,4 @@
-import { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, useContext, useState } from 'react';
 import Link from 'next/link';
 import { Avatar, Button } from '@mantine/core';
 import { useMediaQuery } from 'react-responsive';
@@ -10,6 +10,7 @@ import Pencil from './icons/Pencil';
 import MainButton from './utils/MainButton';
 import PlayerCount from './utils/PlayerCount';
 import { AuthenticationContext } from './authentication/Authentication';
+import Statistics from './authentication/Statistics';
 
 const NewMainPage: FunctionComponent = () => {
     const appearBomb = useMediaQuery({ query: '(min-width: 1100px)' });
@@ -18,6 +19,8 @@ const NewMainPage: FunctionComponent = () => {
     const notifications = useNotifications();
 
     const { isAuthenticated } = useContext(AuthenticationContext);
+
+    const [showStats, setShowStats] = useState(false);
 
     const callGameEndpoint = async (
         endpoint: string,
@@ -50,6 +53,14 @@ const NewMainPage: FunctionComponent = () => {
             method: 'POST',
             credentials: 'include',
         });
+
+    const setStats = () => {
+        setShowStats(true);
+        const element = document.getElementById('stats');
+        if (element !== null) {
+            element.style.visibility = 'visible';
+        }
+    };
 
     return (
         <div className="relative min-h-screen w-full bg-[#06080a]">
@@ -84,10 +95,26 @@ const NewMainPage: FunctionComponent = () => {
                                 Login
                             </Button>
                         </Link>
+                        <Link href="/tutorial" passHref>
+                            <Button variant="light" color="gray">
+                                Tutorial
+                            </Button>
+                        </Link>
                     </nav>
                 )}
 
-                {isAuthenticated && <Avatar radius="xl" />}
+                {isAuthenticated && (
+                    <nav
+                        className={`flex gap-2 ${
+                            rowButtons ? 'flex-row' : 'flex-col'
+                        }`}
+                    >
+                        <Button variant="light" color="gray" onClick={setStats}>
+                            Show stats
+                        </Button>
+                        <Avatar radius="xl" />
+                    </nav>
+                )}
             </header>
 
             <main className="mt-16 flex flex-col items-center">
@@ -151,6 +178,7 @@ const NewMainPage: FunctionComponent = () => {
                         </div>
                     </div>
 
+                    <div>{showStats && <Statistics />}</div>
                     {appearBomb && <MainBomb />}
                 </section>
             </main>

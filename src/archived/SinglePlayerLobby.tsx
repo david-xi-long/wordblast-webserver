@@ -1,4 +1,4 @@
-import { Button } from '@vechaiui/button';
+/*import { Button } from '@vechaiui/button';
 import { FunctionComponent, useEffect, useState } from 'react';
 import GameSocket from '../../scripts/socket/GameSocket';
 import GamePlayPage from './GamePlayPage';
@@ -38,4 +38,5 @@ const SinglePlayerLobby: FunctionComponent = () => {
     );
 };
 
-export default SinglePlayerLobby;
+export default SinglePlayerLobby; */
+export {};
