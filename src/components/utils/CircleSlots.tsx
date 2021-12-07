@@ -1,4 +1,5 @@
 import { ReactElement, useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { uid } from '../../scripts/utils/math';
 
 type Slot<T> =
@@ -16,6 +17,7 @@ const CircleSlots = <T extends { uid: string }>({
     items,
     map,
 }: IProps<T>) => {
+    const largeSlots = useMediaQuery({ query: '(min-width: 650px)' });
     const [slots, setSlots] = useState<Slot<T>[]>([]);
 
     useEffect(() => {
@@ -39,7 +41,7 @@ const CircleSlots = <T extends { uid: string }>({
     }, [items]);
 
     return (
-        <div className="grid grid-cols-3 gap-12">
+        <div className={`grid grid-cols-3 ${largeSlots ? 'gap-12' : 'gap-6'}`}>
             {slots.map((s, i) => {
                 let backgroundColor = s.used
                     ? 'bg-neutral-800'
@@ -49,7 +51,9 @@ const CircleSlots = <T extends { uid: string }>({
                 return (
                     <div
                         key={s.uid}
-                        className={`relative h-40 w-40 p-1.5 flex justify-center items-center rounded-md ${backgroundColor}`}
+                        className={`relative p-1.5 flex justify-center items-center rounded-md ${backgroundColor} ${
+                            largeSlots ? 'h-40 w-40' : 'h-36 w-36'
+                        }`}
                     >
                         {i === 4 && middle}
                         {i !== 4 && s.used && map(s.item)}

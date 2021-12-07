@@ -94,8 +94,7 @@ const NewMainPage: FunctionComponent = () => {
                 <section className="p-16 w-full max-w-[1400px] flex justify-between items-center space-x-16">
                     <div>
                         <p className="font-mont font-semibold text-white text-3xl max-w-[32rem] leading-normal">
-                            Guess a word which includes the combination before
-                            the bomb explodes! (Make this better)
+                            Guess a word before the bomb explodes!
                         </p>
 
                         <div
@@ -154,10 +153,17 @@ const NewMainPage: FunctionComponent = () => {
 
                     {appearBomb && <MainBomb />}
                 </section>
-
-                <section>TODO: Leaderboard Section</section>
-                <section>TODO: Tutorial Section</section>
             </main>
+
+            <span className="absolute left-2 bottom-2">
+                <Button
+                    variant="light"
+                    color="gray"
+                    onClick={() => router.push('/tutorial')}
+                >
+                    Tutorial
+                </Button>
+            </span>
 
             <PlayerCount />
         </div>

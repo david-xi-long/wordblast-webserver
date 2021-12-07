@@ -3,32 +3,44 @@ import GameSocket from '../../scripts/socket/GameSocket';
 import PacketInSettingChange from '../../scripts/packets/in/PacketInSettingChange';
 import PacketOutSettingChange from '../../scripts/packets/out/PacketOutSettingChange';
 import Settings from './Settings';
+import { SettingsMap, SettingValueType } from '../../types';
 
-const gameSettingsInfo = {
+const gameSettingsInfo: SettingsMap = {
     public: {
-        selectorType: 'switch',
+        settingType: 'switch',
         title: 'Public',
         valueType: 'boolean',
+        hideIfDisabled: false,
     },
     playerLives: {
-        selectorType: 'input',
+        settingType: 'textinput',
         title: 'Player Lives',
         valueType: 'number',
+        hideIfDisabled: false,
     },
     timePerPlayer: {
-        selectorType: 'input',
+        settingType: 'textinput',
         title: 'Time Per Player',
         valueType: 'number',
+        hideIfDisabled: false,
     },
     extraLives: {
-        selectorType: 'switch',
+        settingType: 'switch',
         title: 'Extra Lives',
         valueType: 'boolean',
+        hideIfDisabled: false,
     },
     increasingDifficulty: {
-        selectorType: 'switch',
+        settingType: 'switch',
         title: 'Increasing Difficulty',
         valueType: 'boolean',
+        hideIfDisabled: false,
+    },
+    customWords: {
+        settingType: 'textarea',
+        title: 'Custom Words',
+        valueType: 'string',
+        hideIfDisabled: true,
     },
 };
 
@@ -39,28 +51,30 @@ const GameSettings: FunctionComponent<{
     isOwner: boolean;
     initialSettingValues: Record<string, string> | undefined;
 }> = ({ disabled, gameUid, gameSocket, isOwner, initialSettingValues }) => {
-    const [settings, setSettings] = useState<any>();
+    const [settings, setSettings] = useState<SettingsMap>({});
 
     const setSetting = (
         setting: string,
-        value: string | number | boolean,
+        value: SettingValueType,
         initial = false
     ) => {
-        let newValue: string | number | boolean;
-
-        switch (gameSettingsInfo[setting].valueType) {
-            case 'boolean':
-                newValue = value === 'true';
-                break;
-            default:
-                newValue = value;
+        if (typeof value !== gameSettingsInfo[setting].valueType) {
+            switch (gameSettingsInfo[setting].valueType) {
+                case 'boolean':
+                    value = value === 'true';
+                    break;
+                case 'number':
+                    value = Number(value);
+                    break;
+                default:
+            }
         }
 
         setSettings((curSettings) => ({
             ...curSettings,
             [setting]: {
                 ...gameSettingsInfo[setting],
-                value: newValue,
+                value,
             },
         }));
 

@@ -12,6 +12,7 @@ import Countdown from './Countdown';
 import GameplayPlayerSlots from './GameplayPlayerSlots';
 // import { SelectDropdown } from '@mantine/core/lib/src/components/Select/SelectDropdown/SelectDropdown';
 import Popup from './popup';
+import { useMediaQuery } from 'react-responsive';
 
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
@@ -27,6 +28,7 @@ const GameplayPage: NextPage<{
     const [action, setAction] = useState('');
     const [showWarning, setshowWarning] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const largeSlots = useMediaQuery({ query: '(min-width: 650px)' });
 
     const warningMessage = `You just tried to ${action} and that is not allowed!`;
 
@@ -80,7 +82,11 @@ const GameplayPage: NextPage<{
     };
 
     return (
-        <div className="p-8 pb-0 min-h-screen flex flex-col justify-center items-center">
+        <div
+            className={`${
+                largeSlots ? 'p-8' : 'p-4'
+            } pb-0 min-h-screen flex flex-col justify-center items-center`}
+        >
             {/* <div className="m-8 h-24 flex-shrink-0 flex flex-col justify-center items-center overflow-hidden">
                 <p className="text-4xl font-bold">
                     {roundInfo.username === username && <>IT IS YOUR TURN</>}
@@ -113,7 +119,7 @@ const GameplayPage: NextPage<{
 
             <TextInput
                 ref={inputRef}
-                size="xl"
+                size={largeSlots ? 'xl' : 'lg'}
                 className={`mt-16 mx-8 w-[400px] ${
                     onError ? 'shake-input' : ''
                 }`}
@@ -154,7 +160,7 @@ const GameplayPage: NextPage<{
             />
 
             <span className="mt-auto mb-2 w-full">
-                <Countdown roundInfo={roundInfo} />
+                <Countdown gameSocket={gameSocket} roundInfo={roundInfo} />
             </span>
         </div>
     );

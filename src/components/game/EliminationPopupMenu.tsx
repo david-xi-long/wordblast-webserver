@@ -41,7 +41,9 @@ const EliminationPopupMenu: FunctionComponent<{
                 };
             }}
         >
-            <h1 className="text-5xl font-bold">You have been eliminated.</h1>
+            <h1 className="text-5xl font-bold text-center">
+                You have been eliminated.
+            </h1>
             <div className="mt-8 gap-8 flex justify-center">
                 <Button
                     type="button"

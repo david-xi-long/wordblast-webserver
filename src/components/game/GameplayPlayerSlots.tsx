@@ -6,6 +6,7 @@ import {
     useEffect,
     useState,
 } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import PacketInExperienceChange from '../../scripts/packets/in/PacketInExperienceChange';
 import PacketInPlayerMessage from '../../scripts/packets/in/PacketInPlayerMessage';
 import GameSocket from '../../scripts/socket/GameSocket';
@@ -72,6 +73,7 @@ const GameplayPlayerSlots: FunctionComponent<{
     word: string;
     setWord: Dispatch<SetStateAction<string>>;
 }> = ({ roundInfo, gameSocket, players, setPlayers, word, setWord }) => {
+    const largeSlots = useMediaQuery({ query: '(min-width: 650px)' });
     const [curPlayerIndex, setCurPlayerIndex] = useState(0);
 
     useEffect(() => {
@@ -124,7 +126,11 @@ const GameplayPlayerSlots: FunctionComponent<{
             map={(player) => (
                 <>
                     <div className="flex flex-col items-center">
-                        <span className="inline-block h-24 w-24 mb-1">
+                        <span
+                            className={`inline-block mb-1 ${
+                                largeSlots ? 'h-24 w-24' : 'h-20 w-20'
+                            }`}
+                        >
                             <BigHead {...player.bigHeadOptions} />
                         </span>
 
@@ -141,8 +147,12 @@ const GameplayPlayerSlots: FunctionComponent<{
                                 ))}
                         </span>
 
-                        <div className="w-32 mt-0.5 font-semibold text-sm flex justify-center gap-1">
-                            <p className="text-neutral-300 truncate">
+                        <div
+                            className={`${
+                                largeSlots ? 'w-32' : 'w-28'
+                            } mt-0.5 font-semibold flex justify-center gap-1`}
+                        >
+                            <p className="text-neutral-300 truncate text-sm">
                                 {player.username}
                             </p>
                             <p className="text-neutral-400 text-sm">
@@ -154,7 +164,7 @@ const GameplayPlayerSlots: FunctionComponent<{
                             word={word}
                             letterCombo={roundInfo.letterCombo}
                             hidden={roundInfo.username !== player.username}
-                            className="w-32"
+                            className={largeSlots ? 'w-32' : 'w-28'}
                         />
                     </div>
 
