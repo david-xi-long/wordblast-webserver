@@ -1,35 +1,49 @@
-import { ActionIcon, Switch, TextInput } from '@mantine/core';
+import { ActionIcon, Switch, Textarea, TextInput } from '@mantine/core';
 import { FunctionComponent, useRef, useState } from 'react';
 import useOutsideClick from '../../hooks/outsideClick';
+import { Setting, SettingsMap } from '../../types';
 import Close from '../icons/Close';
 import Cog from '../icons/Cog';
 
 const SettingOption: FunctionComponent<{
     disabled: boolean;
-    setting: string;
-    settings: any;
-    setSetting: (setting: string, value: string | boolean) => void;
-}> = ({ disabled, setting, settings, setSetting }) => (
+    settingName: string;
+    setting: Setting;
+    setSetting: (settingName: string, value: string | boolean) => void;
+}> = ({ disabled, settingName, setting, setSetting }) => (
     <div className="w-full flex justify-between items-center">
         <h2 className="text-neutral-300 font-semibold text-lg">
-            {settings[setting].title}
+            {setting.title}
         </h2>
 
-        {settings[setting].selectorType === 'input' && (
+        {setting.settingType === 'switch' && (
+            <Switch
+                checked={setting.value as boolean}
+                onChange={(e) => setSetting(settingName, e.target.checked)}
+                disabled={disabled}
+            />
+        )}
+
+        {setting.settingType === 'textinput' && (
             <TextInput
-                variant="default"
                 size="xs"
-                value={settings[setting].value}
-                onChange={(e) => setSetting(setting, e.target.value)}
+                value={setting.value as string}
+                onChange={(e) => setSetting(settingName, e.target.value)}
                 disabled={disabled}
                 className="max-w-[75px]"
             />
         )}
 
-        {settings[setting].selectorType === 'switch' && (
-            <Switch
-                checked={settings[setting].value}
-                onChange={(e) => setSetting(setting, e.target.checked)}
+        {setting.settingType === 'textarea' && (
+            <Textarea
+                value={
+                    disabled
+                        ? setting.hideIfDisabled
+                            ? 'Hidden'
+                            : (setting.value as string)
+                        : (setting.value as string)
+                }
+                onChange={(e) => setSetting(settingName, e.target.value)}
                 disabled={disabled}
             />
         )}
@@ -39,8 +53,8 @@ const SettingOption: FunctionComponent<{
 const SettingsModal: FunctionComponent<{
     disabled: boolean;
     closeModal: () => void;
-    settings: any;
-    setSetting: (setting: string, value: string | boolean) => void;
+    settings: SettingsMap;
+    setSetting: (settingName: string, value: string | boolean) => void;
 }> = ({ disabled, closeModal, settings, setSetting }) => (
     <div className="min-w-[300px] p-6 bg-neutral-800 rounded-md">
         <div className="flex justify-between items-baseline">
@@ -51,11 +65,11 @@ const SettingsModal: FunctionComponent<{
         </div>
 
         <div className="space-y-1.5">
-            {Object.keys(settings).map((k) => (
+            {Object.entries(settings).map(([settingName, setting]) => (
                 <SettingOption
-                    key={k}
-                    setting={k}
-                    settings={settings}
+                    key={settingName}
+                    settingName={settingName}
+                    setting={setting}
                     setSetting={setSetting}
                     disabled={disabled}
                 />
@@ -66,8 +80,8 @@ const SettingsModal: FunctionComponent<{
 
 const Settings: FunctionComponent<{
     disabled: boolean;
-    settings: any;
-    setSetting: (setting: string, value: string | boolean) => void;
+    settings: SettingsMap;
+    setSetting: (settingName: string, value: string | boolean) => void;
 }> = ({ disabled, settings, setSetting }) => {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const ref = useRef(null);

@@ -1,12 +1,16 @@
 import { FunctionComponent, useEffect, useState } from 'react';
 import { Progress } from '@mantine/core';
 import { RoundInfo } from '../../types';
+import GameSocket from '../../scripts/socket/GameSocket';
+import PacketInGameEnd from '../../scripts/packets/in/PacketInGameEnd';
 
-const Countdown: FunctionComponent<{ roundInfo: RoundInfo }> = ({
-    roundInfo,
-}) => {
+const Countdown: FunctionComponent<{
+    gameSocket: GameSocket;
+    roundInfo: RoundInfo;
+}> = ({ gameSocket, roundInfo }) => {
     const [timeLeft, setTimeLeft] = useState(0);
     const [contTimeLeft, setContTimeLeft] = useState(0);
+    const [gameEnded, setGameEnded] = useState(false);
 
     useEffect(() => {
         setTimeLeft(Math.ceil(roundInfo.timeRemaining / 1000));
@@ -25,21 +29,34 @@ const Countdown: FunctionComponent<{ roundInfo: RoundInfo }> = ({
         };
     }, [roundInfo]);
 
+    useEffect(() => {
+        gameSocket.subscribe<PacketInGameEnd>('game-end', () => {
+            setGameEnded(true);
+        });
+    }, []);
+
     return (
         <div className="w-full">
-            <div
-                className="mb-2 text-right"
-                style={{
-                    width: `${(contTimeLeft / roundInfo.turnLength) * 100}%`,
-                    transition: '100ms ease all',
-                }}
-            >
-                <p className="text-2xl font-bold">{timeLeft}</p>
-            </div>
+            {!gameEnded && (
+                <div
+                    className="mb-2 text-right"
+                    style={{
+                        width: `${
+                            (contTimeLeft / roundInfo.turnLength) * 100
+                        }%`,
+                        transition: '100ms ease all',
+                    }}
+                >
+                    <p className="text-2xl font-bold">{timeLeft}</p>
+                </div>
+            )}
+
             <Progress
                 className="w-full"
                 color="red"
-                value={(contTimeLeft / roundInfo.turnLength) * 100}
+                value={
+                    gameEnded ? 0 : (contTimeLeft / roundInfo.turnLength) * 100
+                }
             />
         </div>
     );

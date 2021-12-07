@@ -55,12 +55,12 @@ const NewMainPage: FunctionComponent = () => {
         });
 
     const setStats = () => {
-        setShowStats(true); 
-        const element = document.getElementById("stats");
-        if (element!== null) {
-            element.style.visibility = "visible";
+        setShowStats(true);
+        const element = document.getElementById('stats');
+        if (element !== null) {
+            element.style.visibility = 'visible';
         }
-    }
+    };
 
     return (
         <div className="relative min-h-screen w-full bg-[#06080a]">
@@ -95,23 +95,21 @@ const NewMainPage: FunctionComponent = () => {
                                 Login
                             </Button>
                         </Link>
-                        <Link href="/tutorial" passHref>
+                        {/* <Link href="/tutorial" passHref>
                             <Button variant="light" color="gray">
                                 Tutorial
                             </Button>
-                        </Link>
+                        </Link> */}
                     </nav>
                 )}
 
                 {isAuthenticated && (
                     <nav
-                        className={`flex gap-2 ${rowButtons ? 'flex-row' : 'flex-col'}`}
+                        className={`flex gap-2 ${
+                            rowButtons ? 'flex-row' : 'flex-col'
+                        }`}
                     >
-                        <Button
-                            variant="light"
-                            color="gray"
-                            onClick={setStats}
-                        >
+                        <Button variant="light" color="gray" onClick={setStats}>
                             Show stats
                         </Button>
                         <Avatar radius="xl" />
@@ -179,16 +177,21 @@ const NewMainPage: FunctionComponent = () => {
                             </MainButton>
                         </div>
                     </div>
-                    <div>
-                        {showStats && (<Statistics />)}
-                    </div>
+
+                    <div>{showStats && <Statistics />}</div>
                     {appearBomb && <MainBomb />}
-
                 </section>
-
-                {/* <section>TODO: Leaderboard Section</section>
-                <section>TODO: Tutorial Section</section> */}
             </main>
+
+            <span className="absolute left-2 bottom-2">
+                <Button
+                    variant="light"
+                    color="gray"
+                    onClick={() => router.push('/tutorial')}
+                >
+                    Tutorial
+                </Button>
+            </span>
 
             <PlayerCount />
         </div>
