@@ -28,7 +28,6 @@ const GameplayPage: NextPage<{
     const [showWarning, setshowWarning] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const [definition, setDefinition] = useState('');
-    const [previousWord, setPreviousWord] = useState('');
 
     const warningMessage = `You just tried to ${action} and that is not allowed!`;
 
@@ -42,8 +41,7 @@ const GameplayPage: NextPage<{
         );
 
         gameSocket.subscribe<PacketInDefinition>('definition', (packet) => {
-            setDefinition(packet.getDefinition());
-            setPreviousWord(packet.getWord().toLocaleUpperCase() + ": ");
+            setDefinition(`${packet.getWord().toLocaleUpperCase()}: ${packet.getDefinition()}`)
         });
     };
 
@@ -94,7 +92,7 @@ const GameplayPage: NextPage<{
             </div> */}
             
             <div className="font-semibold text-2xl">
-                {previousWord} {definition} 
+                {definition} 
             </div>
 
             <span className="mt-auto">

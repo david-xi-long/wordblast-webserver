@@ -1,4 +1,4 @@
-import { Button } from '@vechaiui/button';
+/*import { Button } from '@vechaiui/button';
 import { useNotification } from '@vechaiui/notification';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
@@ -115,4 +115,5 @@ function MainPage() {
     );
 }
 
-export default MainPage;
+export default MainPage; */
+export {};

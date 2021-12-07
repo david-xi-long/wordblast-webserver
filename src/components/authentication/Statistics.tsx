@@ -24,7 +24,6 @@ const Statistics: FunctionComponent = () => {
             }),
             credentials: 'include',
         });
-        //const body = await response.text();
         const json = await response.json()
             .then(data => {
                 setGamesPlayed(data.GamesPlayed);
@@ -35,14 +34,14 @@ const Statistics: FunctionComponent = () => {
             });
         }
         setIsLoading(false);
-        var element = document.getElementById("stats");
+        const element = document.getElementById("stats");
         if (element!== null) {
             element.style.visibility = "visible";
         }
     }
     
     const hideStats = () => {
-        var element = document.getElementById("stats");
+        const element = document.getElementById("stats");
         if (element!== null) {
             element.style.visibility = "hidden";
         }
@@ -56,21 +55,19 @@ const Statistics: FunctionComponent = () => {
         <div>
         { isAuthenticated && (
         <>
-        <div className={'px-3.5 pr-4 py-2.5 bg-neutral-900 ring-1 ring-neutral-800 rounded-md items-center'} id = "stats" style={{
+        <div className='px-3.5 pr-4 py-2.5 bg-neutral-900 ring-1 ring-neutral-800 rounded-md items-center' id = "stats" style={{
             visibility: 'visible',
             position: 'absolute',
-            //backgroundColor: 'dimgrey',
             outline: '5px solid darkgrey',
-            //color: 'black',
             right: '4%',
             top: '4%'
             }}>
             <div className="text-2xl tracking-wide space-y-1" >
-                Total Games Played: {gamesPlayed} <br></br>
-                Total Valid Words: {totalWords} <br></br>
-                Words Per Minute: {WPM} <br></br>
-                Experience: {experience} <br></br>
-                Level: {level} <br></br>
+                <div> Total Games Played: {gamesPlayed} </div>
+                <div> Total Valid Words: {totalWords} </div>
+                <div> Words Per Minute: {WPM} </div>
+                <div> Experience: {experience} </div>
+                <div> Level: {level} </div>
             </div>
             <div className="mt-8 gap-8 flex justify-center">
                 <Button

@@ -1,4 +1,4 @@
-import { Alert } from '@vechaiui/alert';
+/*import { Alert } from '@vechaiui/alert';
 import { Button } from '@vechaiui/button';
 import {
     FormControl,
@@ -59,7 +59,7 @@ const gameplayPage: FunctionComponent = () => {
             )
             .then(
                 (packet) => {
-                    if (packet.wordIsValid() == true) {
+                    if (packet.isValid() == true) {
                         // Implement word being correct
                         console.log('Word is valid');
                         setCorrectInput(true);
@@ -126,4 +126,6 @@ const gameplayPage: FunctionComponent = () => {
     );
 };
 
-export default gameplayPage;
+export default gameplayPage; */
+
+export {};

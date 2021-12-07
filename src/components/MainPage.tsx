@@ -56,7 +56,7 @@ const NewMainPage: FunctionComponent = () => {
 
     const setStats = () => {
         setShowStats(true); 
-        var element = document.getElementById("stats");
+        const element = document.getElementById("stats");
         if (element!== null) {
             element.style.visibility = "visible";
         }
