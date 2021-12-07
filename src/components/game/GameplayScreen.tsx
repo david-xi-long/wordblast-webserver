@@ -27,6 +27,8 @@ const GameplayPage: NextPage<{
     const [action, setAction] = useState('');
     const [showWarning, setshowWarning] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [definition, setDefinition] = useState('');
+    const [previousWord, setPreviousWord] = useState('');
 
     const warningMessage = `You just tried to ${action} and that is not allowed!`;
 
@@ -40,7 +42,8 @@ const GameplayPage: NextPage<{
         );
 
         gameSocket.subscribe<PacketInDefinition>('definition', (packet) => {
-            // alert("WORD:" + packet.getWord() + "Definition: " + packet.getDefinition());
+            setDefinition(packet.getDefinition());
+            setPreviousWord(packet.getWord().toLocaleUpperCase() + ": ");
         });
     };
 
@@ -89,8 +92,13 @@ const GameplayPage: NextPage<{
                         roundInfo.notificationText}
                 </p>
             </div> */}
+            
+            <div className="font-semibold text-2xl">
+                {previousWord} {definition} 
+            </div>
 
             <span className="mt-auto">
+
                 <GameplayPlayerSlots
                     gameSocket={gameSocket}
                     roundInfo={roundInfo}
