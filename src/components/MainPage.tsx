@@ -11,6 +11,7 @@ import MainButton from './utils/MainButton';
 import PlayerCount from './utils/PlayerCount';
 import { AuthenticationContext } from './authentication/Authentication';
 import Statistics from './authentication/Statistics';
+import getGameEndpoint from '../scripts/utils/endpoint';
 
 const NewMainPage: FunctionComponent = () => {
     const appearBomb = useMediaQuery({ query: '(min-width: 1100px)' });
@@ -28,7 +29,7 @@ const NewMainPage: FunctionComponent = () => {
         options: RequestInit = {}
     ) => {
         const response = await fetch(
-            `http://localhost:8080/api/game/${endpoint}`,
+            `${getGameEndpoint()}/api/game/${endpoint}`,
             options
         );
 
@@ -121,7 +122,8 @@ const NewMainPage: FunctionComponent = () => {
                 <section className="p-16 w-full max-w-[1400px] flex justify-between items-center space-x-16">
                     <div>
                         <p className="font-mont font-semibold text-white text-3xl max-w-[32rem] leading-normal">
-                            Enter a valid word that contains the syllable before the bomb explodes!
+                            Enter a valid word that contains the syllable before
+                            the bomb explodes!
                         </p>
 
                         <div

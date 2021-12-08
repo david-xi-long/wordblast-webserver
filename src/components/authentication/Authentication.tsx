@@ -6,6 +6,7 @@ import {
     useEffect,
     useState,
 } from 'react';
+import getGameEndpoint from '../../scripts/utils/endpoint';
 
 interface IAuthenticationContext {
     isAuthenticated?: boolean;
@@ -28,7 +29,7 @@ const Authentication: FunctionComponent = ({ children }) => {
     const [userUid, setUserUid] = useState('');
 
     const getAuthInfo = async () => {
-        const response = await fetch('http://localhost:8080/api/user', {
+        const response = await fetch(`${getGameEndpoint()}/api/user`, {
             credentials: 'include',
         });
 

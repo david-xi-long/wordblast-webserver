@@ -1,4 +1,5 @@
 import { FunctionComponent, useEffect, useState } from 'react';
+import getGameEndpoint from '../../scripts/utils/endpoint';
 import { handleErr } from '../../scripts/utils/error';
 
 const PlayerCount: FunctionComponent = () => {
@@ -6,7 +7,7 @@ const PlayerCount: FunctionComponent = () => {
 
     const getPlayerCount = async () => {
         const [response] = await handleErr(
-            fetch('http://localhost:8080/api/game/count')
+            fetch(`${getGameEndpoint()}/api/game/count`)
         );
         if (response == null) return;
 

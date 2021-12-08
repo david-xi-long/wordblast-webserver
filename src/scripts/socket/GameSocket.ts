@@ -11,7 +11,10 @@ import SocketUtils from './SocketUtils';
 import ResponderImpl from './ResponderImpl';
 
 export default class GameSocket {
-    private static readonly GAME_SOCKET_URL = 'ws://localhost:7000';
+    private static readonly GAME_SOCKET_URL =
+        process.env.NODE_ENV === 'development'
+            ? 'ws://localhost:7000'
+            : 'ws://34.145.177.221:7000';
 
     private readonly responder = new ResponderImpl();
 

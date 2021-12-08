@@ -3,6 +3,7 @@ import { useRouter } from 'next/dist/client/router';
 import { useNotifications } from '@mantine/notifications';
 import { useForm } from '@mantine/hooks';
 import { Button, Divider, TextInput } from '@mantine/core';
+import getGameEndpoint from '../../scripts/utils/endpoint';
 
 const SignUpForm: FunctionComponent = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +27,7 @@ const SignUpForm: FunctionComponent = () => {
     const submit = async (data) => {
         setIsLoading(true);
 
-        const response = await fetch('http://localhost:8080/api/user', {
+        const response = await fetch(`${getGameEndpoint()}/api/user`, {
             method: 'POST',
             body: new URLSearchParams({
                 email: data.email,

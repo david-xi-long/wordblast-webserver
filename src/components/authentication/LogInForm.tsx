@@ -3,6 +3,7 @@ import { useRouter } from 'next/dist/client/router';
 import { Alert, Button, Divider, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { AuthenticationContext } from './Authentication';
+import getGameEndpoint from '../../scripts/utils/endpoint';
 
 const LogInForm: FunctionComponent = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +30,7 @@ const LogInForm: FunctionComponent = () => {
         setIsLoading(true);
         setIsIncorrect(false);
 
-        const response = await fetch('http://localhost:8080/api/user/login', {
+        const response = await fetch(`${getGameEndpoint()}/api/user/login`, {
             method: 'POST',
             body: new URLSearchParams({
                 username: data.email,

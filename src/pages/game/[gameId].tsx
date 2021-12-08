@@ -19,19 +19,16 @@ import PacketInPlayerEliminated from '../../scripts/packets/in/PacketInPlayerEli
 import GamePopup from '../../components/game/GamePopup';
 import PacketInLivesChange from '../../scripts/packets/in/PacketInLivesChange';
 import randomOptions from '../../scripts/utils/bigHead';
-
-const env = 'dev';
-const endpoints = {
-    dev: 'http://localhost:8080/api/game/',
-    prod: 'http://localhost:8080/api/game/',
-};
+import getGameEndpoint from '../../scripts/utils/endpoint';
 
 // This is ran on the web server.
 // Inform the client whether the game exists or not.
 export const getServerSideProps = async (context) => {
     const props = { gameExists: false, gameUid: null };
 
-    const response = await fetch(`${endpoints[env]}${context.params?.gameId}`);
+    const response = await fetch(
+        `${getGameEndpoint()}/api/game/${context.params?.gameId}`
+    );
 
     props.gameExists = response.status === 200;
 
