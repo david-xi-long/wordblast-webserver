@@ -54,7 +54,7 @@ const LobbyPlayers: FunctionComponent<{
             <h1 className="font-bold text-3xl mb-8">Players</h1>
             <Slots
                 items={players.map((p) => ({ uid: p.username, ...p }))}
-                map={(player) => (
+                map={() => (
                     <>
                         <BigHead />
 

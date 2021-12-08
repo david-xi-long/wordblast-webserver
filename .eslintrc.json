@@ -20,12 +20,14 @@
         "no-shadow": "off",
         "@typescript-eslint/no-shadow": ["error"],
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": ["warn"],
+        "@typescript-eslint/no-unused-vars": ["off"],
         "import/no-extraneous-dependencies": "off",
         "react-hooks/exhaustive-deps": "off",
         "@next/next/no-document-import-in-page": "off",
         "requireStringLiterals": "off",
         "no-nested-ternary": "off",
-        "valid-typeof": "off"
+        "valid-typeof": "off",
+        "@next/next/no-page-custom-font": ["off"]
+        
     }
 }
