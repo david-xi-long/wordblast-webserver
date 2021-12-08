@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:alpine AS deps
+FROM node:16-alpine AS deps
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
