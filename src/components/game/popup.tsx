@@ -1,4 +1,4 @@
-import { useState, useRef, FunctionComponent, Fragment } from 'react';
+import { useRef, FunctionComponent, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { cx, Button } from '@vechaiui/react';
 

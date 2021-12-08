@@ -5,7 +5,6 @@ import PacketInUsernameChange from '../../scripts/packets/in/PacketInUsernameCha
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player } from '../../types';
 import Slots from '../utils/Slots';
-import StateIndicator from '../utils/StateIndicator';
 
 const LobbyPlayers: FunctionComponent<{
     gameSocket: GameSocket;

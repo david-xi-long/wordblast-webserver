@@ -24,6 +24,8 @@
         "import/no-extraneous-dependencies": "off",
         "react-hooks/exhaustive-deps": "off",
         "@next/next/no-document-import-in-page": "off",
-        "requireStringLiterals": false
+        "requireStringLiterals": "off",
+        "no-nested-ternary": "off",
+        "valid-typeof": "off"
     }
 }

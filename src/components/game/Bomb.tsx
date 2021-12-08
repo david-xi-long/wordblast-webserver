@@ -1,8 +1,8 @@
 import { FunctionComponent } from 'react';
 import Image from 'next/image';
+import { useMediaQuery } from 'react-responsive';
 import BombImage from '../../../public/Bomb.png';
 import Arrow from '../../../public/arrow.png';
-import { useMediaQuery } from 'react-responsive';
 
 const Bomb: FunctionComponent<{
     deg: number;

@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { TextInput } from '@mantine/core';
+import { useMediaQuery } from 'react-responsive';
 import GameSocket from '../../scripts/socket/GameSocket';
 import { Player, RoundInfo } from '../../types';
 import PacketOutPlayerMessage from '../../scripts/packets/out/PacketOutPlayerMessage';
@@ -12,7 +13,6 @@ import Countdown from './Countdown';
 import GameplayPlayerSlots from './GameplayPlayerSlots';
 // import { SelectDropdown } from '@mantine/core/lib/src/components/Select/SelectDropdown/SelectDropdown';
 import Popup from './popup';
-import { useMediaQuery } from 'react-responsive';
 
 const GameplayPage: NextPage<{
     gameSocket: GameSocket;
@@ -77,10 +77,8 @@ const GameplayPage: NextPage<{
             )
             .then((packet) => {
                 if (packet.isValid()) {
-                    console.log('word', guess, 'is valid');
                     // TODO: Implement word being correct
                 } else {
-                    console.log('word', guess, 'is invalid');
                     setError(true);
                 }
             });
