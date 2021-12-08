@@ -50,4 +50,4 @@ jobs:
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.RESTART_WEBHOOK_URL }}
-          body: '{ "hook": { "name": "redeployment" }, "auth": { "token": "${{ secrets.RESTART_WEBHOOK_SECRET_TOKEN }}" } }'
+          body: '{ "hook": { "name": "redeploy-web-server" }, "auth": { "token": "${{ secrets.RESTART_WEBHOOK_SECRET_TOKEN }}" } }'
